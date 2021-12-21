@@ -1,20 +1,15 @@
-import Navbar from "./components/shared/Navbar";
-import {BrowserRouter, Route, Routes} from "react-router-dom";
-import Login from "./components/pages/Login";
+import Navbar from "./components/shared/Navbar"
+import createRoutes from "./routes"
 
+const routes = createRoutes()
 
 function App() {
-  return (
-    <div>
-        <BrowserRouter>
-            <Navbar />
-            <Routes>
-                <Route path="/login" component={<Login/>} />
-                <Route path="*" component={<div><h1>Yay</h1></div>} />
-            </Routes>
-        </BrowserRouter>
-    </div>
-  );
+	return (
+		<>
+			<Navbar/>
+			{routes}
+		</>
+	)
 }
 
-export default App;
+export default App

@@ -16,7 +16,7 @@ const RegisterPage = () => {
 			<div>
 				<h1>Register</h1>
 				<form>
-					<label htmlFor="name">name</label>
+					<label htmlFor="name" className="text-lg">name</label>
 					<input type="text" name="name" id="name" value={name} onChange={(e)=> setName(e.target.value)}/>
 
 					<label htmlFor="email">email</label>

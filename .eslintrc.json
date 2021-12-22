@@ -27,8 +27,9 @@
             "windows"
         ],
         "quotes": [
-            "error",
-            "double"
+            1,
+            "double",
+            "backtick"
         ],
         "semi": [
             "error",

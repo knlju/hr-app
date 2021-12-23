@@ -10,9 +10,11 @@ const ToggleTheme = () => {
 
 	useEffect(() => console.log(theme), [theme])
 
-	const handleToggle = () => {
-		console.log("theme", theme)
+	const handleToggle = e => {
+		e.stopPropagation()
+		e.preventDefault()
 		toggleTheme()
+		setToggle(!toggle)
 	}
 
 	return (
@@ -25,7 +27,7 @@ const ToggleTheme = () => {
 						className={`absolute left-0 bg-white border-2 mb-2 w-6 h-6 rounded-full transition transform duration-100 ease-linear cursor-pointer ${toggle === true ? 'translate-x-full border-green-400' : 'translate-x-0 border-gray-400'}`}></label>
 					<input type="checkbox" id="toggle" name="toggle"
 						className="appearance-none w-full h-full active:outline-none focus:outline-none"
-						checked={toggle} onChange={()=>setToggle(!toggle)}/>
+						defaultChecked={toggle} />
 				</div>
 			</div>
 		</div>

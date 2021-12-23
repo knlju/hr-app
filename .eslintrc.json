@@ -22,14 +22,16 @@
             "error",
             "tab"
         ],
-        "linebreak-style": [
-            "error",
-            "windows"
-        ],
+        // "linebreak-style": [
+        //     "error",
+        //     "windows"
+        // ],
         "quotes": [
             1,
             "double",
-            "backtick"
+            {
+                "allowTemplateLiterals": true
+            }
         ],
         "semi": [
             "error",

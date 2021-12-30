@@ -1,10 +1,10 @@
 import {
-	AUTH_FAIL,
-	AUTH_START,
-	AUTH_SUCCESS,
+	LOGIN_FAIL,
+	LOGIN_START,
+	LOGIN_SUCCESS,
 	LOGOUT_FAIL,
 	LOGOUT_START,
-	LOGOUT_SUCCESS,
+	LOGOUT_SUCCESS, REGISTER_FAIL, REGISTER_START, REGISTER_SUCCESS,
 } from "../actions/actions"
 
 const initialState = {
@@ -16,13 +16,12 @@ const initialState = {
 
 export default (state = initialState, { type, payload }) => {
 	switch (type) {
-	case AUTH_START:
-	case LOGOUT_START:
+	case LOGIN_START:
 		return {
 			...state,
 			isLoading: true,
 		}
-	case AUTH_SUCCESS:
+	case LOGIN_SUCCESS:
 		// console.log(AUTH_SUCCESS)
 		return {
 			...state,
@@ -30,7 +29,7 @@ export default (state = initialState, { type, payload }) => {
 			isLoggedIn: true,
 			user: payload,
 		}
-	case AUTH_FAIL:
+	case LOGIN_FAIL:
 		// console.log(AUTH_FAIL)
 		return {
 			...state,
@@ -38,6 +37,33 @@ export default (state = initialState, { type, payload }) => {
 			user: null,
 			isLoading: false,
 			error: payload,
+		}
+	case REGISTER_START:
+		return {
+			...state,
+			isLoading: true,
+		}
+	case REGISTER_SUCCESS:
+		// console.log(AUTH_SUCCESS)
+		return {
+			...state,
+			isLoading: false,
+			isLoggedIn: true,
+			user: payload,
+		}
+	case REGISTER_FAIL:
+		// console.log(AUTH_FAIL)
+		return {
+			...state,
+			isLoggedIn: false,
+			user: null,
+			isLoading: false,
+			error: payload,
+		}
+	case LOGOUT_START:
+		return {
+			...state,
+			isLoading: true,
 		}
 	case LOGOUT_SUCCESS:
 		return {

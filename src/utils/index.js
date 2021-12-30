@@ -1,48 +1,43 @@
-// import firebase from 'firebase/app';
-// import 'firebase/auth';
-// import 'firebase/database';
-// import { firebaseConfig } from './firebase';
-
-// firebase.initializeApp(firebaseConfig);
-
-// var database = firebase.database();
+// TODO: Ovo je API fajl za sad
 import axios from "axios"
 
 
+//TODO: Ovo je samo privremeno
 const endPoint = `https://internship-hr-app.herokuapp.com/api/auth/local`
 
 
+export const registerUser = async ({name, email, password, b64image}) => {
 
-export const registerUser = async () => {
-  
-	const response = await fetch("https://example.com/profile", {
-		method: "POST", // or 'PUT'
-		headers: {
-			"Content-Type": "application/json",
-		},
-		credentials: "include",
-		body: JSON.stringify({
-			identifier: "nemraci1234@gmail.com",
-			password: "asdfjkl;"}),
+	// TODO: kako se slika uploaduje?
+	console.log(b64image, "This is b64 of the image")
+	console.log(name, "This is name lol")
+	console.log({name, email, password, b64image})
+
+	const response = await axios.post(`https://internship-hr-app.herokuapp.com/api/auth/local/register`, {
+		// identifier: "nemraci1234@gmail.com",
+		// password: "asdfjkl;"
+		identifier: name,
+		email: email,
+		password: password
 	})
-	const data = await response.json()
-      
+	const data = response.data
+
+	localStorage.setItem("token", `Bearer ${data.jwt}`)
+
 	return data
 }
 
-export const loginUser = async () => {
-	const response = await fetch(endPoint, {
-		method: "POST", // or 'PUT'
-		headers: {
-			"Content-Type": "application/json",
-		},
-		// credentials: 'include',
-		body: JSON.stringify({
-			identifier: "nemraci1234@gmail.com",
-			password: "asdfjkl;"}),
+export const loginUser = async ({email, password}) => {
+// export const loginUser = async () => {
+	const response = await axios.post(endPoint, {
+		// identifier: "nemraci1234@gmail.com",
+		// password: "asdfjkl;"
+		identifier: email,
+		password: password
 	})
-	const data = await response.json()
-	localStorage.setItem("token", data.jwt)
+	const data = response.data
+	localStorage.setItem("token", `Bearer ${data.jwt}`)
+	// document.cookie = `Authorization=Bearer ${data.jwt}`
 	console.log(data)
 	return data
 }
@@ -58,17 +53,13 @@ export const logoutUser = () => {
 
 export const fetchQuestions = async () => {
 	const response = await axios.get("https://internship-hr-app.herokuapp.com/api/questions", {
-		// method: 'GET', 
 		headers: {
 			"Content-Type": "application/json",
-			"Accept" : "application/json",
-			// 'Content-Type' : 'application/x-www-form-urlencoded; charset=UTF-8',
-			"Authorization": "Bearer " + localStorage.getItem("token")
+			"Accept": "application/json",
+			// "Authorization": localStorage.getItem("token")
 		},
-		// mode: "cors",
-		// credentials: 'include',
 	})
-	const data =  response.data
+	const data = response.data
 	console.log(data)
-	return data 
+	return data
 }

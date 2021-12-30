@@ -1,7 +1,8 @@
-import React, {useEffect, useState} from "react"
-import {useDispatch, useSelector} from "react-redux"
+import React, { useEffect, useState } from "react"
+import { useDispatch, useSelector } from "react-redux"
 // import {loginUser} from "../../actions/actionCreators"
-import { authStart } from "../../actions/actions"
+import { loginStart } from "../../actions/actions"
+import {fetchQuestions} from "../../utils"
 
 const LoginPage = () => {
 
@@ -18,10 +19,19 @@ const LoginPage = () => {
 	// const handleFakeLogin = () => {
 	// 	dispatch(loginUser("test"))
 	// }
-	const authenticate = () => {
-		const data = { email, password }
-		console.log("authenticate")
-		dispatch(authStart(data))
+	// const authenticate = () => {
+	// 	const data = { email, password }
+	// 	console.log("authenticate")
+	// 	dispatch(authStart(data))
+	// }
+
+	const handleLogIn = e => {
+		e.preventDefault()
+		const data = {
+			email,
+			password
+		}
+		dispatch(loginStart(data))
 	}
 
 	return (
@@ -32,16 +42,16 @@ const LoginPage = () => {
 						<h3 className="text-xl font-medium text-gray-900 dark:text-white">Sign in to our platform</h3>
 						<div>
 							<label htmlFor="email" className="text-sm font-medium text-gray-900 block mb-2 dark:text-gray-300">Your email</label>
-							<input type="email" name="email" id="email" className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" placeholder="name@company.com" required="" value={email} onChange={(e)=> setEmail(e.target.value)}/>
+							<input type="email" name="email" id="email" className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" placeholder="name@company.com" required="" value={email} onChange={(e) => setEmail(e.target.value)} />
 						</div>
 						<div>
 							<label htmlFor="password" className="text-sm font-medium text-gray-900 block mb-2 dark:text-gray-300">Your password</label>
-							<input type="password" name="password" id="password" placeholder="••••••••" className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" required="" value={password} onChange={(e)=> setPassword(e.target.value)}/>
+							<input type="password" name="password" id="password" placeholder="••••••••" className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" required="" value={password} onChange={(e) => setPassword(e.target.value)} />
 						</div>
 						<div className="flex items-start">
 							<div className="flex items-start">
 								<div className="flex items-center h-5">
-									<input id="remember" aria-describedby="remember" type="checkbox" className="bg-gray-50 border border-gray-300 focus:ring-3 focus:ring-blue-300 h-4 w-4 rounded dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-blue-600 dark:ring-offset-gray-800" required=""/>
+									<input id="remember" aria-describedby="remember" type="checkbox" className="bg-gray-50 border border-gray-300 focus:ring-3 focus:ring-blue-300 h-4 w-4 rounded dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-blue-600 dark:ring-offset-gray-800" required="" />
 								</div>
 								<div className="text-sm ml-3">
 									<label htmlFor="remember" className="font-medium text-gray-900 dark:text-gray-300">Remember me</label>
@@ -49,13 +59,14 @@ const LoginPage = () => {
 							</div>
 							<a href="#" className="text-sm text-blue-700 hover:underline ml-auto dark:text-blue-500">Lost Password?</a>
 						</div>
-						<button type="submit" className="w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" onClick={authenticate}>Login to your account</button>
-						<div className="text-sm font-medium text-gray-500 dark:text-gray-300">Not registered? 
+						<button type="submit" className="w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" onClick={handleLogIn}>Login to your account</button>
+						<div className="text-sm font-medium text-gray-500 dark:text-gray-300">Not registered?
 							<a href="#" className="text-blue-700 hover:underline dark:text-blue-500">Create account</a>
 						</div>
 					</form>
 				</div>
 			</div>
+			<button type="submit" className="w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" onClick={fetchQuestions}>Login to your account</button>
 		</div>
 	)
 }

@@ -1,6 +1,14 @@
-import { all, take, call, put, delay, fork,  cancel } from "redux-saga/effects"
-import {authFail, authSuccess, AUTH_START, logoutFail, logoutSuccess, LOGOUT_START} from "../actions/actions"
-import {loginUser} from "../utils/index"
+import {all, take, call, put} from "redux-saga/effects"
+import {
+	loginFail,
+	loginSuccess,
+	LOGIN_START,
+	logoutFail,
+	logoutSuccess,
+	LOGOUT_START,
+	registerStart, registerSuccess, registerFail, REGISTER_START
+} from "../actions/actions"
+import {loginUser, logoutUser} from "../utils/index"
 
 // function* authenticate({email, password, isRegister}) {
 //   try {
@@ -17,36 +25,41 @@ import {loginUser} from "../utils/index"
 //   }
 // }
 
-function* authenticate({email, password}) {
-	try { 
+function* login({email, password}) {
+	try {
 		const {data} = yield call(loginUser, {email, password})
-		// race({
-		// 	data: call(loginUser, {email, password}),
-		// 	timeout: delay(1000)
-		// })
-		if(data) {
-			yield put(authSuccess(data.user))
-			return data.user.uid
+		if (data) {
+			yield put(loginSuccess(data.user))
 		} else {
-			yield put(authFail("The login didnt finish in the accepted time"))
+			// TODO: da li ovo treba da se proverava? :)
+			yield put(loginFail("Login epic Fail"))
 		}
-		
 	} catch (error) {
-		yield put(authFail(error.message))
+		yield put(loginFail(error.message))
+	}
+}
+// b64 image is base 64 because JSON doesn't support blob
+function* register({name, email, password, b64image}) {
+	try {
+		const {data} = yield call(registerStart, {name, email, password, b64image})
+		if (data) {
+			yield put(registerSuccess(data.user))
+		} else {
+			// TODO: da li ovo treba da se proverava? :)
+			yield put(registerFail("Login epic Fail"))
+		}
+	} catch (error) {
+		yield put(registerFail(error.message))
 	}
 }
 
 function* logout() {
 	try {
-		yield call(loginUser)
+		yield call(logoutUser)
 		yield put(logoutSuccess())
 	} catch (error) {
 		yield put(logoutFail(error.message))
 	}
-}
-
-function* longRunningYield() {
-	yield delay(5000)
 }
 
 // function* throwErrorSaga() {
@@ -56,21 +69,33 @@ function* longRunningYield() {
 // 	})
 // }
 
-function* authFlow() {
-	while(true) {
-		const {payload} = yield take(AUTH_START)
-		const uid = yield call(authenticate, payload) //firebase has the userId
-		const forkedSaga = yield fork(longRunningYield)
-		// yield spawn(throwErrorSaga)
-		if(uid) {
-			yield take (LOGOUT_START)
-			yield call(logout)
-			yield cancel(forkedSaga)
-		}
+// This is a watcher saga, I think
+function* loginFlow() {
+	while (true) {
+		const {payload} = yield take(LOGIN_START)
+		yield call(login, payload)
+		yield take(LOGOUT_START)
+		yield call(logout, payload)
+		// const uid = yield call(authenticate, payload) //firebase has the userId
+		// const forkedSaga = yield fork(longRunningYield)
+		// // yield spawn(throwErrorSaga)
+		// if(uid) {
+		// 	yield take (LOGOUT_START)
+		// 	yield call(logout)
+		// 	yield cancel(forkedSaga)
+		// }
+	}
+}
+
+// This is also a watcher saga, I think
+function* registerWatcher() {
+	while (true) {
+		const {payload} = yield take(REGISTER_START)
+		yield call(register, payload)
 	}
 }
 
 export default function* () {
-	yield all([authFlow()])
+	yield all([loginFlow(), registerWatcher()])
 }
 

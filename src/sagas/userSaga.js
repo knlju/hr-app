@@ -28,7 +28,10 @@ import {loginUser, logoutUser} from "../utils/index"
 function* login({email, password}) {
 	try {
 		const {data} = yield call(loginUser, {email, password})
+		localStorage.setItem("token", `Bearer ${data.jwt}`)
+		console.log("login, data", data)
 		if (data) {
+			console.log("login, data 2")
 			yield put(loginSuccess(data.user))
 		} else {
 			// TODO: da li ovo treba da se proverava? :)
@@ -75,7 +78,7 @@ function* loginFlow() {
 		const {payload} = yield take(LOGIN_START)
 		yield call(login, payload)
 		yield take(LOGOUT_START)
-		yield call(logout, payload)
+		yield call(logout)
 		// const uid = yield call(authenticate, payload) //firebase has the userId
 		// const forkedSaga = yield fork(longRunningYield)
 		// // yield spawn(throwErrorSaga)

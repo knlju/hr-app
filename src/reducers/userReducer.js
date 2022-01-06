@@ -22,7 +22,7 @@ export default (state = initialState, { type, payload }) => {
 			isLoading: true,
 		}
 	case LOGIN_SUCCESS:
-		// console.log(AUTH_SUCCESS)
+		console.log(LOGIN_SUCCESS)
 		return {
 			...state,
 			isLoading: false,
@@ -30,7 +30,7 @@ export default (state = initialState, { type, payload }) => {
 			user: payload,
 		}
 	case LOGIN_FAIL:
-		// console.log(AUTH_FAIL)
+		console.log(LOGIN_FAIL)
 		return {
 			...state,
 			isLoggedIn: false,

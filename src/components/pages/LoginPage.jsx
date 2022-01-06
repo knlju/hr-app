@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 // import {loginUser} from "../../actions/actionCreators"
-// import { loginStart } from "../../actions/actions"
-import { loginSuccess } from "../../actions/actions"
+import { loginStart } from "../../actions/actions"
+// import { loginSuccess } from "../../actions/actions"
 import { HomePage } from "./HomePage"
+import {Link} from "react-router-dom"
 // import {fetchQuestions} from "../../utils"
 
 const LoginPage = () => {
@@ -33,8 +34,8 @@ const LoginPage = () => {
 			email,
 			password
 		}
-		// dispatch(loginStart(data))
-		dispatch(loginSuccess(data))
+		dispatch(loginStart(data))
+		// dispatch(loginSuccess(data))
 	}
 
 	return (
@@ -64,7 +65,7 @@ const LoginPage = () => {
 						</div>
 						<button type="submit" className="w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" onClick={handleLogIn}>Login to your account</button>
 						<div className="text-sm font-medium text-gray-500 dark:text-gray-300">Not registered?
-							<a href="#" className="text-blue-700 hover:underline dark:text-blue-500">Create account</a>
+							<Link to="/register" className="text-blue-700 hover:underline dark:text-blue-500">Create account</Link>
 						</div>
 					</form>
 				</div>

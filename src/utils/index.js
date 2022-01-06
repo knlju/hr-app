@@ -27,22 +27,24 @@ export const registerUser = async ({name, email, password, b64image}) => {
 	return data
 }
 
-export const loginUser = async ({email, password}) => {
+export const loginUser = ({email, password}) => {
 // export const loginUser = async () => {
-	const response = await axios.post(endPoint, {
+	return axios.post(endPoint, {
 		// identifier: "nemraci1234@gmail.com",
 		// password: "asdfjkl;"
 		identifier: email,
 		password: password
 	})
-	const data = response.data
-	localStorage.setItem("token", `Bearer ${data.jwt}`)
+	// const data = response.data
+	// localStorage.setItem("token", `Bearer ${data.jwt}`)
 	// document.cookie = `Authorization=Bearer ${data.jwt}`
-	console.log(data)
-	return data
+	// console.log(data)
+	// return data
 }
 
 export const logoutUser = () => {
+	// ? TODO: ne mora ovde promise i tamo call
+	return new Promise(() => localStorage.removeItem("jwt"))
 	// return firebase
 	//   .auth()
 	//   .signOut()

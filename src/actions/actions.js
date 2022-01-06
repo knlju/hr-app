@@ -25,17 +25,17 @@ export const loginFail = (payload) => ({
 
 
 export const registerStart = (payload) => ({
-	type: LOGIN_START,
+	type: REGISTER_START,
 	payload,
 })
 
 export const registerSuccess = (payload) => ({
-	type: LOGIN_SUCCESS,
+	type: REGISTER_SUCCESS,
 	payload,
 })
 
 export const registerFail = (payload) => ({
-	type: LOGIN_FAIL,
+	type: REGISTER_FAIL,
 	payload,
 })
 

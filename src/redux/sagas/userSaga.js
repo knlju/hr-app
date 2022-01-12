@@ -8,30 +8,16 @@ import {
 	LOGOUT_START,
 	registerStart, registerSuccess, registerFail, REGISTER_START
 } from "../actions/actions"
-import {loginUser, logoutUser} from "../utils/index"
-
-// function* authenticate({email, password, isRegister}) {
-//   try {
-//     let data
-//     if(isRegister) {
-//       data = yield call(registerUser, {email, password})
-//     } else {
-//       data = yield call(loginUser, {email, password})
-//     }
-//     yield put(authSuccess(data.user))
-//     return data.user.uid
-//   } catch (error) { 
-//     yield put(authFail(error.message))
-//   }
-// }
+import {loginUser, logoutUser} from "../../api"
 
 function* login({email, password}) {
+	console.log("*login")
 	try {
 		const {data} = yield call(loginUser, {email, password})
-		localStorage.setItem("token", `Bearer ${data.jwt}`)
 		console.log("login, data", data)
 		if (data) {
 			console.log("login, data 2")
+			localStorage.setItem("token", data.jwt)
 			yield put(loginSuccess(data.user))
 		} else {
 			// TODO: da li ovo treba da se proverava? :)
@@ -39,9 +25,11 @@ function* login({email, password}) {
 		}
 	} catch (error) {
 		yield put(loginFail(error.message))
+		console.log(error)
 	}
 }
-// b64 image is base 64 because JSON doesn't support blob
+
+// TODO: polako s register
 function* register({name, email, password, b64image}) {
 	try {
 		const {data} = yield call(registerStart, {name, email, password, b64image})
@@ -65,28 +53,18 @@ function* logout() {
 	}
 }
 
-// function* throwErrorSaga() {
-// 	yield delay(1000)
-// 	yield call(()=>{
-// 		throw Error("New Error from saga")
-// 	})
-// }
-
 // This is a watcher saga, I think
-function* loginFlow() {
+function* loginWatcher() {
 	while (true) {
 		const {payload} = yield take(LOGIN_START)
 		yield call(login, payload)
+	}
+}
+
+function* logoutWatcher(){
+	while(true) {
 		yield take(LOGOUT_START)
 		yield call(logout)
-		// const uid = yield call(authenticate, payload) //firebase has the userId
-		// const forkedSaga = yield fork(longRunningYield)
-		// // yield spawn(throwErrorSaga)
-		// if(uid) {
-		// 	yield take (LOGOUT_START)
-		// 	yield call(logout)
-		// 	yield cancel(forkedSaga)
-		// }
 	}
 }
 
@@ -99,6 +77,5 @@ function* registerWatcher() {
 }
 
 export default function* () {
-	yield all([loginFlow(), registerWatcher()])
+	yield all([loginWatcher(), logoutWatcher(), registerWatcher()])
 }
-

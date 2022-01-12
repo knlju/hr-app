@@ -1,16 +1,22 @@
 import React, {useState} from "react"
 import {registerUser} from "../../utils"
+import {Navigate} from "react-router-dom"
+import {useSelector} from "react-redux"
 
 const RegisterPage = () => {
 	const [name, setName] = useState("")
 	const [email, setEmail] = useState("")
 	const [password, setPassword] = useState("")
 
+	const isLoggedIn = useSelector(state => state.user.isLoggedIn)
 
 	const submitRegistration = (e) => {
 		e.preventDefault()
 	}
 
+	if(isLoggedIn) {
+		return <Navigate to="/" />
+	}
 
 	return (
 		<>

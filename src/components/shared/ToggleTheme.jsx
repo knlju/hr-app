@@ -1,6 +1,5 @@
 import React, {useEffect, useState} from "react"
 import {useTheme} from "../../contexts/ThemeProvider"
-// import PropTypes from "prop-types"
 
 const ToggleTheme = () => {
 
@@ -33,9 +32,5 @@ const ToggleTheme = () => {
 		</div>
 	)
 }
-
-// ToggleTheme.propTypes = {
-//
-// }
 
 export default ToggleTheme

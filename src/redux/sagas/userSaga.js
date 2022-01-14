@@ -6,9 +6,9 @@ import {
 	logoutFail,
 	logoutSuccess,
 	LOGOUT_START,
-	registerStart, registerSuccess, registerFail, REGISTER_START
+	registerStart, registerSuccess, registerFail, REGISTER_START, REGISTER_SUCCESS, REGISTER_FAIL, CREATE_COMPANY_START
 } from "../actions/actions"
-import {loginUser, logoutUser} from "../../api"
+import {createCompany, loginUser, logoutUser, registerUser} from "../../api"
 
 function* login({email, password}) {
 	console.log("*login")
@@ -30,11 +30,13 @@ function* login({email, password}) {
 }
 
 // TODO: polako s register
-function* register({name, email, password, b64image}) {
+function* register({name, email, password, role, image = false, company = false}) {
 	try {
-		const {data} = yield call(registerStart, {name, email, password, b64image})
+		const {data} = yield call(registerUser, name, email, password)
+		console.log("function* register:", data)
 		if (data) {
 			yield put(registerSuccess(data.user))
+
 		} else {
 			// TODO: da li ovo treba da se proverava? :)
 			yield put(registerFail("Login epic Fail"))
@@ -61,8 +63,8 @@ function* loginWatcher() {
 	}
 }
 
-function* logoutWatcher(){
-	while(true) {
+function* logoutWatcher() {
+	while (true) {
 		yield take(LOGOUT_START)
 		yield call(logout)
 	}
@@ -72,9 +74,21 @@ function* logoutWatcher(){
 function* registerWatcher() {
 	while (true) {
 		const {payload} = yield take(REGISTER_START)
-		yield call(register, payload)
+		const res = yield call(register, payload)
+		console.log(res)
 	}
 }
+
+
+//
+// function* registerFlow() {
+// 	while(true) {
+// 		const {payload: registerPayload} =  yield take(REGISTER_SUCCESS)
+// 		const {payload: createCompanyPayload} =  yield take(CREATE_COMPANY_START)
+// 		const data = yield call(createCompany, createCompanyPayload)
+// 		console.log(data)
+// 	}
+// }
 
 export default function* () {
 	yield all([loginWatcher(), logoutWatcher(), registerWatcher()])

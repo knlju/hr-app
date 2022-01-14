@@ -1,3 +1,5 @@
+// TODO: legacy fajl, refaktorisati
+
 import {LOGIN_USER} from "./actions"
 
 // Iz dokumentacije react-redux za smanjenje boilerplate-a

@@ -5,23 +5,23 @@ import {axiosInstanceWithAuth, axiosInstanceWithoutAuth} from "./axios"
  * NOTE: You should call endpoint for creating
  * a new profile after this is done
  *
- * @param {String} name
+ * @param {String} username
  * @param {String} email
  * @param {String} password
- * @returns {Promise<any>}
+ * @returns {Promise<AxiosResponse<any>>}
  */
-export const registerUser = async ({name, email, password}) => {
-	const response = await axiosInstanceWithoutAuth.post("/api/auth/local/register", {
-		identifier: name,
+export const registerUser = ({username, email, password}) => {
+	console.log({username, email, password}, "{username, email, password}")
+	return axiosInstanceWithoutAuth.post("/api/auth/local/register", {
+		username: username,
 		email: email,
 		password: password
 	})
-	return response.data
 }
 
 /**
- * 	Calls endpoing for creation of a new profile
- * 	for the user after registration
+ *    Calls endpoing for creation of a new profile
+ *    for the user after registration
  *
  * @param {String} name - TODO: is name username?
  * @param {Number} company - ID of the company
@@ -29,7 +29,7 @@ export const registerUser = async ({name, email, password}) => {
  * @param {String} userRole - either 'comapny_user' or 'company_admin'
  * @returns {Promise<AxiosResponse<any>>}
  */
-export const createProfile = async ({name, company, user, userRole}) => {
+export const createProfile = ({name, company, user, userRole}) => {
 	return axiosInstanceWithAuth.post("/api/profiles", {
 		name,
 		company,
@@ -39,7 +39,7 @@ export const createProfile = async ({name, company, user, userRole}) => {
 }
 
 /**
- *	Calls endpoing for creation of a new company
+ *    Calls endpoing for creation of a new company
  *  after registration and before
  *  creation of a new profile
  *
@@ -47,7 +47,7 @@ export const createProfile = async ({name, company, user, userRole}) => {
  * @param {String} slug - company slug
  * @returns {Promise<AxiosResponse<any>>}
  */
-export const createCompany = async ({name, slug}) => {
+export const createCompany = ({name, slug}) => {
 	return axiosInstanceWithAuth.post("/api/profiles", {
 		name,
 		slug
@@ -89,15 +89,32 @@ export const logoutUser = () => {
 	localStorage.removeItem("token")
 }
 
-export const fetchQuestions = async () => {
-	const response = await axiosInstanceWithAuth.get("/api/questions", {
+/**
+ *
+ * @param name {String}
+ * @param company {Number}
+ * @param user {Number}
+ * @param userRole {String}
+ * @returns {Promise<AxiosResponse<any>>}
+ */
+export const createNewProfile = ({name, company, user, userRole}) => {
+	console.log("{name, company, user, userRole}", {name, company, user, userRole})
+	return axiosInstanceWithAuth.post("/api/profiles", {
+		data: {
+			name,
+			company,
+			user,
+			userRole
+		}
+	})
+}
+
+export const fetchQuestions = () => {
+	return axiosInstanceWithAuth.get("/api/questions", {
 		headers: {
 			"Content-Type": "application/json",
 			"Accept": "application/json",
 			// "Authorization": localStorage.getItem("token")
 		},
 	})
-	const data = response.data
-	console.log(data)
-	return data
 }

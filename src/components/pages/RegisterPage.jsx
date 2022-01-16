@@ -3,6 +3,7 @@ import {Link} from "react-router-dom"
 import {useDispatch, useSelector} from "react-redux"
 import {fetchCompaniesStart, registerStart} from "../../redux/actions/actions"
 import PropTypes from "prop-types"
+import Loader from "../shared/Loader"
 
 const CreateNewCompany = ({companyName, setCompanyName, companySlug, setCompanySlug}) => {
 	return (
@@ -39,36 +40,38 @@ CreateNewCompany.propTypes = {
 }
 
 const RegisterPage = () => {
-	const [name, setName] = useState("")
+	const [username, setUsername] = useState("")
 	const [email, setEmail] = useState("")
 	const [password, setPassword] = useState("")
 	const [companyId, setCompanyId] = useState("-1")
 	const [userRole, setUserRole] = useState("company_user")
-	const [image, setImage] = useState("company_user")
+	const [image, setImage] = useState("cicada")
 	const [companyName, setCompanyName] = useState("")
 	const [companySlug, setCompanySlug] = useState("")
 
 	// const isLoggedIn = useSelector(state => state.user.isLoggedIn)
 	const companies = useSelector(state => state.companies)
+	const user = useSelector(state => state.user)
 	const dispatch = useDispatch()
 
 	useEffect(() => {
 		dispatch(fetchCompaniesStart())
 	}, [])
 
-	useEffect(() =>
-		console.log("companies changed:", companies),
-	[companies])
+	// useEffect(() =>
+	// 	console.log("companies changed:", companies),
+	// [companies])
 
 	const submitRegistration = (e) => {
 		e.preventDefault()
-		let company
+		// let company
 		// TODO: odradi validaciju za kompaniju
-		const payload = {name, email, password}
-		if(parseInt(companyId) < 1) {
-			company = {name: companyName, slug: companySlug}
-			payload.company = company
-		}
+		const company = companyId
+		const payload = {username, email, password, company, userRole}
+		// if(parseInt(companyId) < 1) {
+		// 	company = {name: companyName, slug: companySlug}
+		// 	payload.company = company
+		// }
 		if (image) {
 			payload.image = image
 		}
@@ -94,6 +97,7 @@ const RegisterPage = () => {
 	// TODO: Add file preview
 	return (
 		<>
+			{user.isLoading && <Loader />}
 			<div className="flex justify-between items-center mx-auto max-w-screen-lg py-10">
 				<div
 					className="bg-white shadow-md border border-gray-200 rounded-lg mx-auto w-2/5 max-w-md p-4 sm:p-6 lg:p-8 dark:bg-gray-800 dark:border-gray-700">
@@ -105,8 +109,8 @@ const RegisterPage = () => {
                                 name</label>
 							<input type="text" name="name" id="name"
 								className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
-								placeholder="name@company.com" required="" value={name}
-								onChange={(e) => setName(e.target.value)}/>
+								placeholder="name@company.com" required="" value={username}
+								onChange={(e) => setUsername(e.target.value)}/>
 						</div>
 						<div>
 							<label htmlFor="email"

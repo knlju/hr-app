@@ -1,92 +1,96 @@
-export const LOGIN_START = "LOGIN_START"
-export const LOGIN_SUCCESS = "LOGIN_SUCCESS"
-export const LOGIN_FAIL = "LOGIN_FAIL"
+const actions = {
+	LOGIN_START : "LOGIN_START",
+	LOGIN_SUCCESS : "LOGIN_SUCCESS",
+	LOGIN_ERROR : "LOGIN_ERROR",
 
-export const REGISTER_START = "REGISTER_START"
-export const REGISTER_SUCCESS = "REGISTER_SUCCESS"
-export const REGISTER_FAIL = "REGISTER_FAIL"
+	REGISTER_START : "REGISTER_START",
+	REGISTER_SUCCESS : "REGISTER_SUCCESS",
+	REGISTER_ERROR : "REGISTER_ERROR",
 
-// TODO: ovaj flow je nepotreban
-export const LOGOUT_START = "LOGOUT_START"
-export const LOGOUT_SUCCESS = "LOGOUT_SUCCESS"
-export const LOGOUT_FAIL = "LOGOUT_FAIL"
+	// TODO: ovaj flow je nepotreban
+	LOGOUT_START : "LOGOUT_START",
+	LOGOUT_SUCCESS : "LOGOUT_SUCCESS",
+	LOGOUT_ERROR : "LOGOUT_ERROR",
 
-export const FETCH_COMPANIES_START = "FETCH_COMPANIES_START"
-export const FETCH_COMPANIES_SUCCESS = "FETCH_COMPANIES_SUCCESS"
-export const FETCH_COMPANIES_ERROR = "FETCH_COMPANIES_ERROR"
+	FETCH_COMPANIES_START : "FETCH_COMPANIES_START",
+	FETCH_COMPANIES_SUCCESS : "FETCH_COMPANIES_SUCCESS",
+	FETCH_COMPANIES_ERROR : "FETCH_COMPANIES_ERROR",
 
-export const CREATE_COMPANY_START = "CREATE_COMPANY_START"
-export const CREATE_COMPANY_SUCCESS = "CREATE_COMPANY_SUCCESS"
-export const CREATE_COMPANY_ERROR = "CREATE_COMPANY_ERROR"
+	CREATE_COMPANY_START : "CREATE_COMPANY_START",
+	CREATE_COMPANY_SUCCESS : "CREATE_COMPANY_SUCCESS",
+	CREATE_COMPANY_ERROR : "CREATE_COMPANY_ERROR",
+}
 
 export const loginStart = (payload) => ({
-	type: LOGIN_START,
+	type: actions.LOGIN_START,
 	payload,
 })
 
 export const loginSuccess = (payload) => ({
-	type: LOGIN_SUCCESS,
+	type: actions.LOGIN_SUCCESS,
 	payload,
 })
 
-export const loginFail = (payload) => ({
-	type: LOGIN_FAIL,
+export const loginError = (payload) => ({
+	type: actions.LOGIN_ERROR,
 	payload,
 })
 
 
 export const registerStart = (payload) => ({
-	type: REGISTER_START,
+	type: actions.REGISTER_START,
 	payload,
 })
 
 export const registerSuccess = (payload) => ({
-	type: REGISTER_SUCCESS,
+	type: actions.REGISTER_SUCCESS,
 	payload,
 })
 
-export const registerFail = (payload) => ({
-	type: REGISTER_FAIL,
+export const registerError = (payload) => ({
+	type: actions.REGISTER_ERROR,
 	payload,
 })
 
 export const logoutStart = () => ({
-	type: LOGOUT_START,
+	type: actions.LOGOUT_START,
 })
 
-export const logoutFail = () => ({
-	type: LOGOUT_FAIL,
+export const logoutError = () => ({
+	type: actions.LOGOUT_ERROR,
 })
 
 export const logoutSuccess = () => ({
-	type: LOGOUT_SUCCESS,
+	type: actions.LOGOUT_SUCCESS,
 })
 
 export const fetchCompaniesStart = () => ({
-	type: FETCH_COMPANIES_START,
+	type: actions.FETCH_COMPANIES_START,
 })
 
 export const fetchCompaniesSuccess = (payload) => ({
-	type: FETCH_COMPANIES_SUCCESS,
+	type: actions.FETCH_COMPANIES_SUCCESS,
 	payload,
 })
 
 export const fetchCompaniesError = (payload) => ({
-	type: FETCH_COMPANIES_ERROR,
+	type: actions.FETCH_COMPANIES_ERROR,
 	payload,
 })
 
 export const createCompanyStart = (payload) => ({
-	type: CREATE_COMPANY_START,
+	type: actions.CREATE_COMPANY_START,
 	payload,
 })
 
 export const createCompanySuccess = (payload) => ({
-	type: CREATE_COMPANY_SUCCESS,
+	type: actions.CREATE_COMPANY_SUCCESS,
 	payload,
 })
 
 export const createCompanyError = (payload) => ({
-	type: CREATE_COMPANY_ERROR,
+	type: actions.CREATE_COMPANY_ERROR,
 	payload,
 })
+
+export default actions

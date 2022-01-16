@@ -1,11 +1,4 @@
-import {
-	LOGIN_FAIL,
-	LOGIN_START,
-	LOGIN_SUCCESS,
-	LOGOUT_FAIL,
-	LOGOUT_START,
-	LOGOUT_SUCCESS, REGISTER_FAIL, REGISTER_START, REGISTER_SUCCESS,
-} from "../actions/actions"
+import actions from "../actions/actions"
 
 const initialState = {
 	isLoading: false,
@@ -16,21 +9,21 @@ const initialState = {
 
 export default (state = initialState, { type, payload }) => {
 	switch (type) {
-	case LOGIN_START:
+	case actions.LOGIN_START:
 		return {
 			...state,
 			isLoading: true,
 		}
-	case LOGIN_SUCCESS:
-		console.log(LOGIN_SUCCESS)
+	case actions.LOGIN_SUCCESS:
+		console.log(actions.LOGIN_SUCCESS)
 		return {
 			...state,
 			isLoading: false,
 			isLoggedIn: true,
 			user: payload,
 		}
-	case LOGIN_FAIL:
-		console.log(LOGIN_FAIL)
+	case actions.LOGIN_ERROR:
+		console.log(actions.LOGIN_ERROR)
 		return {
 			...state,
 			isLoggedIn: false,
@@ -38,12 +31,12 @@ export default (state = initialState, { type, payload }) => {
 			isLoading: false,
 			error: payload,
 		}
-	case REGISTER_START:
+	case actions.REGISTER_START:
 		return {
 			...state,
 			isLoading: true,
 		}
-	case REGISTER_SUCCESS:
+	case actions.REGISTER_SUCCESS:
 		// console.log(AUTH_SUCCESS)
 		return {
 			...state,
@@ -51,25 +44,24 @@ export default (state = initialState, { type, payload }) => {
 			isLoggedIn: true,
 			user: payload,
 		}
-	case REGISTER_FAIL:
-		// console.log(AUTH_FAIL)
+	case actions.REGISTER_ERROR:
+		console.log(payload)
 		return {
-			...state,
 			isLoggedIn: false,
 			user: null,
 			isLoading: false,
 			error: payload,
 		}
-	case LOGOUT_START:
+	case actions.LOGOUT_START:
 		return {
 			...state,
 			isLoading: true,
 		}
-	case LOGOUT_SUCCESS:
+	case actions.LOGOUT_SUCCESS:
 		return {
 			...initialState,
 		}
-	case LOGOUT_FAIL: {
+	case actions.LOGOUT_ERROR: {
 		return {
 			...state,
 			isLoading: false,

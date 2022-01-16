@@ -1,6 +1,5 @@
 import {all, take, call, put} from "redux-saga/effects"
-import {
-	FETCH_COMPANIES_START,
+import actions, {
 	fetchCompaniesError, fetchCompaniesSuccess
 } from "../actions/actions"
 import {getAllCompanies} from "../../api"
@@ -19,7 +18,7 @@ function* fetchCompanies() {
 
 function* fetchCompaniesWatcher() {
 	while (true) {
-		yield take(FETCH_COMPANIES_START)
+		yield take(actions.FETCH_COMPANIES_START)
 		yield call(fetchCompanies)
 	}
 }

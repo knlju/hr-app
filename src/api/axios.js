@@ -10,6 +10,7 @@ export const axiosInstanceWithoutAuth = axios.create({
 })
 
 // TODO: Ako je token istekao izloguj korisnika
+// TODO: hmm da li se ovako dodaje korisnik
 axiosInstanceWithAuth.interceptors.request.use((req) => {
 	const token = localStorage.getItem("token")
 	console.log("intercepted!", req)
@@ -22,7 +23,7 @@ axiosInstanceWithAuth.interceptors.request.use((req) => {
 		catch (error) {
 			console.log("token doesn't work:", error)
 		}
-		req.headers.Authorization = `Bearer ${token}`
 	}
+	req.headers.Authorization = `Bearer ${token}`
 	return req
 })

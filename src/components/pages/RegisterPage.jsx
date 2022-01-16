@@ -14,7 +14,7 @@ const CreateNewCompany = ({companyName, setCompanyName, companySlug, setCompanyS
 			<div>
 				<label htmlFor="companyName"
 					className="text-sm font-medium text-gray-900 block mb-2 dark:text-gray-300">Company
-                name</label>
+                    name</label>
 				<input type="text" name="companyName" id="name"
 					className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
 					placeholder="name@company.com" required="" value={companyName}
@@ -58,20 +58,16 @@ const RegisterPage = () => {
 		dispatch(fetchCompaniesStart())
 	}, [])
 
-	// useEffect(() =>
-	// 	console.log("companies changed:", companies),
-	// [companies])
-
 	const submitRegistration = (e) => {
 		e.preventDefault()
 		// let company
 		// TODO: odradi validaciju za kompaniju
-		const company = companyId
+		let company = companyId
 		const payload = {username, email, password, company, userRole}
-		// if(parseInt(companyId) < 1) {
-		// 	company = {name: companyName, slug: companySlug}
-		// 	payload.company = company
-		// }
+		if (parseInt(companyId) < 1) {
+			company = {name: companyName, slug: companySlug}
+			payload.company = company
+		}
 		if (image) {
 			payload.image = image
 		}
@@ -87,7 +83,8 @@ const RegisterPage = () => {
 	}
 
 	function handleImageChange(e) {
-		setImage(e.target.value)
+		console.log(e)
+		setImage(e.target.files[0])
 	}
 
 	// if (isLoggedIn) {
@@ -97,7 +94,8 @@ const RegisterPage = () => {
 	// TODO: Add file preview
 	return (
 		<>
-			{user.isLoading && <Loader />}
+			{user.isLoading && <Loader/>}
+			{user.error && <h1 className="text-6xl">{JSON.stringify(user.error)}</h1>}
 			<div className="flex justify-between items-center mx-auto max-w-screen-lg py-10">
 				<div
 					className="bg-white shadow-md border border-gray-200 rounded-lg mx-auto w-2/5 max-w-md p-4 sm:p-6 lg:p-8 dark:bg-gray-800 dark:border-gray-700">
@@ -106,7 +104,7 @@ const RegisterPage = () => {
 						<div>
 							<label htmlFor="name"
 								className="text-sm font-medium text-gray-900 block mb-2 dark:text-gray-300">Your
-                                name</label>
+                                name *</label>
 							<input type="text" name="name" id="name"
 								className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
 								placeholder="name@company.com" required="" value={username}
@@ -115,7 +113,7 @@ const RegisterPage = () => {
 						<div>
 							<label htmlFor="email"
 								className="text-sm font-medium text-gray-900 block mb-2 dark:text-gray-300">Your
-                                email</label>
+                                email *</label>
 							<input type="email" name="email" id="email"
 								className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
 								placeholder="name@company.com" required="" value={email}
@@ -124,7 +122,7 @@ const RegisterPage = () => {
 						<div>
 							<label htmlFor="password"
 								className="text-sm font-medium text-gray-900 block mb-2 dark:text-gray-300">Your
-                                password</label>
+                                password *</label>
 							<input type="password" name="password" id="password" placeholder="••••••••"
 								className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
 								required="" value={password} onChange={(e) => setPassword(e.target.value)}/>
@@ -139,7 +137,8 @@ const RegisterPage = () => {
 						</div>
 						<div>
 							<label htmlFor="formRole"
-								className="form-label text-sm font-medium text-gray-900 block mb-2 dark:text-gray-300">Role</label>
+								className="form-label text-sm font-medium text-gray-900 block mb-2 dark:text-gray-300">Role *</label>
+							{/* TODO: maybe use radiobutton instead of select here */}
 							<select
 								className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
 								value={userRole} onChange={handleUserRoleChange} id="formRole">

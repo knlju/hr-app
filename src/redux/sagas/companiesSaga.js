@@ -1,12 +1,14 @@
 import {all, take, call, put} from "redux-saga/effects"
 import actions, {
+	createCompanyError,
+	createCompanySuccess,
 	fetchCompaniesError, fetchCompaniesSuccess
 } from "../actions/actions"
-import {getAllCompanies} from "../../api"
+import api from "../../api"
 
 function* fetchCompanies() {
 	try {
-		const {data} = yield call(getAllCompanies)
+		const {data} = yield call(api.getAllCompanies)
 		if (data) {
 			console.log("data:", data)
 			yield put(fetchCompaniesSuccess(data))
@@ -23,6 +25,25 @@ function* fetchCompaniesWatcher() {
 	}
 }
 
+function* createNewCompany({name, slug}) {
+	try {
+		const {data} = yield call(api.createCompany, {name, slug})
+		if (data) {
+			console.log("data:", data)
+			yield put(createCompanySuccess(data))
+		}
+	} catch (error) {
+		yield put(createCompanyError(error))
+	}
+}
+
+function* createNewCompanyWatcher() {
+	while (true) {
+		const {payload} = yield take(actions.CREATE_COMPANY_START)
+		yield call(createNewCompany, payload)
+	}
+}
+
 export default function* () {
-	yield all([fetchCompaniesWatcher()])
+	yield all([fetchCompaniesWatcher(), createNewCompanyWatcher()])
 }

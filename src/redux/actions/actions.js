@@ -1,4 +1,5 @@
 const actions = {
+	// User Actions
 	LOGIN_START : "LOGIN_START",
 	LOGIN_SUCCESS : "LOGIN_SUCCESS",
 	LOGIN_ERROR : "LOGIN_ERROR",
@@ -12,6 +13,24 @@ const actions = {
 	LOGOUT_SUCCESS : "LOGOUT_SUCCESS",
 	LOGOUT_ERROR : "LOGOUT_ERROR",
 
+	// Profile Actions
+
+	CREATE_PROFILE_START : "CREATE_PROFILE_START",
+	CREATE_PROFILE_SUCCESS : "CREATE_PROFILE_SUCCESS",
+	CREATE_PROFILE_ERROR : "CREATE_PROFILE_ERROR",
+
+	FETCH_PROFILE_START : "FETCH_PROFILE_START",
+	FETCH_PROFILE_SUCCESS : "FETCH_PROFILE_SUCCESS",
+	FETCH_PROFILE_ERROR : "FETCH_PROFILE_ERROR",
+
+	// Image actions
+
+	UPLOAD_IMAGE_START : "UPLOAD_IMAGE_START",
+	UPLOAD_IMAGE_SUCCESS : "UPLOAD_IMAGE_SUCCESS",
+	UPLOAD_IMAGE_ERROR : "UPLOAD_IMAGE_ERROR",
+
+	// Companies Actions
+
 	FETCH_COMPANIES_START : "FETCH_COMPANIES_START",
 	FETCH_COMPANIES_SUCCESS : "FETCH_COMPANIES_SUCCESS",
 	FETCH_COMPANIES_ERROR : "FETCH_COMPANIES_ERROR",
@@ -20,6 +39,8 @@ const actions = {
 	CREATE_COMPANY_SUCCESS : "CREATE_COMPANY_SUCCESS",
 	CREATE_COMPANY_ERROR : "CREATE_COMPANY_ERROR",
 }
+
+// ACTION CREATORS
 
 export const loginStart = (payload) => ({
 	type: actions.LOGIN_START,
@@ -90,6 +111,36 @@ export const createCompanySuccess = (payload) => ({
 
 export const createCompanyError = (payload) => ({
 	type: actions.CREATE_COMPANY_ERROR,
+	payload,
+})
+
+export const createProfileStart = (payload) => ({
+	type: actions.CREATE_PROFILE_START,
+	payload,
+})
+
+export const createProfileSuccess = (payload) => ({
+	type: actions.CREATE_PROFILE_SUCCESS,
+	payload,
+})
+
+export const createProfileError = (payload) => ({
+	type: actions.CREATE_PROFILE_ERROR,
+	payload,
+})
+
+export const uploadImageStart = (payload) => ({
+	type: actions.UPLOAD_IMAGE_START,
+	payload,
+})
+
+export const uploadImageSuccess = (payload) => ({
+	type: actions.UPLOAD_IMAGE_SUCCESS,
+	payload,
+})
+
+export const uploadImageError = (payload) => ({
+	type: actions.UPLOAD_IMAGE_ERROR,
 	payload,
 })
 

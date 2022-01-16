@@ -5,6 +5,9 @@ const initialState = {
 	isLoggedIn: false,
 	user: null,
 	error: null,
+	// TODO: da li da ubacim profil u poseban reducer?
+	profile: null,
+	image: null
 }
 
 export default (state = initialState, { type, payload }) => {
@@ -37,7 +40,6 @@ export default (state = initialState, { type, payload }) => {
 			isLoading: true,
 		}
 	case actions.REGISTER_SUCCESS:
-		// console.log(AUTH_SUCCESS)
 		return {
 			...state,
 			isLoading: false,
@@ -47,9 +49,7 @@ export default (state = initialState, { type, payload }) => {
 	case actions.REGISTER_ERROR:
 		console.log(payload)
 		return {
-			isLoggedIn: false,
-			user: null,
-			isLoading: false,
+			...initialState,
 			error: payload,
 		}
 	case actions.LOGOUT_START:
@@ -62,6 +62,42 @@ export default (state = initialState, { type, payload }) => {
 			...initialState,
 		}
 	case actions.LOGOUT_ERROR: {
+		return {
+			...state,
+			isLoading: false,
+			error: payload,
+		}
+	}
+	case actions.CREATE_PROFILE_START:
+		return {
+			...state,
+			isLoading: true,
+		}
+	case actions.CREATE_PROFILE_SUCCESS:
+		return {
+			...state,
+			isLoading: false,
+			profile: payload
+		}
+	case actions.CREATE_PROFILE_ERROR: {
+		return {
+			...state,
+			isLoading: false,
+			error: payload,
+		}
+	}
+	case actions.UPLOAD_IMAGE_START:
+		return {
+			...state,
+			isLoading: true,
+		}
+	case actions.UPLOAD_IMAGE_SUCCESS:
+		return {
+			...state,
+			isLoading: false,
+			image: payload
+		}
+	case actions.UPLOAD_IMAGE_ERROR: {
 		return {
 			...state,
 			isLoading: false,

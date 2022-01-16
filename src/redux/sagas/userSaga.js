@@ -1,21 +1,23 @@
-import {all, take, call, put, race} from "redux-saga/effects"
+import {all, take, call, put, race, select} from "redux-saga/effects"
 import actions, {
 	loginError,
 	loginSuccess,
 	logoutError,
 	logoutSuccess,
-	registerSuccess, registerError,
+	registerSuccess,
+	registerError,
+	createProfileError,
+	createProfileSuccess,
+	createCompanyStart,
+	createProfileStart,
+	uploadImageStart, uploadImageSuccess, uploadImageError,
 } from "../actions/actions"
-import {loginUser, logoutUser, registerUser, createProfile} from "../../api"
-import {type} from "@testing-library/user-event/dist/type"
+import api from "../../api"
 
 function* login({email, password}) {
-	console.log("*login")
 	try {
-		const {data} = yield call(loginUser, {email, password})
-		console.log("login, data", data)
+		const {data} = yield call(api.loginUser, {email, password})
 		if (data) {
-			console.log("login, data 2")
 			localStorage.setItem("token", data.jwt)
 			yield put(loginSuccess(data.user))
 		} else {
@@ -24,32 +26,87 @@ function* login({email, password}) {
 		}
 	} catch (error) {
 		yield put(loginError(error.message))
-		console.log(error)
 	}
 }
 
 // TODO: polako s register
-function* register({username, email, password}) {
+function* register(payload) {
 	try {
-		const {data} = yield call(registerUser, username, email, password)
-		console.log("function* register:", data)
+		const {username, email, password} = payload
+		const {data} = yield call(api.registerUser, {username, email, password})
 		if (data) {
-			console.log("function* register 2:", data)
-
+			localStorage.setItem("token", data.jwt)
 			yield put(registerSuccess(data.user))
-
+			yield call(registerOrchestrator, payload)
 		} else {
 			// TODO: da li ovo treba da se proverava? :)
-			yield put(registerError("Login epic Fail"))
+			yield put(registerError("Register Failed"))
 		}
 	} catch (error) {
 		yield put(registerError(error.message))
 	}
 }
 
+function* registerWatcher() {
+	while (true) {
+		const {payload} = yield take(actions.REGISTER_START)
+		yield call(register, payload)
+	}
+}
+
+function* uploadImage(payload) {
+	try {
+		const image = payload
+		const data = yield call(api.uploadImage, image)
+		if (data) {
+			yield put(uploadImageSuccess(data))
+		} else {
+			yield put(uploadImageError("Upload Failed"))
+		}
+	} catch (error) {
+		yield put(uploadImageError(error.message))
+	}
+}
+
+function* uploadImageWatcher() {
+	while (true) {
+		const {payload} = yield take(actions.UPLOAD_IMAGE_START)
+		// eslint-disable-next-line no-debugger
+		debugger
+		yield call(uploadImage, payload)
+	}
+}
+
+// TODO: add response checking (error, data, etc.)
+function* createNewProfile({name, company, user, userRole, profilePhoto = undefined}) {
+	try {
+		const requestConfig = {name, company, user, userRole}
+		if (profilePhoto !== undefined) {
+			requestConfig.profilePhoto = profilePhoto
+		}
+		const {data} = yield call(api.createProfile, requestConfig)
+		if (data) {
+			yield put(createProfileSuccess(data.data.attributes))
+		} else {
+			yield put(createProfileError("Data error"))
+		}
+	} catch (error) {
+		yield put(createProfileError(error))
+	}
+}
+
+function* createNewProfileWatcher() {
+	while (true) {
+		const {payload} = yield take(actions.CREATE_PROFILE_START)
+		// eslint-disable-next-line no-debugger
+		debugger
+		yield createNewProfile(payload)
+	}
+}
+
 function* logout() {
 	try {
-		yield call(logoutUser)
+		yield call(api.logoutUser)
 		yield put(logoutSuccess())
 	} catch (error) {
 		yield put(logoutError(error.message))
@@ -71,100 +128,78 @@ function* logoutWatcher() {
 	}
 }
 
-// This is also a watcher saga, I think
-// function* registerWatcher() {
-// 	while (true) {
-// 		const {payload} = yield take(actions.REGISTER_START)
-// 		console.log("registerWatcher")
-// 		console.log("-----------")
-// 		console.log(payload)
-// 		console.log("-----------")
-// 		const {username, email, password} = payload
-// 		console.log("username, email, password", username, email, password)
-// 		const res = yield call(register, username, email, password)
-// 		console.log("res", res)
-// 	}
-// }
-
-
-// function* registerFlow() {
-// 	while (true) {
-// 		// const {payload: registerPayload} =  yield take(REGISTER_SUCCESS)
-// 		// const {payload: createCompanyPayload} =  yield take(CREATE_COMPANY_START)
-// 		// const data = yield call(createCompany, createCompanyPayload)
-// 		// console.log(data)
-// 		try {
-// 			// {name, email, password, role, company : Number or Object, image : optional}
-// 			const {payload} = yield take(actions.REGISTER_START)
-// 			console.log("registerFlow")
-// 			// console.log("payload"payload)
-// 			// const {name: username, email, password} = payload
-// 			// const registerRes = yield call(register, username, email, password)
-// 			// console.log("registerRes:", registerRes)
-//
-// 			const {success: registerSuccess, error: registerError} = yield race({
-// 				success: take(actions.REGISTER_SUCCESS),
-// 				error: take(actions.REGISTER_ERROR)
-// 			})
-//
-// 			if (registerError) {
-// 				console.log("registerError:", registerError)
-// 				// TODO: rollback
-// 				return
-// 			}
-//
-// 			console.log("registerSuccess:", registerSuccess)
-//
-// 			// let companyRes
-// 			// if (typeof payload.company === "object") {
-// 			//
-// 			// }
-//
-// 		} catch (error) {
-// 			console.log(error)
-// 			// TODO: find a way for handling errors
-// 			yield put(actions.REGISTER_ERROR)
-// 		}
-// 	}
-// }
-
 /**
- * Yeah
+ * Orchestrator saga
+ * Called in register saga
+ * creates a new profile,
+ * creates a new company if company is an object
+ * uploads a file if provided
  */
-function* ljubinoDjubre() {
+function* registerOrchestrator(payload) {
 	// {name, email, password, role, company : Number or Object, image : optional}
-	while(true){
-		const {payload} = yield take(actions.REGISTER_START)
-		const {username, email, password, userRole, company, image} = payload
-		console.log("{username, email, password, role, company, image}", {username, email, password, userRole, company, image})
-		try {
-			const {data} = yield call(registerUser, payload)
-			console.log("function* register:", data)
-			if (data) {
-				console.log("function* register 2:", data)
+	let {username, userRole, company} = payload
+	let profileConfig = {}
 
-				yield put(registerSuccess(data.user))
-				if(typeof company === "object") {
-					//	The company is an object {name, slug}
-					// TODO: add a new company
-				}
-				// Company is companyId integer Number
-				const name = username
-				const user = data.user.id
-				yield call(createProfile, {name, company: parseInt(company), user: parseInt(user), userRole})
-			} else {
-				// TODO: da li ovo treba da se proverava? :)
-				yield put(registerError("Login epic Fail"))
+	try {
+		if (typeof company === "object") {
+			// The company is an object {name, slug}
+			yield put(createCompanyStart(company))
+
+			const {error: companyCreationError} = yield race({
+				success: take(actions.CREATE_COMPANY_SUCCESS),
+				error: take(actions.CREATE_COMPANY_ERROR)
+			})
+
+			if (companyCreationError) {
+				// TODO: rollback
+				return
 			}
-		} catch (error) {
-			// yield put(registerError(error.message))
-			console.log("Register errpr")
+
+			company = yield select(state => state.companies.createdCompany.id)
 		}
+
+		if (Object.prototype.hasOwnProperty.call(payload, "image")) {
+			// eslint-disable-next-line no-debugger
+			debugger
+			const {image} = payload
+			yield put(uploadImageStart(image))
+
+			const {error: uploadImageError} = yield race({
+				success: take(actions.CREATE_COMPANY_SUCCESS),
+				error: take(actions.CREATE_COMPANY_ERROR)
+			})
+
+			if (uploadImageError) {
+				// TODO: rollback
+				return
+			}
+
+			const profilePhotoId = yield select(state => state.user.image.id)
+			profileConfig.profilePhoto = profilePhotoId
+		}
+
+		// Company is companyId integer Number
+		const name = username
+		const user = yield select(state => state.user.user.id)
+
+		// Create profile
+		profileConfig = {...profileConfig, name, company: parseInt(company), user: parseInt(user), userRole}
+		yield put(createProfileStart(profileConfig))
+
+		const {error: profileCreationError} = yield race({
+			success: take(actions.CREATE_PROFILE_SUCCESS),
+			error: take(actions.CREATE_PROFILE_ERROR)
+		})
+
+		if (profileCreationError) {
+			// TODO: rollback
+			return
+		}
+	} catch (error) {
+		yield put(registerError(error.message))
 	}
 }
 
 export default function* () {
-	// yield all([loginWatcher(), logoutWatcher(), registerWatcher()])
-	// yield all([loginWatcher(), logoutWatcher(), registerWatcher(), registerFlow()])
-	yield all([loginWatcher(), logoutWatcher(), ljubinoDjubre()])
+	yield all([loginWatcher(), logoutWatcher(), registerWatcher(), uploadImageWatcher(), createNewProfileWatcher()])
 }

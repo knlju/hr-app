@@ -68,6 +68,46 @@ const api = {
 	},
 
 	/**
+     * GETs our company
+     *
+     * @returns {Promise<AxiosResponse<any>>}
+     */
+	getOurCompany: () => {
+		return axiosInstanceWithAuth.get("/api/companies/7")
+	},
+	/**
+     * Edit our company
+     *
+     * @returns {Promise<AxiosResponse<any>>}
+     */
+	editOurCompany: (config) => {
+		console.log(config)
+		return axiosInstanceWithAuth.put("/api/companies/7", {
+			data: {
+				...config
+			}
+		})
+	},
+	/**
+     * GETs myProfile
+     *
+     * @returns {Promise<AxiosResponse<any>>}
+     */
+	getMyProfile: () => {
+		return axiosInstanceWithAuth.get("/api/users/me")
+	},
+	/**
+     * Edit myProfile
+     *
+     * @returns {Promise<AxiosResponse<any>>}
+     */
+	editMyProfile: (variables) => {
+		console.log("variables")
+		console.log(variables)
+		return axiosInstanceWithAuth.put("/api/users/" + 999, {}) // example id 17
+	},
+
+	/**
      * Calls endpoint for logging in user
      *
      * @param {String} email

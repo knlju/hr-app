@@ -39,15 +39,135 @@ CreateNewCompany.propTypes = {
 	setCompanySlug: PropTypes.func,
 }
 
+
+
+
+
+const FormField = (props) => {
+	// pocetak komponente
+	const name = props.name
+	const value = props.formState[name]
+	const errorValue = props.formErrors[name]
+
+	let jsxError = null
+	if (errorValue && errorValue !== "") {
+		jsxError = (
+			<div className="input-validation-error-msg">* {errorValue}</div>
+		)
+	}
+
+	let jsx = (
+		<div>
+			<label htmlFor={name}
+				className="text-sm font-medium text-gray-900 block mb-2 dark:text-gray-300">{props.title}</label>
+			{jsxError}
+			<input type="text" name={name}
+				className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
+				placeholder="name@company.com" required="" value={value}
+				onChange={props.handleChange}/>
+		</div>
+	) 
+
+	if (props.type === "email") {
+		jsx = (
+			<div>
+				<label htmlFor={name}
+					className="text-sm font-medium text-gray-900 block mb-2 dark:text-gray-300">{props.title}</label>
+				{jsxError}
+				<input type="email" name={name}
+					className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
+					placeholder={props.placeholder} required="" value={value}
+					onChange={props.handleChange}/>
+			</div>
+		)
+	} else if (props.type === "password") {
+		jsx = (
+			<div>
+				<label htmlFor={name}
+					className="text-sm font-medium text-gray-900 block mb-2 dark:text-gray-300">{props.title}</label>
+				{jsxError}
+				<input type="password" name={name}
+					className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
+					required="" value={value}
+					onChange={props.handleChange}/>
+			</div>
+		)
+	} 
+
+	return (
+		<>
+			{jsx}
+		</>
+	)
+}
+FormField.propTypes = {
+	name: PropTypes.string,
+	title: PropTypes.string,
+	formState: PropTypes.object,
+	formErrors: PropTypes.object,
+	handleChange: PropTypes.func,
+	type: PropTypes.string,
+	placeholder: PropTypes.string,
+	options: PropTypes.array,
+}
+
+
+
+
 const RegisterPage = () => {
 	const [username, setUsername] = useState("")
+
+	const [formState, setFormState] = useState({})
+	const [formErrors, setFormErrors] = useState({})
+
+	const [name, setName] = useState("")
+	// const name = formState.name
 	const [email, setEmail] = useState("")
+	// const email = formState.email
+	// const {
+	// 	name,
+	// 	email,
+	// 	password
+	// } = formState
 	const [password, setPassword] = useState("")
 	const [companyId, setCompanyId] = useState("-1")
 	const [userRole, setUserRole] = useState("company_user")
 	const [image, setImage] = useState("cicada")
 	const [companyName, setCompanyName] = useState("")
 	const [companySlug, setCompanySlug] = useState("")
+
+	// const proveraGreske = useSelector(defaultState => defaultState.user.error)
+
+
+	const universalhandleChange = (e)=>{
+		// svako input pooje zove ovoga na event onChange
+		const name = e.target.name
+		const value = e.target.value
+		setFormState({
+			...formState,
+			[name]: value
+		})
+	}
+
+	const validator = (formState)=>{
+		let test = true
+		let formErrorsMessages = {}
+
+		if (!formState.name || formState.name === "") {
+			test = false
+			formErrorsMessages.name = "Korisnicko ime ne sme biti prazno"
+		}
+		
+		if (!formState.email || formState.email === "") {
+			test = false
+			formErrorsMessages.email = "eMail mora biti unet"
+		}
+
+		setFormErrors(formErrorsMessages)
+		return test
+	}
+
+
 
 	// const isLoggedIn = useSelector(state => state.user.isLoggedIn)
 	const companies = useSelector(state => state.companies)
@@ -60,23 +180,38 @@ const RegisterPage = () => {
 
 	const submitRegistration = (e) => {
 		e.preventDefault()
+
 		// let company
 		// TODO: odradi validaciju za kompaniju
-		let company = companyId
-		const payload = {username, email, password, company, userRole}
-		if (parseInt(companyId) < 1) {
-			company = {name: companyName, slug: companySlug}
-			payload.company = company
+		// let company = companyId
+		// const payload = {username, email, password, company, userRole}
+		// if (parseInt(companyId) < 1) {
+		// 	company = {name: companyName, slug: companySlug}
+		// 	payload.company = company
+		// }
+		// if (image) {
+		// 	payload.image = image}
+
+		if (validator(formState)) {
+			// submitujem osamo ako prodje validaciju
+			let company
+			const payload = {name, email, password}
+			if(parseInt(companyId) < 1) {
+				company = {name: companyName, slug: companySlug}
+				payload.company = company
+			}
+			if (image) {
+				payload.image = image
+			}
+			dispatch(registerStart(payload))
 		}
-		if (image) {
-			payload.image = image
-		}
-		dispatch(registerStart(payload))
 	}
 
 	function handleCompanyChange(e) {
 		setCompanyId(e.target.value)
 	}
+
+
 
 	function handleUserRoleChange(e) {
 		setUserRole(e.target.value)
@@ -86,6 +221,7 @@ const RegisterPage = () => {
 		console.log(e)
 		setImage(e.target.files[0])
 	}
+
 
 	// if (isLoggedIn) {
 	// 	return <Navigate to="/"/>
@@ -101,6 +237,25 @@ const RegisterPage = () => {
 					className="bg-white shadow-md border border-gray-200 rounded-lg mx-auto w-2/5 max-w-md p-4 sm:p-6 lg:p-8 dark:bg-gray-800 dark:border-gray-700">
 					<form className="space-y-6" action="#" onSubmit={submitRegistration}>
 						<h3 className="text-xl font-medium text-gray-900 dark:text-white">Sign in to our platform</h3>
+						<FormField 
+							name="name"
+							title="Your name"
+							formState={formState}
+							handleChange={universalhandleChange}
+							formErrors={formErrors}
+							placeholder="name@company.com"
+						/>
+						<FormField 
+							name="email"
+							title="Your email"
+							formState={formState}
+							handleChange={universalhandleChange}
+							formErrors={formErrors}
+							type="email"
+							placeholder="name@company.com"
+						/>
+
+
 						<div>
 							<label htmlFor="name"
 								className="text-sm font-medium text-gray-900 block mb-2 dark:text-gray-300">Your
@@ -159,7 +314,7 @@ const RegisterPage = () => {
 								))}
 							</select>
 						</div>
-						{companyId === "0" && (
+						{(companyId === "0") && (
 							<CreateNewCompany
 								companyName={companyName}
 								companySlug={companySlug}
@@ -175,6 +330,7 @@ const RegisterPage = () => {
 							<button type="submit"
 								className=" text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Register
 							</button>
+							{/* {proveraGreske} */}
 						</div>
 					</form>
 				</div>

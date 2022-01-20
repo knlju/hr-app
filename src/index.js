@@ -9,13 +9,18 @@ import ThemeProvider from "./contexts/ThemeProvider"
 // Redux
 import {Provider} from "react-redux"
 import store from "./redux/store"
+import {QueryClient, QueryClientProvider} from "react-query"
+
+const queryClient = new QueryClient()
 
 ReactDOM.render(
 	<React.StrictMode>
 		<Provider store={store}>
 			<ThemeProvider>
 				<BrowserRouter>
-					<App/>
+					<QueryClientProvider client={queryClient}>
+						<App/>
+					</QueryClientProvider>
 				</BrowserRouter>
 			</ThemeProvider>
 		</Provider>

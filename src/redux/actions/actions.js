@@ -4,6 +4,12 @@ const actions = {
 	LOGIN_SUCCESS : "LOGIN_SUCCESS",
 	LOGIN_ERROR : "LOGIN_ERROR",
 
+	// import axios from "axios"
+
+	// export const LOGIN_START = "LOGIN_START"
+	// export const LOGIN_SUCCESS = "LOGIN_SUCCESS"
+	// export const LOGIN_FAIL = "LOGIN_FAIL"
+
 	REGISTER_START : "REGISTER_START",
 	REGISTER_SUCCESS : "REGISTER_SUCCESS",
 	REGISTER_ERROR : "REGISTER_ERROR",
@@ -41,6 +47,7 @@ const actions = {
 }
 
 // ACTION CREATORS
+
 
 export const loginStart = (payload) => ({
 	type: actions.LOGIN_START,

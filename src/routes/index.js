@@ -11,22 +11,24 @@ import { MyProfile } from "../components/pages/MyProfile"
 
 const createRoutes = () => (
 	<Routes>
-		<Route path="/" element={<HomePage/>}/>
-		<Route path="/team" element={<Team/>}/>
-		<Route element={<ProtectedRoutes adminOnly />}>
-			<Route path="/pending" element={<Pending/>}/>
-			<Route path="/questions" element={<Questions/>}/>
-			<Route path="/company" element={<Company/>}/>
-			<Route path="/myprofile" element={<MyProfile/>}/>
+		{/* <Route path="/" element={<HomePage/>}/> */}
+		<Route path="/" element={<HomePage/>}>
+			<Route path="/team" element={<Team/>}/>
+			<Route element={<ProtectedRoutes  />}>
+				<Route path="/pending" element={<Pending/>}/>
+				<Route path="/questions" element={<Questions/>}/>
+				<Route path="/company" element={<Company/>}/>
+				<Route path="/myprofile" element={<MyProfile/>}/>
+			</Route>
+			<Route element={<ProtectedRoutes companyUser />}>
+				<Route path="/myprofile" element={<MyProfile/>}/>
+			</Route>
+			<Route element={<ProtectedRoutes loggedOutOnly />}>
+				<Route path="/login" element={<LoginPage/>}/>
+				<Route path="/register" element={<RegisterPage/>}/>
+			</Route>
+			<Route path="*" element={<div><h1>Yay 404</h1></div>}/>
 		</Route>
-		<Route element={<ProtectedRoutes companyUser />}>
-			<Route path="/myprofile" element={<MyProfile/>}/>
-		</Route>
-		<Route element={<ProtectedRoutes loggedOutOnly />}>
-			<Route path="/login" element={<LoginPage/>}/>
-			<Route path="/register" element={<RegisterPage/>}/>
-		</Route>
-		<Route path="*" element={<div><h1>Yay 404</h1></div>}/>
 	</Routes>
 )
 

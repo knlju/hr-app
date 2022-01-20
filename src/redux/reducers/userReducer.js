@@ -10,6 +10,10 @@ const initialState = {
 	image: null
 }
 
+
+
+
+
 export default (state = initialState, { type, payload }) => {
 	switch (type) {
 	case actions.LOGIN_START:

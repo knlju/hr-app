@@ -4,6 +4,7 @@ import {useEffect} from "react"
 import {useDispatch} from "react-redux"
 import {loginSuccess} from "./redux/actions/actions"
 
+
 const routes = createRoutes()
 
 function App() {
@@ -18,7 +19,7 @@ function App() {
 
 	return (
 		<>
-			<Navbar/>
+			{/* <Navbar/> */}
 			{routes}
 		</>
 	)

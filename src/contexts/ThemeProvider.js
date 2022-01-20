@@ -10,9 +10,13 @@ const ThemeProvider = ({children}) => {
 
 	const [theme, setTheme] = useState(localStorage.getItem("theme") || "dark")
 
-	const toggleTheme = () => setTheme(oldTheme => oldTheme === "dark" ? "light" : "dark")
+	const toggleTheme = () => {
+		setTheme(oldTheme => oldTheme === "dark" ? "light" : "dark")
+		document.body.classList.toggle("dark")
+	}
 
 	useEffect(() => localStorage.setItem("theme", theme), [theme])
+	useEffect(() => theme === "dark" && document.body.classList.toggle("dark"), [])
 
 	const value = {
 		theme,

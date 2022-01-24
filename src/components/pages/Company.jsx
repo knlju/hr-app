@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react"
-import { useQuery } from "react-query"
+import { useMutation, useQuery } from "react-query"
 import api from "../../api"
 
 export const Company = () => {
@@ -8,7 +8,27 @@ export const Company = () => {
 	const {data} = useQuery("getOurCompany", api.getOurCompany)
 	const [companyName, setCompanyName] = useState("")
 	const [companyLogo, setCompanyLogo] = useState(null)
+
+	const [image, setImage] = useState(null)
 	
+	const {
+		mutate
+	} = useMutation((payload)=>{ 
+		api.editOurCompany(payload)
+	})
+
+	const handleSubmit = (e)=> {
+		e.preventDefault()
+		console.log("klik na submit")
+		const payload = {
+			name: companyName, 
+			imageToSend: companyLogo
+		}
+		mutate(payload)
+		
+	}
+
+
 	// useEffect(() => {
 
 	// 	setCompanyName(data.data.data.attributes.name)
@@ -23,21 +43,26 @@ export const Company = () => {
 	// }, [])
 	useEffect(() => {
 		if (data) {
+			console.log(data)
 			setCompanyName(data.data.data.attributes.name)
-			console.log(data.data.data)
+			try {
+				setImage(data.data.data.attributes.logo.data.attributes.url)
+			} catch (error) {
+				console.log(error)
+			}
 		}
 	}, [data])
 
-	const handleCompanyInfo = (e) => {
-		e.preventDefault();
+	// const handleCompanyInfo = (e) => {
+	// 	e.preventDefault();
 
-		(async()=>{
-			const image = await api.uploadImage(companyLogo)
-			const companyUpdated = await api.editOurCompany({name: companyName, logo: image.data.id})
-			console.log(companyUpdated)
-		})()
+	// 	(async()=>{
+	// 		const image = await api.uploadImage(companyLogo)
+	// 		const companyUpdated = await api.editOurCompany({name: companyName, logo: image.data.id})
+	// 		console.log(companyUpdated)
+	// 	})()
 		
-	}
+	// }
 	return (
 		<div className="flex justify-between align-top mx-auto max-w-screen-lg py-10">
 			<div className="bg-white shadow-md border border-gray-200 rounded-lg mx-auto w-2/5 max-w-md p-4 sm:p-6 lg:p-8 dark:bg-gray-800 dark:border-gray-700">
@@ -64,8 +89,9 @@ export const Company = () => {
 							type="file" id="formFile" accept="image/*" onChange={(e) => setCompanyLogo(e.target.files[0])}/>
 					</div>
 					<button type="submit"
-						className=" text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" onClick={handleCompanyInfo}>Save
+						className=" text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" onClick={handleSubmit}>Save
 					</button>
+					<img src={image} alt="" />
 				</form>
 			</div>
 		</div>

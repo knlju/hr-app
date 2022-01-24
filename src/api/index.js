@@ -73,18 +73,29 @@ const api = {
      * @returns {Promise<AxiosResponse<any>>}
      */
 	getOurCompany: () => {
-		return axiosInstanceWithAuth.get("/api/companies/7")
+		return axiosInstanceWithAuth.get("/api/companies/7?populate=*")
 	},
 	/**
      * Edit our company
      *
      * @returns {Promise<AxiosResponse<any>>}
      */
-	editOurCompany: (config) => {
-		console.log(config)
+	editOurCompany: async (payload) => {
+		console.log(payload)
+		const {
+			name,
+			imageToSend,
+		} = payload
+		const res = await api.uploadImage(imageToSend)
+		console.log("response od uploadImage")
+		console.log(res)
+		const submitData = {
+			name,
+			logo: res.data[0].id
+		}
 		return axiosInstanceWithAuth.put("/api/companies/7", {
 			data: {
-				...config
+				...submitData
 			}
 		})
 	},
@@ -101,10 +112,28 @@ const api = {
      *
      * @returns {Promise<AxiosResponse<any>>}
      */
-	editMyProfile: (variables) => {
-		console.log("variables")
-		console.log(variables)
-		return axiosInstanceWithAuth.put("/api/users/" + 999, {}) // example id 17
+	editMyProfile: async (payload) => {
+		const {
+			id,
+			userProfileData,
+			imageToSend
+		} = payload
+		const res = await api.uploadImage(imageToSend)
+		console.log("response od uploadImage")
+		console.log(res)
+		const submitData = {
+			...userProfileData,
+			profilePhoto: res.data[0].id
+		}
+		console.log("editMyProfile id", id, submitData)
+		//return await axiosInstanceWithAuth.put("/api/users/" + id, submitData) // example id 17
+		return await axiosInstanceWithAuth.put("/api/profiles/" + id, {
+			data: {
+				// profilePhoto: image.data,id
+				...submitData
+
+			},
+		}) // example id 17
 	},
 
 	/**

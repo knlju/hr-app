@@ -5,8 +5,24 @@ import api from "../../api"
 export const MyProfile = () => {
 	const {data} = useQuery("getMyProfile", api.getMyProfile)
 
-	let id = null
+	const initialState = {
+		email: "",
+		username: ""
+	}
+	const [state, setState] = useState(initialState)
+	const [userProfilePhoto, setUserProfilePhoto] = useState(null)
 
+	const handleChange = (e)=> {
+		const target = e.target
+		const value = target.type === "checkbox" ? target.checked : target.value
+		const name = target.name
+		setState({
+			[name]: value
+		})
+	}
+
+
+	let id = null
 	if (data && data.data && data.data.email) {
 		// znaci da je response succes
 		if (data.data.id) {
@@ -14,18 +30,33 @@ export const MyProfile = () => {
 		}
 	}
 
+	const {
+		mutate
+	} = useMutation((payload)=>{ 
+		api.editMyProfile(payload)
+	})
+
+	const handleSubmit = ()=> {
+		console.log("klik na submit")
+		console.log(id)
+		if (id) {
+			const payload = {
+				id: id,
+				test: "bla bla",
+				userProfileData: state,
+				imageToSend: userProfilePhoto
+			}
+			mutate(payload)
+		}
+	}
+
+
+
 	const putId = ()=> {
 		api.editMyProfile(id)
 	}
 
 	
-
-
-	const initialState = {
-		email: "",
-		username: ""
-	}
-	const [state, setstate] = useState(initialState)
 
 	useEffect(() => {
 		console.log("data se promenio za my profil")
@@ -42,7 +73,7 @@ export const MyProfile = () => {
 			} else {
 				preparedFormData.username = "Neki USername"
 			}
-			setstate(preparedFormData)
+			setState(preparedFormData)
 		}
 	}, [data])
 
@@ -57,9 +88,9 @@ export const MyProfile = () => {
 					<label htmlFor="userName"
 						className="text-sm font-medium text-gray-900 block mb-2 dark:text-gray-300">Your
                                 name *</label>
-					<input type="text" name="name" id="name"
+					<input type="text" name="username" id="name"
 						className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
-						placeholder={"userName"} value={state.username} required="" onChange={()=>{}}/>
+						placeholder={"userName"} value={state.username} required="" onChange={handleChange}/>
 				</div>
 				<div>
 					<label htmlFor="formFile"
@@ -67,11 +98,11 @@ export const MyProfile = () => {
                                 photo</label>
 					<input
 						className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
-						type="file" id="formFile" accept="image/*"/>
+						type="file" id="formFile" accept="image/*" onChange={(e) => setUserProfilePhoto(e.target.files[0])}/>
 				</div>
 				<button type="submit"
 					className=" text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-					// onClick={handleSubmit}
+					onClick={handleSubmit}
 				>Save
 				</button>
 			</div>

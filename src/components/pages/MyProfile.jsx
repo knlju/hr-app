@@ -1,9 +1,32 @@
 import React, { useEffect, useState } from "react"
 import { useMutation, useQuery } from "react-query"
 import api from "../../api"
+import jwtDecode from "jwt-decode"
+import { useSelector } from "react-redux"
 
 export const MyProfile = () => {
-	const {data} = useQuery("getMyProfile", api.getMyProfile)
+
+	const isLoggedIn = useSelector(defaultState => defaultState.user.isLoggedIn)
+	// const {data} = useQuery("getMyProfile", ()=>api.getMyProfile(jwtDecode(localStorage.getItem("token")).id))
+
+	// const userId = "327"
+	// const userId = "479"
+	// const {data} = useQuery("getMyProfile", ()=>api.getMyProfile(userId))
+	const {data} = useQuery("getMyProfile", async ()=>{
+		if (isLoggedIn) {
+			const token = await localStorage.getItem("token")
+			if (token) {
+				const tokenDecoded = jwtDecode(token)
+				const userId = tokenDecoded.id
+				// const userId = 327 // laziranje
+				return api.getMyProfile(userId)
+			}
+			return false
+		}
+		return false
+	})
+	console.log("-------data za novog korisnika----------", data)
+
 
 	const initialState = {
 		email: "",
@@ -11,6 +34,7 @@ export const MyProfile = () => {
 	}
 	const [state, setState] = useState(initialState)
 	const [userProfilePhoto, setUserProfilePhoto] = useState(null)
+
 
 	const handleChange = (e)=> {
 		const target = e.target
@@ -21,14 +45,52 @@ export const MyProfile = () => {
 		})
 	}
 
+	// const putId = ()=> {
+	// 	api.editMyProfile(id)
+	// }
+
+	// console.log("proveravam datu za korisnika", data)
 
 	let id = null
-	if (data && data.data && data.data.email) {
-		// znaci da je response succes
-		if (data.data.id) {
-			id = data.data.id
+	// let id = "327"
+
+	useEffect(() => {
+		console.log("data se promenio za my profil")
+		console.log(data)
+		console.log("id", id)
+		/*
+		// STARI API ZA MY PROFILE
+		if (data) {
+			// znaci da je response succes
+			const preparedFormData = {}
+			if (data) {
+				preparedFormData.email = data.data[0].attributes.user.data.attributes.email
+				preparedFormData.username = data.data[0].attributes.user.data.attributes.username
+			}
+			// if (data.data) {
+			// 	// preparedFormData.username = data.data.username
+			// } 
+			else {
+				preparedFormData.username = "Neki USername"
+			}
+			setState(preparedFormData)
 		}
-	}
+		*/
+		if (isLoggedIn) {
+			if(data && data.data && data.data.data[0] && data.data.data[0].id) {
+				// znaci da je response succes
+				// znaci da su podaci stigli u validnoj formi
+				id = data.data.data[0].id // sad upisujemo pravi id koji dobijemo iz data
+				// id = 327 // laziranje
+				const preparedFormData = {}
+				console.log(data)
+				preparedFormData.email = data.data.data[0].attributes.user.data.attributes.email
+				preparedFormData.username = data.data.data[0].attributes.user.data.attributes.username
+				setState(preparedFormData)
+			}
+		}
+	}, [data])
+
 
 	const {
 		mutate
@@ -42,42 +104,21 @@ export const MyProfile = () => {
 		if (id) {
 			const payload = {
 				id: id,
-				test: "bla bla",
 				userProfileData: state,
 				imageToSend: userProfilePhoto
 			}
 			mutate(payload)
 		}
+		// let laznjak = 1
+		// if (laznjak === 1) { // laziramo da iammo id
+		// 	const payload = {
+		// 		id: 327, // lazirano
+		// 		userProfileData: state,
+		// 		imageToSend: userProfilePhoto
+		// 	}
+		// 	mutate(payload)
+		// }
 	}
-
-
-
-	const putId = ()=> {
-		api.editMyProfile(id)
-	}
-
-	
-
-	useEffect(() => {
-		console.log("data se promenio za my profil")
-		console.log(data)
-		console.log("id", id)
-		if (data && data.data && data.data.email) {
-			// znaci da je response succes
-			const preparedFormData = {}
-			if (data.data.email) {
-				preparedFormData.email = data.data.email
-			}
-			if (data.data.username) {
-				preparedFormData.username = data.data.username
-			} else {
-				preparedFormData.username = "Neki USername"
-			}
-			setState(preparedFormData)
-		}
-	}, [data])
-
-
 
 
 	return (

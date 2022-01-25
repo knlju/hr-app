@@ -165,8 +165,8 @@ function* registerOrchestrator(payload) {
 			yield put(uploadImageStart(image))
 
 			const {error: uploadImageError} = yield race({
-				success: take(actions.CREATE_COMPANY_SUCCESS),
-				error: take(actions.CREATE_COMPANY_ERROR)
+				success: take(actions.UPLOAD_IMAGE_SUCCESS),
+				error: take(actions.UPLOAD_IMAGE_ERROR)
 			})
 
 			if (uploadImageError) {

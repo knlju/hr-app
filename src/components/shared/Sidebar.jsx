@@ -6,15 +6,73 @@ import sidebarNav from "./SidebarNav"
 import { Logout } from "./Logout"
 import { useQuery } from "react-query"
 import api from "../../api"
+import jwtDecode from "jwt-decode"
 
 const Sidebar = () => {
-	// const {data} = useQuery("allCompanies", api.getOurCompany)
 
-	// const [companyName] = useState(data.data.data.attributes.name)
+	const isLoggedIn = useSelector(defaultState => defaultState.user.isLoggedIn)
+
+	// const token = localStorage.getItem("token")
+	// const [userTokenId, setUserTokenId] = useState(null)
+	
+	
+	// useEffect(() => {
+	// 	const token = localStorage.getItem("token")
+	// 	if(token) {
+	// 		const userIDDecoded = jwtDecode(token)
+	// 		setUserTokenId(userIDDecoded)
+	// 	}
+	// }, [])
+
+	const {data} = useQuery("getMyProfile", async ()=>{
+		if (isLoggedIn) {
+			const token = await localStorage.getItem("token")
+			if (token) {
+				const tokenDecoded = jwtDecode(token)
+				const userId = tokenDecoded.id
+				// const userId = 327
+				return api.getMyProfile(userId)
+			}
+			return false
+		}
+		return false
+	})
+
+	// let userId = 327
+	// let tekenDecoded = jwtDecode(localStorage.getItem("token"))
+	// console.log("tekenDecoded")
+	// console.log(tekenDecoded)
+	// if (tekenDecoded && tekenDecoded.id) {
+	// 	userId = tekenDecoded.id
+	// }
+
+	// const userId = "479"
+	// const {data} = useQuery("getMyProfile", ()=>api.getMyProfile(userId))
+	// console.log("proveravam datu za korisnika", userTokenId)
+
+	console.log("proveravam datu za korisnika", data)
+	
+	useEffect(() => {
+		if (isLoggedIn) {
+			if(data && data.data && data.data.data[0] && data.data.data[0].id) {
+				// znaci da su podaci stigli u validnoj formi
+				console.log(data)
+				setUserName(data.data.data[0].attributes.name)
+				setCompanyName(data.data.data[0].attributes.company.data.attributes.name)
+				// setUserPhoto(data.data.data[0].attributes.profilePhoto.data)
+				console.log("proveravam datu za korisnika", data)
+			}
+		}
+	}, [data])
+
 
 	const [activeIndex, setActiveIndex] = useState(0)
 	const location = useLocation()
 	const user = useSelector(defaultState => defaultState.user)
+	// console.log("isprobavam usera", user)
+	const [userName, setUserName] = useState("")
+	const [companyName, setCompanyName] = useState("")
+	// const [userPhoto, setUserPhoto] = useState("")
 
 	useEffect(() => {
 		const curPath = window.location.pathname.split("/")[1]
@@ -22,6 +80,8 @@ const Sidebar = () => {
 
 		setActiveIndex(curPath.length === 0 ? 0 : activeItem)
 	}, [location])
+
+	
 
 	const closeSidebar = () => {
 		document.querySelector(".main__content").style.transform = "scale(1) translateX(0)"
@@ -32,65 +92,12 @@ const Sidebar = () => {
 	}
 	return (
 		<>
-			{/* <div>
-				<ul>
-					<li>
-						<Link to="/pending">Pending</Link>
-					</li>
-					<li>
-						<Link to="/team">Team</Link>
-					</li>
-					<li>
-						<Link to="/questions">Questions</Link>
-					</li>
-					<li>
-						<Link to="/company">Company Info</Link>
-					</li>
-					<li>
-						<Link to="/myprofile">My Profile</Link>
-					</li>
-				</ul>
-			</div> */}
-
-			{/* <!-- Side bar--> */}
-			{/* <div id="sidebar" className="h-screen w-16 menu bg-white text-white px-4 flex items-center nunito fixed shadow">
-				<ul className="list-reset ">
-					<li className="my-2 md:my-0">
-						<Link to="/pending" className="block py-1 md:py-3 pl-1 align-middle text-gray-600 no-underline hover:text-indigo-400">
-							<i className="fas fa-user-clock fa-fw mr-3"></i><span className="w-full inline-block pb-1 md:pb-0 text-sm">Pending</span>
-						</Link>
-					</li>
-					<li className="my-2 md:my-0 ">
-						<Link to="/team" className="block py-1 md:py-3 pl-1 align-middle text-gray-600 no-underline hover:text-indigo-400">
-							<i className="fas fa-users fa-fw mr-3"></i><span className="w-full inline-block pb-1 md:pb-0 text-sm">Team</span>
-						</Link>
-					</li>
-					<li className="my-2 md:my-0">
-						<Link to="/questions" className="block py-1 md:py-3 pl-1 align-middle text-gray-600 no-underline hover:text-indigo-400">
-							<i className="fas fa-question-circle fa-fw mr-3"></i><span className="w-full inline-block pb-1 md:pb-0 text-sm">Questions</span>
-						</Link>
-					</li>
-					<li className="my-2 md:my-0">
-						<Link to="/company" className="block py-1 md:py-3 pl-1 align-middle text-gray-600 no-underline hover:text-indigo-400">
-							<i className="fas fa-building fa-fw mr-3"></i><span className="w-full inline-block pb-1 md:pb-0 text-sm">Company</span>
-						</Link>
-					</li>
-					<li className="my-2 md:my-0">
-						<Link to="/myprofile" className="block py-1 md:py-3 pl-1 align-middle text-gray-600 no-underline hover:text-indigo-400 items-center" >
-							<i className="fa fa-id-card fa-fw mr-3"></i><span className="w-full inline-block pb-1 md:pb-0 text-sm">My Profile</span>
-						</Link>
-					</li>
-				</ul>
-
-			</div> */}
-
-
 			{/* novi sidebar */}
 			<div className='sidebar'>
 				<div className="sidebar__logo">
 					<div>
-						<img src="https://images.unsplash.com/photo-1516397281156-ca07cf9746fc?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=870&q=80" alt="" />
-						{/* <p>{companyName}</p> */}
+						{/* <img src="https://images.unsplash.com/photo-1516397281156-ca07cf9746fc?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=870&q=80" alt="" /> */}
+						<p className="text-xl font-medium text-white">.teamHUB</p>
 					</div>
 					<div className="sidebar-close" onClick={closeSidebar}>
 						<i className="fas fa-times"></i>
@@ -123,8 +130,8 @@ const Sidebar = () => {
 										<img className="w-8 h-8 rounded-full mr-4" src="http://i.pravatar.cc/300" alt="Avatar of User"/>
 									</div>
 									<div className="flex-col">
-										<p>User name</p>
-										<p>Company name</p>
+										<p>{userName}</p>
+										<p>{companyName}</p>
 									</div>
 								</div>
 								<div className="sidebar__menu__item__logout ml-3">

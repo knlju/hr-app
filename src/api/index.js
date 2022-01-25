@@ -72,8 +72,8 @@ const api = {
      *
      * @returns {Promise<AxiosResponse<any>>}
      */
-	getOurCompany: () => {
-		return axiosInstanceWithAuth.get("/api/companies/7?populate=*")
+	getOurCompany: (companyID) => {
+		return axiosInstanceWithAuth.get("/api/companies/"+companyID+"?populate=*")
 	},
 	/**
      * Edit our company
@@ -83,6 +83,7 @@ const api = {
 	editOurCompany: async (payload) => {
 		console.log(payload)
 		const {
+			id,
 			name,
 			imageToSend,
 		} = payload
@@ -93,7 +94,7 @@ const api = {
 			name,
 			logo: res.data[0].id
 		}
-		return axiosInstanceWithAuth.put("/api/companies/7", {
+		return axiosInstanceWithAuth.put("/api/companies/" + id, {
 			data: {
 				...submitData
 			}
@@ -104,8 +105,11 @@ const api = {
      *
      * @returns {Promise<AxiosResponse<any>>}
      */
-	getMyProfile: () => {
-		return axiosInstanceWithAuth.get("/api/users/me")
+	getMyProfile: (userId) => {
+		// return axiosInstanceWithAuth.get("/api/profiles/me")
+		
+		return axiosInstanceWithAuth.get("/api/profiles?filters[user][id][$eq]=" + userId + "&populate=*")
+		// get('/profiles?filters[user][id][$eq]=' + userStorage.user.id)
 	},
 	/**
      * Edit myProfile

@@ -20,22 +20,26 @@ const api = {
 	},
 
 	/**
-     *    Calls endpoing for creation of a new profile
-     *    for the user after registration
-     *
-     * @param {String} name - TODO: is name username?
-     * @param {Number} company - ID of the company
-     * @param {Number} user - ID of the user
-     * @param {String} userRole - either 'comapny_user' or 'company_admin'
-     * @returns {Promise<AxiosResponse<any>>}
-     */
-	createProfile: ({name, company, user, userRole}) => {
+	 *    Calls endpoing for creation of a new profile
+	 *    for the user after registration
+	 *
+	 * @param {String} name - TODO: is name username?
+	 * @param {Number} company - ID of the company
+	 * @param {Number} user - ID of the user
+	 * @param {String} userRole - either 'comapny_user' or 'company_admin'
+	 * @param {Number} profilePhoto - profile photo ID
+	 * @returns {Promise<AxiosResponse<any>>}
+	 */
+	createProfile: ({name, company, user, userRole, profilePhoto = undefined}) => {
+		// eslint-disable-next-line no-debugger
+		debugger
 		return axiosInstanceWithAuth.post("/api/profiles", {
 			data: {
 				name,
 				company,
 				user,
-				userRole
+				userRole,
+				profilePhoto
 			}
 		})
 	},
@@ -170,6 +174,8 @@ const api = {
      * @returns {Promise<AxiosResponse<any>>}
      */
 	uploadImage: (image) => {
+		// eslint-disable-next-line no-debugger
+		debugger
 		const formData = new FormData()
 		formData.append("files", image)
 		return axiosInstanceWithAuth.post("/api/upload",
@@ -179,7 +185,45 @@ const api = {
 					"Content-Type": "multipart/form-data"
 				}
 			})
-	}
+	},
+
+	// TODO: dodati paginaciju
+	/**
+	 * Gets all pending populated profiles
+	 *
+	 * @returns {Promise<AxiosResponse<any>>}
+	 */
+	getPublishedTeamMemberProfiles: () => {
+		return axiosInstanceWithAuth.get("/api/profiles?filters[status][$eq]=published&sort=createdAt&populate=*")
+	},
+
+	// TODO: i ovde dodati paginaciju
+	/**
+	 * Gets all published populated profiles by company ID
+	 * default company ID is the ID of our company 7
+	 *
+	 * @param {Number} companyId - Company ID, default 7
+	 * @returns {Promise<AxiosResponse<any>>}
+	 */
+	getPendingTeamMemberProfiles: (companyId = 7) => {
+		// eslint-disable-next-line no-debugger
+		debugger
+		return axiosInstanceWithAuth.get(`/api/profiles?filters[status][$eq]=pending&filters[company][id][$eq]=${companyId}&sort=createdAt&populate=*`)
+	},
+
+	// TODO: i ovde dodati paginaciju
+	/**
+	 * Gets all published populated profiles by company ID
+	 * default company ID is the ID of our company 7
+	 *
+	 * @param {Number} companyId - Company ID, default 7
+	 * @returns {Promise<AxiosResponse<any>>}
+	 */
+	getAllPendingProfiles: () => {
+		// eslint-disable-next-line no-debugger
+		debugger
+		return axiosInstanceWithAuth.get(`/api/profiles?filters[status][$eq]=pending&sort=createdAt&populate=*`)
+	},
 }
 
 export default api

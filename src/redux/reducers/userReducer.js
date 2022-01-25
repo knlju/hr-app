@@ -99,7 +99,7 @@ export default (state = initialState, { type, payload }) => {
 		return {
 			...state,
 			isLoading: false,
-			image: payload
+			image: payload.data[0]
 		}
 	case actions.UPLOAD_IMAGE_ERROR: {
 		return {

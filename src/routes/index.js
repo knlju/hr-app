@@ -4,7 +4,7 @@ import RegisterPage from "../components/pages/RegisterPage"
 import {HomePage} from "../components/pages/HomePage"
 import ProtectedRoutes from "./ProtectedRoutes"
 import { Pending } from "../components/pages/Pending"
-import { Team } from "../components/pages/Team"
+import { TeamPage } from "../components/pages/TeamPage"
 import { Questions } from "../components/pages/Questions"
 import { Company } from "../components/pages/Company"
 import { MyProfile } from "../components/pages/MyProfile"
@@ -13,7 +13,7 @@ const createRoutes = () => (
 	<Routes>
 		{/* <Route path="/" element={<HomePage/>}/> */}
 		<Route path="/" element={<HomePage/>}>
-			<Route path="/team" element={<Team/>}/>
+			<Route path="/team" element={<TeamPage/>}/>
 			<Route element={<ProtectedRoutes  />}>
 				<Route path="/pending" element={<Pending/>}/>
 				<Route path="/questions" element={<Questions/>}/>

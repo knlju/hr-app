@@ -56,6 +56,8 @@ function* registerWatcher() {
 
 function* uploadImage(payload) {
 	try {
+		// eslint-disable-next-line no-debugger
+		debugger
 		const image = payload
 		const data = yield call(api.uploadImage, image)
 		if (data) {
@@ -80,6 +82,8 @@ function* uploadImageWatcher() {
 // TODO: add response checking (error, data, etc.)
 function* createNewProfile({name, company, user, userRole, profilePhoto = undefined}) {
 	try {
+		// eslint-disable-next-line no-debugger
+		debugger
 		const requestConfig = {name, company, user, userRole}
 		if (profilePhoto !== undefined) {
 			requestConfig.profilePhoto = profilePhoto
@@ -136,12 +140,16 @@ function* logoutWatcher() {
  * uploads a file if provided
  */
 function* registerOrchestrator(payload) {
+	// eslint-disable-next-line no-debugger
+	debugger
 	// {name, email, password, role, company : Number or Object, image : optional}
 	let {username, userRole, company} = payload
 	let profileConfig = {}
 
 	try {
 		if (typeof company === "object") {
+			// eslint-disable-next-line no-debugger
+			debugger
 			// The company is an object {name, slug}
 			yield put(createCompanyStart(company))
 
@@ -149,6 +157,8 @@ function* registerOrchestrator(payload) {
 				success: take(actions.CREATE_COMPANY_SUCCESS),
 				error: take(actions.CREATE_COMPANY_ERROR)
 			})
+			// eslint-disable-next-line no-debugger
+			debugger
 
 			if (companyCreationError) {
 				// TODO: rollback
@@ -175,7 +185,10 @@ function* registerOrchestrator(payload) {
 			}
 
 			const profilePhotoId = yield select(state => state.user.image.id)
+			const state = yield select(state => state)
 			profileConfig.profilePhoto = profilePhotoId
+			// eslint-disable-next-line no-debugger
+			debugger
 		}
 
 		// Company is companyId integer Number
@@ -184,6 +197,8 @@ function* registerOrchestrator(payload) {
 
 		// Create profile
 		profileConfig = {...profileConfig, name, company: parseInt(company), user: parseInt(user), userRole}
+		// eslint-disable-next-line no-debugger
+		debugger
 		yield put(createProfileStart(profileConfig))
 
 		const {error: profileCreationError} = yield race({

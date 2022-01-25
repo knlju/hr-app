@@ -1,15 +1,11 @@
-import React from "react"
+import React, {useEffect} from "react"
 import {useQuery} from "react-query"
 import api from "../../api"
-import {useNavigate} from "react-router"
 import Loader from "../shared/Loader"
+import {useNavigate} from "react-router"
 
-export const Pending = () => {
-	const {
-		data,
-		isLoading,
-		isError
-	} = useQuery("getPendingTeamMemberProfiles", () => api.getAllPendingProfiles(7))
+export const TeamPage = () => {
+	const {data, isLoading, isError} = useQuery("getPublishedTeamMemberProfiles", api.getPublishedTeamMemberProfiles)
 	const navigate = useNavigate()
 
 	function openUserModal() {

@@ -5,14 +5,9 @@ const initialState = {
 	isLoggedIn: false,
 	user: null,
 	error: null,
-	// TODO: da li da ubacim profil u poseban reducer?
 	profile: null,
 	image: null
 }
-
-
-
-
 
 export default (state = initialState, { type, payload }) => {
 	switch (type) {
@@ -31,6 +26,26 @@ export default (state = initialState, { type, payload }) => {
 		}
 	case actions.LOGIN_ERROR:
 		console.log(actions.LOGIN_ERROR)
+		return {
+			...state,
+			isLoggedIn: false,
+			user: null,
+			isLoading: false,
+			error: payload,
+		}
+	case actions.LOGIN_WITH_TOKEN_START:
+		return {
+			...state,
+			isLoading: true,
+		}
+	case actions.LOGIN_WITH_TOKEN_SUCCESS:
+		return {
+			...state,
+			isLoading: false,
+			isLoggedIn: true,
+			user: payload,
+		}
+	case actions.LOGIN_WITH_TOKEN_ERROR:
 		return {
 			...state,
 			isLoggedIn: false,
@@ -90,6 +105,18 @@ export default (state = initialState, { type, payload }) => {
 			error: payload,
 		}
 	}
+	case actions.FETCH_PROFILE_SUCCESS: {
+		return {
+			...state,
+			profile: payload
+		}
+	}
+	case actions.FETCH_IMAGE_SUCCESS: {
+		return {
+			...state,
+			image: payload
+		}
+	}
 	case actions.UPLOAD_IMAGE_START:
 		return {
 			...state,
@@ -99,7 +126,7 @@ export default (state = initialState, { type, payload }) => {
 		return {
 			...state,
 			isLoading: false,
-			image: payload.data[0]
+			image: payload
 		}
 	case actions.UPLOAD_IMAGE_ERROR: {
 		return {

@@ -10,7 +10,12 @@ import actions, {
 	createProfileSuccess,
 	createCompanyStart,
 	createProfileStart,
-	uploadImageStart, uploadImageSuccess, uploadImageError,
+	uploadImageStart,
+	uploadImageSuccess,
+	uploadImageError,
+	loginWithTokenSuccess,
+	loginWithTokenError,
+	logoutRemoveCompany, loginAddCompany, fetchProfileSuccess, fetchImageSuccess,
 } from "../actions/actions"
 import api from "../../api"
 
@@ -20,6 +25,9 @@ function* login({email, password}) {
 		if (data) {
 			localStorage.setItem("token", data.jwt)
 			yield put(loginSuccess(data.user))
+			// eslint-disable-next-line no-debugger
+			debugger
+			yield call(fetchPopulatedUser, data.user.id)
 		} else {
 			// TODO: da li ovo treba da se proverava? :)
 			yield put(loginError("Login epic Fail"))
@@ -29,7 +37,42 @@ function* login({email, password}) {
 	}
 }
 
-// TODO: polako s register
+function* loginWithToken() {
+	try {
+		const {data} = yield call(api.getCurrentUser)
+		if (data) {
+			yield put(loginWithTokenSuccess(data))
+			yield call(fetchPopulatedUser, data.id)
+		} else {
+			localStorage.removeItem("token")
+			yield put(loginWithTokenError("Login data parse failure"))
+		}
+	} catch (error) {
+		localStorage.removeItem("token")
+		yield put(loginWithTokenError(error.message))
+	}
+}
+
+function* fetchPopulatedUser(id) {
+	try {
+		// eslint-disable-next-line no-debugger
+		debugger
+		const {data} = yield call(api.getProfileByID, id)
+		yield put(loginAddCompany(data.data[0].attributes?.company))
+		yield put(fetchProfileSuccess(data.data[0]))
+		// eslint-disable-next-line no-debugger
+		debugger
+		yield put(fetchImageSuccess(data.data[0].attributes?.profilePhoto.data))
+		// eslint-disable-next-line no-debugger
+		debugger
+	} catch (e) {
+		// Rollback
+		console.log({e})
+		// eslint-disable-next-line no-debugger
+		debugger
+	}
+}
+
 function* register(payload) {
 	try {
 		const {username, email, password} = payload
@@ -56,12 +99,19 @@ function* registerWatcher() {
 
 function* uploadImage(payload) {
 	try {
-		// eslint-disable-next-line no-debugger
-		debugger
 		const image = payload
 		const data = yield call(api.uploadImage, image)
 		if (data) {
-			yield put(uploadImageSuccess(data))
+			// eslint-disable-next-line no-debugger
+			debugger
+			const {id, ...payloadData} = data.data[0]
+			const payload = {
+				id: id,
+				attributes: payloadData
+			}
+			// eslint-disable-next-line no-debugger
+			debugger
+			yield put(uploadImageSuccess(payload))
 		} else {
 			yield put(uploadImageError("Upload Failed"))
 		}
@@ -73,8 +123,6 @@ function* uploadImage(payload) {
 function* uploadImageWatcher() {
 	while (true) {
 		const {payload} = yield take(actions.UPLOAD_IMAGE_START)
-		// eslint-disable-next-line no-debugger
-		debugger
 		yield call(uploadImage, payload)
 	}
 }
@@ -82,15 +130,13 @@ function* uploadImageWatcher() {
 // TODO: add response checking (error, data, etc.)
 function* createNewProfile({name, company, user, userRole, profilePhoto = undefined}) {
 	try {
-		// eslint-disable-next-line no-debugger
-		debugger
 		const requestConfig = {name, company, user, userRole}
 		if (profilePhoto !== undefined) {
 			requestConfig.profilePhoto = profilePhoto
 		}
 		const {data} = yield call(api.createProfile, requestConfig)
 		if (data) {
-			yield put(createProfileSuccess(data.data.attributes))
+			yield put(createProfileSuccess(data.data))
 		} else {
 			yield put(createProfileError("Data error"))
 		}
@@ -102,8 +148,6 @@ function* createNewProfile({name, company, user, userRole, profilePhoto = undefi
 function* createNewProfileWatcher() {
 	while (true) {
 		const {payload} = yield take(actions.CREATE_PROFILE_START)
-		// eslint-disable-next-line no-debugger
-		debugger
 		yield createNewProfile(payload)
 	}
 }
@@ -112,6 +156,7 @@ function* logout() {
 	try {
 		yield call(api.logoutUser)
 		yield put(logoutSuccess())
+		yield put(logoutRemoveCompany())
 	} catch (error) {
 		yield put(logoutError(error.message))
 	}
@@ -122,6 +167,13 @@ function* loginWatcher() {
 	while (true) {
 		const {payload} = yield take(actions.LOGIN_START)
 		yield call(login, payload)
+	}
+}
+
+function* loginWithTokenWatcher() {
+	while (true) {
+		const {payload} = yield take(actions.LOGIN_WITH_TOKEN_START)
+		yield call(loginWithToken, payload)
 	}
 }
 
@@ -140,16 +192,12 @@ function* logoutWatcher() {
  * uploads a file if provided
  */
 function* registerOrchestrator(payload) {
-	// eslint-disable-next-line no-debugger
-	debugger
 	// {name, email, password, role, company : Number or Object, image : optional}
 	let {username, userRole, company} = payload
 	let profileConfig = {}
 
 	try {
 		if (typeof company === "object") {
-			// eslint-disable-next-line no-debugger
-			debugger
 			// The company is an object {name, slug}
 			yield put(createCompanyStart(company))
 
@@ -157,20 +205,16 @@ function* registerOrchestrator(payload) {
 				success: take(actions.CREATE_COMPANY_SUCCESS),
 				error: take(actions.CREATE_COMPANY_ERROR)
 			})
-			// eslint-disable-next-line no-debugger
-			debugger
 
 			if (companyCreationError) {
 				// TODO: rollback
 				return
 			}
 
-			company = yield select(state => state.companies.createdCompany.id)
+			company = yield select(state => state.companies.userCompany.id)
 		}
 
 		if (Object.prototype.hasOwnProperty.call(payload, "image")) {
-			// eslint-disable-next-line no-debugger
-			debugger
 			const {image} = payload
 			yield put(uploadImageStart(image))
 
@@ -185,10 +229,7 @@ function* registerOrchestrator(payload) {
 			}
 
 			const profilePhotoId = yield select(state => state.user.image.id)
-			const state = yield select(state => state)
 			profileConfig.profilePhoto = profilePhotoId
-			// eslint-disable-next-line no-debugger
-			debugger
 		}
 
 		// Company is companyId integer Number
@@ -197,8 +238,6 @@ function* registerOrchestrator(payload) {
 
 		// Create profile
 		profileConfig = {...profileConfig, name, company: parseInt(company), user: parseInt(user), userRole}
-		// eslint-disable-next-line no-debugger
-		debugger
 		yield put(createProfileStart(profileConfig))
 
 		const {error: profileCreationError} = yield race({
@@ -216,5 +255,5 @@ function* registerOrchestrator(payload) {
 }
 
 export default function* () {
-	yield all([loginWatcher(), logoutWatcher(), registerWatcher(), uploadImageWatcher(), createNewProfileWatcher()])
+	yield all([loginWatcher(), loginWithTokenWatcher(), logoutWatcher(), registerWatcher(), uploadImageWatcher(), createNewProfileWatcher()])
 }

@@ -31,7 +31,7 @@ const Sidebar = () => {
 				const tokenDecoded = jwtDecode(token)
 				const userId = tokenDecoded.id
 				// const userId = 327
-				return api.getMyProfile(userId)
+				return api.getProfileByID(userId)
 			}
 			return false
 		}

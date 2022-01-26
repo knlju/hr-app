@@ -21,7 +21,7 @@ export const Company = () => {
 				const tokenDecoded = jwtDecode(token)
 				const userId = tokenDecoded.id
 				// const userId = 327 // laziranje
-				return api.getMyProfile(userId)
+				return api.getProfileByID(userId)
 			}
 			return false
 		}

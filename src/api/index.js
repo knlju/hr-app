@@ -20,19 +20,17 @@ const api = {
 	},
 
 	/**
-	 *    Calls endpoing for creation of a new profile
-	 *    for the user after registration
-	 *
-	 * @param {String} name - TODO: is name username?
-	 * @param {Number} company - ID of the company
-	 * @param {Number} user - ID of the user
-	 * @param {String} userRole - either 'comapny_user' or 'company_admin'
-	 * @param {Number} profilePhoto - profile photo ID
-	 * @returns {Promise<AxiosResponse<any>>}
-	 */
+     *    Calls endpoing for creation of a new profile
+     *    for the user after registration
+     *
+     * @param {String} name - TODO: is name username?
+     * @param {Number} company - ID of the company
+     * @param {Number} user - ID of the user
+     * @param {String} userRole - either 'comapny_user' or 'company_admin'
+     * @param {Number} profilePhoto - profile photo ID
+     * @returns {Promise<AxiosResponse<any>>}
+     */
 	createProfile: ({name, company, user, userRole, profilePhoto = undefined}) => {
-		// eslint-disable-next-line no-debugger
-		debugger
 		return axiosInstanceWithAuth.post("/api/profiles", {
 			data: {
 				name,
@@ -77,7 +75,7 @@ const api = {
      * @returns {Promise<AxiosResponse<any>>}
      */
 	getOurCompany: (companyID) => {
-		return axiosInstanceWithAuth.get("/api/companies/"+companyID+"?populate=*")
+		return axiosInstanceWithAuth.get("/api/companies/" + companyID + "?populate=*")
 	},
 	/**
      * Edit our company
@@ -109,10 +107,9 @@ const api = {
      *
      * @returns {Promise<AxiosResponse<any>>}
      */
-	getMyProfile: (userId) => {
+	getProfileByID: (userId) => {
 		// return axiosInstanceWithAuth.get("/api/profiles/me")
-		
-		return axiosInstanceWithAuth.get("/api/profiles?filters[user][id][$eq]=" + userId + "&populate=*")
+		return axiosInstanceWithAuth.get(`/api/profiles?filters[user][id][$eq]=${userId}&populate=*`)
 		// get('/profiles?filters[user][id][$eq]=' + userStorage.user.id)
 	},
 	/**
@@ -160,6 +157,15 @@ const api = {
 	},
 
 	/**
+     * GETs user logged in with JWT token
+     *
+     * @returns {Promise<AxiosResponse<any>>}
+     */
+	getCurrentUser: () => {
+		return axiosInstanceWithAuth.get("/api/users/me")
+	},
+
+	/**
      * Removes JWT from localStorage, to logout a user.
      * This way it prevents authorization
      */
@@ -174,8 +180,6 @@ const api = {
      * @returns {Promise<AxiosResponse<any>>}
      */
 	uploadImage: (image) => {
-		// eslint-disable-next-line no-debugger
-		debugger
 		const formData = new FormData()
 		formData.append("files", image)
 		return axiosInstanceWithAuth.post("/api/upload",
@@ -189,39 +193,35 @@ const api = {
 
 	// TODO: dodati paginaciju
 	/**
-	 * Gets all pending populated profiles
-	 *
-	 * @returns {Promise<AxiosResponse<any>>}
-	 */
+     * Gets all pending populated profiles
+     *
+     * @returns {Promise<AxiosResponse<any>>}
+     */
 	getPublishedTeamMemberProfiles: () => {
 		return axiosInstanceWithAuth.get("/api/profiles?filters[status][$eq]=published&sort=createdAt&populate=*")
 	},
 
 	// TODO: i ovde dodati paginaciju
 	/**
-	 * Gets all published populated profiles by company ID
-	 * default company ID is the ID of our company 7
-	 *
-	 * @param {Number} companyId - Company ID, default 7
-	 * @returns {Promise<AxiosResponse<any>>}
-	 */
+     * Gets all published populated profiles by company ID
+     * default company ID is the ID of our company 7
+     *
+     * @param {Number} companyId - Company ID, default 7
+     * @returns {Promise<AxiosResponse<any>>}
+     */
 	getPendingTeamMemberProfiles: (companyId = 7) => {
-		// eslint-disable-next-line no-debugger
-		debugger
 		return axiosInstanceWithAuth.get(`/api/profiles?filters[status][$eq]=pending&filters[company][id][$eq]=${companyId}&sort=createdAt&populate=*`)
 	},
 
 	// TODO: i ovde dodati paginaciju
 	/**
-	 * Gets all published populated profiles by company ID
-	 * default company ID is the ID of our company 7
-	 *
-	 * @param {Number} companyId - Company ID, default 7
-	 * @returns {Promise<AxiosResponse<any>>}
-	 */
+     * Gets all published populated profiles by company ID
+     * default company ID is the ID of our company 7
+     *
+     * @param {Number} companyId - Company ID, default 7
+     * @returns {Promise<AxiosResponse<any>>}
+     */
 	getAllPendingProfiles: () => {
-		// eslint-disable-next-line no-debugger
-		debugger
 		return axiosInstanceWithAuth.get(`/api/profiles?filters[status][$eq]=pending&sort=createdAt&populate=*`)
 	},
 }

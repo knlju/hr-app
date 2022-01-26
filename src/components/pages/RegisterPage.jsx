@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from "react"
 import {Link} from "react-router-dom"
 import {useDispatch, useSelector} from "react-redux"
-import {fetchCompaniesStart, registerStart} from "../../redux/actions/actions"
+import {createCompanySuccess, fetchCompaniesStart, registerStart} from "../../redux/actions/actions"
 import PropTypes from "prop-types"
 import Loader from "../shared/Loader"
 
@@ -40,9 +40,6 @@ CreateNewCompany.propTypes = {
 }
 
 
-
-
-
 const FormField = (props) => {
 	// pocetak komponente
 	const name = props.name
@@ -66,7 +63,7 @@ const FormField = (props) => {
 				placeholder="name@company.com" required="" value={value}
 				onChange={props.handleChange}/>
 		</div>
-	) 
+	)
 
 	if (props.type === "email") {
 		jsx = (
@@ -92,7 +89,7 @@ const FormField = (props) => {
 					onChange={props.handleChange}/>
 			</div>
 		)
-	} 
+	}
 
 	return (
 		<>
@@ -110,8 +107,6 @@ FormField.propTypes = {
 	placeholder: PropTypes.string,
 	options: PropTypes.array,
 }
-
-
 
 
 const RegisterPage = () => {
@@ -139,7 +134,7 @@ const RegisterPage = () => {
 	// const proveraGreske = useSelector(defaultState => defaultState.user.error)
 
 
-	const universalhandleChange = (e)=>{
+	const universalhandleChange = (e) => {
 		// svako input pooje zove ovoga na event onChange
 		const name = e.target.name
 		const value = e.target.value
@@ -149,7 +144,7 @@ const RegisterPage = () => {
 		})
 	}
 
-	const validator = (formState)=>{
+	const validator = (formState) => {
 		let test = true
 		let formErrorsMessages = {}
 
@@ -157,7 +152,7 @@ const RegisterPage = () => {
 			test = false
 			formErrorsMessages.name = "Korisnicko ime ne sme biti prazno"
 		}
-		
+
 		if (!formState.email || formState.email === "") {
 			test = false
 			formErrorsMessages.email = "eMail mora biti unet"
@@ -166,7 +161,6 @@ const RegisterPage = () => {
 		setFormErrors(formErrorsMessages)
 		return test
 	}
-
 
 
 	// const isLoggedIn = useSelector(state => state.user.isLoggedIn)
@@ -190,7 +184,8 @@ const RegisterPage = () => {
 			payload.company = company
 		}
 		if (image) {
-			payload.image = image}
+			payload.image = image
+		}
 		dispatch(registerStart(payload))
 		// if (validator(formState)) {
 		// 	// submitujem osamo ako prodje validaciju
@@ -209,8 +204,9 @@ const RegisterPage = () => {
 
 	function handleCompanyChange(e) {
 		setCompanyId(e.target.value)
+		console.log("companies.companies.find:", companies.companies.find(company => company.id === parseInt(e.target.value)))
+		dispatch(createCompanySuccess({data: companies.companies.find(company => company.id === parseInt(e.target.value))}))
 	}
-
 
 
 	function handleUserRoleChange(e) {
@@ -237,7 +233,7 @@ const RegisterPage = () => {
 					className="bg-white shadow-md border border-gray-200 rounded-lg mx-auto w-2/5 max-w-md p-4 sm:p-6 lg:p-8 dark:bg-gray-800 dark:border-gray-700">
 					<form className="space-y-6" action="#" onSubmit={submitRegistration}>
 						<h3 className="text-xl font-medium text-gray-900 dark:text-white">Sign in to our platform</h3>
-						{/* <FormField 
+						{/* <FormField
 							name="name"
 							title="Your name"
 							formState={formState}
@@ -292,7 +288,8 @@ const RegisterPage = () => {
 						</div>
 						<div>
 							<label htmlFor="formRole"
-								className="form-label text-sm font-medium text-gray-900 block mb-2 dark:text-gray-300">Role *</label>
+								className="form-label text-sm font-medium text-gray-900 block mb-2 dark:text-gray-300">Role
+                                *</label>
 							{/* TODO: maybe use radiobutton instead of select here */}
 							<select
 								className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"

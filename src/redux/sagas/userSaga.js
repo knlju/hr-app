@@ -25,8 +25,6 @@ function* login({email, password}) {
 		if (data) {
 			localStorage.setItem("token", data.jwt)
 			yield put(loginSuccess(data.user))
-			// eslint-disable-next-line no-debugger
-			debugger
 			yield call(fetchPopulatedUser, data.user.id)
 		} else {
 			// TODO: da li ovo treba da se proverava? :)
@@ -55,21 +53,13 @@ function* loginWithToken() {
 
 function* fetchPopulatedUser(id) {
 	try {
-		// eslint-disable-next-line no-debugger
-		debugger
 		const {data} = yield call(api.getProfileByID, id)
 		yield put(loginAddCompany(data.data[0].attributes?.company))
 		yield put(fetchProfileSuccess(data.data[0]))
-		// eslint-disable-next-line no-debugger
-		debugger
 		yield put(fetchImageSuccess(data.data[0].attributes?.profilePhoto.data))
-		// eslint-disable-next-line no-debugger
-		debugger
 	} catch (e) {
 		// Rollback
 		console.log({e})
-		// eslint-disable-next-line no-debugger
-		debugger
 	}
 }
 
@@ -102,15 +92,11 @@ function* uploadImage(payload) {
 		const image = payload
 		const data = yield call(api.uploadImage, image)
 		if (data) {
-			// eslint-disable-next-line no-debugger
-			debugger
 			const {id, ...payloadData} = data.data[0]
 			const payload = {
 				id: id,
 				attributes: payloadData
 			}
-			// eslint-disable-next-line no-debugger
-			debugger
 			yield put(uploadImageSuccess(payload))
 		} else {
 			yield put(uploadImageError("Upload Failed"))

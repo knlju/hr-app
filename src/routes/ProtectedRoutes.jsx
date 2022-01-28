@@ -15,11 +15,11 @@ const ProtectedRoutes = ({adminOnly = false, companyUser = false, loggedOutOnly 
 	const user = useSelector(defaultState => defaultState.user)
 
 	if (adminOnly) {
-		return user?.isAdmin ? <Outlet /> : <Navigate to="/401" />
+		return user?.profile?.attributes.userRole === "company_admin" ? <Outlet /> : <Navigate to="/401" />
 	}
 
 	if (companyUser) {
-		return user ? <Outlet /> : <Navigate to="/401" />
+		return user?.profile?.attributes.userRole === "company_user" ? <Outlet /> : <Navigate to="/401" />
 	}
 
 	// TODO: gde ono treba da se redirectuje posle logina

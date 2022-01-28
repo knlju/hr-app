@@ -103,7 +103,7 @@ const api = {
 		})
 	},
 	/**
-     * GETs myProfile
+     * GETs myProfile by user ID
      *
      * @returns {Promise<AxiosResponse<any>>}
      */
@@ -111,6 +111,15 @@ const api = {
 		// return axiosInstanceWithAuth.get("/api/profiles/me")
 		return axiosInstanceWithAuth.get(`/api/profiles?filters[user][id][$eq]=${userId}&populate=*`)
 		// get('/profiles?filters[user][id][$eq]=' + userStorage.user.id)
+	},
+
+	/**
+     * GETs profile by ID
+     *
+     * @returns {Promise<AxiosResponse<any>>}
+     */
+	getProfileByProfileID: (userId) => {
+		return axiosInstanceWithAuth.get(`/api/profiles/${userId}?populate=*`)
 	},
 	/**
      * Edit myProfile
@@ -197,8 +206,9 @@ const api = {
      *
      * @returns {Promise<AxiosResponse<any>>}
      */
-	getPublishedTeamMemberProfiles: () => {
-		return axiosInstanceWithAuth.get("/api/profiles?filters[status][$eq]=published&sort=createdAt&populate=*")
+	getPublishedTeamMemberProfiles: (companyId = 7) => {
+		console.log({companyId})
+		return axiosInstanceWithAuth.get(`/api/profiles?filters[status][$eq]=published&filters[company][id][$eq]=${companyId}&sort=createdAt&populate=*`)
 	},
 
 	// TODO: i ovde dodati paginaciju
@@ -210,6 +220,7 @@ const api = {
      * @returns {Promise<AxiosResponse<any>>}
      */
 	getPendingTeamMemberProfiles: (companyId = 7) => {
+		console.log({companyId})
 		return axiosInstanceWithAuth.get(`/api/profiles?filters[status][$eq]=pending&filters[company][id][$eq]=${companyId}&sort=createdAt&populate=*`)
 	},
 
@@ -222,7 +233,17 @@ const api = {
      * @returns {Promise<AxiosResponse<any>>}
      */
 	getAllPendingProfiles: () => {
-		return axiosInstanceWithAuth.get(`/api/profiles?filters[status][$eq]=pending&sort=createdAt&populate=*`)
+		return axiosInstanceWithAuth.get(`/api/profiles?filters[status][$eq]=pending&sort=createdAt&populate=*&pagination[pageSize]=1000`)
+	},
+
+	/**
+     * Deletes a profile by ID
+     *
+     * @param {Number} profileId
+     * @returns {Promise<AxiosResponse<any>>}
+     */
+	deleteProfileById: (profileId) => {
+		return axiosInstanceWithAuth.delete(`/api/profiles/${profileId}`)
 	},
 }
 

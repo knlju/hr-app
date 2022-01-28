@@ -5,8 +5,9 @@ const sidebarNav = [
 		icon: <i className='fas fa-home fa-fw mr-3'></i>,
 		text: "Home"
 	},
+	// TODO: fix highlighting
 	{
-		link: "/pending",
+		link: "/team/pending",
 		section: "pending",
 		icon: <i className='fas fa-user-clock fa-fw mr-3' ></i>,
 		text: "Pending"

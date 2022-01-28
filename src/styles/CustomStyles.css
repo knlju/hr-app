@@ -96,7 +96,7 @@ li {
   height: 100vh;
   position: fixed;
   top: 0;
-  z-index: 100;
+  z-index: 1;
 }
 .sidebar__logo {
   display: flex;

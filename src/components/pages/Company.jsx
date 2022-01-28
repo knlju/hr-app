@@ -30,7 +30,7 @@ export const Company = () => {
 	console.log("proveravam id korisnika", user_profile)
 	useEffect(() => {
 		if (user_profile) {
-			setCompanyID(user_profile.data.data[0].attributes.company.data.id)
+			setCompanyID(user_profile.data.data[0].attributes?.company?.data?.id)
 		}
 	}, [user_profile])
 	console.log("---------novi ID----------", companyID)

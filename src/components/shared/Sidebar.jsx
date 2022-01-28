@@ -58,7 +58,7 @@ const Sidebar = () => {
 				// znaci da su podaci stigli u validnoj formi
 				console.log(data)
 				setUserName(data.data.data[0].attributes.name)
-				setCompanyName(data.data.data[0].attributes.company.data.attributes.name)
+				setCompanyName(data.data.data[0].attributes?.company?.data?.attributes.name)
 				// setUserPhoto(data.data.data[0].attributes.profilePhoto.data)
 				console.log("proveravam datu za korisnika", data)
 			}

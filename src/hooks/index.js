@@ -4,23 +4,23 @@ import api from "../api"
 /**
  * useQuery hook for getting published team member profiles
  *
- * @param {Number} comapnyId
+ * @param {Number} company
  * @returns {UseQueryResult<AxiosResponse<*>, unknown>}
  */
-export const usePublishedTeamMemberProfiles = (comapnyId) => {
-	return useQuery("getPublishedTeamMemberProfiles",
-		() => api.getPublishedTeamMemberProfiles(comapnyId))
+export const usePublishedTeamMemberProfiles = (company) => {
+	return useQuery(["getPublishedTeamMemberProfiles", company],
+		() => api.getPublishedTeamMemberProfiles(company))
 }
 
 /**
  * useQuery hook for getting pending team member profiles
  *
- * @param {Number} comapnyId
+ * @param {Number} company
  * @returns {UseQueryResult<unknown, unknown>}
  */
-export const usePendingTeamMemberProfiles = (comapnyId) => {
-	return useQuery("getPendingTeamMemberProfiles",
-		() => api.getPendingTeamMemberProfiles(comapnyId))
+export const usePendingTeamMemberProfiles = (company) => {
+	return useQuery(["getPendingTeamMemberProfiles", company],
+		() => api.getPendingTeamMemberProfiles(company))
 }
 
 /**
@@ -31,9 +31,14 @@ export const usePendingTeamMemberProfiles = (comapnyId) => {
  * @returns {UseQueryResult<AxiosResponse<*>, unknown>}
  */
 export const useUserProfileQuery = (profileId, options = {}) => {
-	return useQuery("getUserProfile",
+	return useQuery(["getUserProfile", profileId],
 		() => api.getProfileByProfileID(profileId), {
 			...options,
-			enabled: false
+			enabled: false,
+			// initialData: () => {
+			// 	console.log(queryClient.getQueryData())
+			// 	alert("ziv sam")
+			// }
+			// ?.data.find(profile => console.log({profile}))
 		})
 }

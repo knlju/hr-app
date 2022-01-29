@@ -14,6 +14,7 @@ function EditUserPage() {
 	})
 
 	const [username, setUsername] = useState("Loading username..")
+	const [userProfilePhoto, setUserProfilePhoto] = useState()
 
 	useEffect(() => {
 		refetch()
@@ -31,7 +32,7 @@ function EditUserPage() {
 
 	return (
 		<div className="flex justify-between align-top mx-auto max-w-screen-lg py-10">
-			<div
+			<form
 				className="bg-white shadow-md border border-gray-200 rounded-lg mx-auto w-2/5 max-w-md p-4 sm:p-6 lg:p-8 dark:bg-gray-800 dark:border-gray-700">
 				<span className="text-sm font-medium text-gray-900 block mb-2 dark:text-gray-300">basic info</span>
 				<div>
@@ -49,7 +50,7 @@ function EditUserPage() {
 					<input
 						className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
 						type="file" id="formFile" accept="image/*"
-						// onChange={(e) => setUserProfilePhoto(e.target.files[0])}/>
+						onChange={(e) => setUserProfilePhoto(e.target.files[0])}
 					/>
 				</div>
 				<button type="submit"
@@ -58,7 +59,15 @@ function EditUserPage() {
 					// onClick={handleSubmit}
 				>Save
 				</button>
-			</div>
+				<div>
+					<img src={user?.profilePhoto?.data.attributes.url} alt=""/>
+				</div>
+				{userProfilePhoto && (
+					<div>
+						<p>New Profile Photo preview:</p>
+						<img src={URL.createObjectURL(userProfilePhoto)} alt="new profile photo"/>
+					</div>)}
+			</form>
 		</div>
 	)
 }

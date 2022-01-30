@@ -92,7 +92,8 @@ li {
   flex-direction: column;
   color: #4e4d4f;
   width: 384px;
-  background-color: #fff;
+  /* background-color: #fff; */
+  background-color: darkslategray;
   height: 100vh;
   position: fixed;
   top: 0;
@@ -181,7 +182,8 @@ li {
 @media screen and (max-width: 1366px) {
   .sidebar {
     width: 100vw;
-    background-color: #8624db;
+    /* background-color: #8624db; */
+    background-color: darkslategray;
     color: #fff;
     z-index: 1;
   }

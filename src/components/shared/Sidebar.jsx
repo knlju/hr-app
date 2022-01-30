@@ -7,10 +7,18 @@ import { Logout } from "./Logout"
 import { useQuery } from "react-query"
 import api from "../../api"
 import jwtDecode from "jwt-decode"
+import Loader from "../shared/Loader"
+import ToggleTheme from "./ToggleTheme"
 
 const Sidebar = () => {
 
 	const isLoggedIn = useSelector(defaultState => defaultState.user.isLoggedIn)
+	const user = useSelector(defaultState => defaultState.user)
+
+	const [userName, setUserName] = useState("")
+	const [companyName, setCompanyName] = useState("")
+	const [activeIndex, setActiveIndex] = useState(0)
+	const location = useLocation()
 
 	// const token = localStorage.getItem("token")
 	// const [userTokenId, setUserTokenId] = useState(null)
@@ -50,7 +58,7 @@ const Sidebar = () => {
 	// const {data} = useQuery("getMyProfile", ()=>api.getMyProfile(userId))
 	// console.log("proveravam datu za korisnika", userTokenId)
 
-	console.log("proveravam datu za korisnika", data)
+	// console.log("proveravam datu za korisnika", data)
 	
 	useEffect(() => {
 		if (isLoggedIn) {
@@ -66,12 +74,11 @@ const Sidebar = () => {
 	}, [data])
 
 
-	const [activeIndex, setActiveIndex] = useState(0)
-	const location = useLocation()
-	const user = useSelector(defaultState => defaultState.user)
+	// const [activeIndex, setActiveIndex] = useState(0)
+	// const location = useLocation()
+	// const user = useSelector(defaultState => defaultState.user)
 	// console.log("isprobavam usera", user)
-	const [userName, setUserName] = useState("")
-	const [companyName, setCompanyName] = useState("")
+	
 	// const [userPhoto, setUserPhoto] = useState("")
 
 	useEffect(() => {
@@ -90,6 +97,10 @@ const Sidebar = () => {
 			document.querySelector(".main__content").style = ""
 		}, 500)
 	}
+
+	// if(!data) {
+	// 	return <Loader/>
+	// }
 	return (
 		<>
 			{/* novi sidebar */}
@@ -116,7 +127,8 @@ const Sidebar = () => {
 							</Link>
 						))
 					}
-					<div className="sidebar__menu__item">
+					<div className="sidebar__menu__item flex-col items-start">
+						<ToggleTheme />
 						{/* <div className="sidebar__menu__item__icon">
 							<i className="fas fa-sign-out-alt"></i>
 						</div>
@@ -138,8 +150,8 @@ const Sidebar = () => {
 									<Logout />
 								</div>
 							</div> : <div className="flex-col gap-1">
-								<Link className="sidebar__menu__item" onClick={closeSidebar} to="/login">Login</Link>
-								<Link className="sidebar__menu__item" onClick={closeSidebar} to="/register">Register</Link>
+								<Link className="sidebar__menu__item" onClick={closeSidebar} to="/login"><i className="fas fa-user-lock"></i>Login</Link>
+								<Link className="sidebar__menu__item" onClick={closeSidebar} to="/register"><i className="fas fa-sign-in-alt"></i>Register</Link>
 							</div>
 						}
 					</div>

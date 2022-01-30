@@ -1,3 +1,4 @@
+import jwtDecode from "jwt-decode"
 import {useQuery} from "react-query"
 import api from "../api"
 
@@ -36,4 +37,25 @@ export const useUserProfileQuery = (profileId, options = {}) => {
 			...options,
 			enabled: false
 		})
+}
+
+/**
+ * * Returns useQuery hook for fetching user by Token
+ * 
+ * @param {boolean} isLoggedIn 
+ * @returns 
+ */
+export const useGetMyProfile = (isLoggedIn, options = {}) => {
+	return useQuery("getMyProfile", async ()=>{
+		if (isLoggedIn) {
+			const token = await localStorage.getItem("token")
+			if (token) {
+				const tokenDecoded = jwtDecode(token)
+				const userId = tokenDecoded.id
+				return api.getProfileByID(userId)
+			}
+			return false
+		}
+		return false
+	}, options)
 }

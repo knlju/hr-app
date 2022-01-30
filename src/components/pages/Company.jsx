@@ -3,6 +3,8 @@ import React, { useState, useEffect } from "react"
 import { useMutation, useQuery } from "react-query"
 import { useSelector } from "react-redux"
 import api from "../../api"
+import { useGetMyProfile } from "../../hooks"
+import SpinnerLoader from "../shared/SpinnerLoader"
 
 export const Company = () => {
 	const isLoggedIn = useSelector(defaultState => defaultState.user.isLoggedIn)
@@ -13,42 +15,15 @@ export const Company = () => {
 
 	const [companyID, setCompanyID] = useState(null)
 
-	//TODO prvo nalazim userID pa zatim u useru putanju do kompani ID, nakon toga pozivam api.companyID
-	const {data:user_profile} = useQuery("getMyProfile", async ()=>{
-		if (isLoggedIn) {
-			const token = await localStorage.getItem("token")
-			if (token) {
-				const tokenDecoded = jwtDecode(token)
-				const userId = tokenDecoded.id
-				// const userId = 327 // laziranje
-				return api.getProfileByID(userId)
-			}
-			return false
-		}
-		return false
-	})
-	console.log("proveravam id korisnika", user_profile)
-	useEffect(() => {
-		if (user_profile) {
+	const {data: user_profile, isLoading, isError,} = useGetMyProfile(isLoggedIn, {
+		onSuccess: user_profile => {
 			setCompanyID(user_profile.data.data[0].attributes?.company?.data?.id)
 		}
-	}, [user_profile])
-	console.log("---------novi ID----------", companyID)
-	
-	
-	
-
-	// const {data:company_id} = useQuery("getOurCompany", ()=>api.getOurCompany(companyID))
-
-	const {data:company_id} = useQuery(["getOurCompany",companyID], ()=>api.getOurCompany(companyID),{
-		enabled: !!companyID
 	})
 
-
-	
-	useEffect(() => {
-		if (company_id) {
-			console.log(company_id)
+	const {data:company_id} = useQuery(["getOurCompany",companyID], ()=>api.getOurCompany(companyID),{
+		enabled: !!companyID,
+		onSuccess: company_id => {
 			setCompanyName(company_id.data.data.attributes.name)
 			try {
 				setImage(company_id.data.data.attributes.logo.data.attributes.url)
@@ -56,7 +31,7 @@ export const Company = () => {
 				console.log(error)
 			}
 		}
-	}, [company_id])
+	})
 
 	const {
 		mutate
@@ -73,9 +48,15 @@ export const Company = () => {
 			imageToSend: companyLogo
 		}
 		mutate(payload)
-		
 	}
 
+	if (isLoading) {
+		return <SpinnerLoader/>
+	}
+
+	if (isError) {
+		return <p>Loading error...</p>
+	}
 
 	return (
 		<div className="flex justify-between align-top mx-auto max-w-screen-lg py-10">

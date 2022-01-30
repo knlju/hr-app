@@ -108,3 +108,16 @@ export const useEditProfileMutation = (options = {}) => {
 	},
 	options)
 }
+
+/**
+ * Update user profile status to published
+ *
+ * @param {Object} options - name and image ID
+ * @returns {UseMutationResult<AxiosResponse<*>, unknown, void, unknown>}
+ */
+export const usePublishTeamMemberMutation = (options = {}) => {
+	return useMutation(async (profileId) => {
+		await api.publishProfile(profileId)
+	},
+	options)
+}

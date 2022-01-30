@@ -5,6 +5,7 @@ import jwtDecode from "jwt-decode"
 import { useSelector } from "react-redux"
 
 //TODO: dodati InfoForm i ovde
+//TODO: ipak je reset password umesto new password ili tako nesto...
 export const MyProfile = () => {
 
 	const isLoggedIn = useSelector(defaultState => defaultState.user.isLoggedIn)

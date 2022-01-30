@@ -285,9 +285,24 @@ const api = {
 	 * @returns {Promise<AxiosResponse<any>>}
 	 */
 	editProfile: (profileId, putOptions) => {
+		//todo da li da populate i da hvatam sliku ovde ili ne hmm
 		return axiosInstanceWithAuth.put(`/api/profiles/${profileId}?populate=*`, {
 			data: {
 				...putOptions
+			}
+		})
+	},
+
+	/**
+	 * Updates profile status to published
+	 *
+	 * @param {Number} profileId
+	 * @returns {Promise<AxiosResponse<any>>}
+	 */
+	publishProfile: (profileId) => {
+		return axiosInstanceWithAuth.put(`/api/profiles/${profileId}`, {
+			data: {
+				status: "published"
 			}
 		})
 	},

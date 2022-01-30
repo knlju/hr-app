@@ -4,6 +4,7 @@ import api from "../../api"
 import jwtDecode from "jwt-decode"
 import { useSelector } from "react-redux"
 
+//TODO: dodati InfoForm i ovde
 export const MyProfile = () => {
 
 	const isLoggedIn = useSelector(defaultState => defaultState.user.isLoggedIn)

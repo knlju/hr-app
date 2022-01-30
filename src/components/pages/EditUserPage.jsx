@@ -1,7 +1,11 @@
 import React, {useEffect, useState} from "react"
 import {useParams} from "react-router"
-import {useUserProfileQuery} from "../../hooks"
+import {useEditProfileMutation, usePostImageMutation, useUserProfileQuery} from "../../hooks"
 import SpinnerLoader from "../shared/SpinnerLoader"
+import QuestionsAndAnswers from "../shared/QuestionsAndAnswers"
+import InfoForm from "../shared/InfoForm"
+import Loader from "../shared/Loader"
+import {useQueryClient} from "react-query"
 
 function EditUserPage() {
 
@@ -10,15 +14,41 @@ function EditUserPage() {
 	const {data: user, isLoading, isError, refetch} = useUserProfileQuery(parseInt(profileId), {
 		onSuccess: user => {
 			setUsername(user.data.data.attributes.name)
-		}
+		},
+		enabled: false
 	})
 
+	const {
+		mutateAsync: uploadImageAsyncMutation,
+		isLoading: isImageUploading,
+		isError: imageUploadError
+	} = usePostImageMutation()
+	const {
+		mutateAsync: updateProfileAsyncMutation,
+		isLoading: isProfileUpdateLoading,
+		isError: isProfileUpdateError
+	} = useEditProfileMutation()
+
 	const [username, setUsername] = useState("Loading username..")
-	const [userProfilePhoto, setUserProfilePhoto] = useState()
+	const [userProfilePhoto, setUserProfilePhoto] = useState(false)
 
 	useEffect(() => {
 		refetch()
 	}, [])
+
+	async function onSave(e) {
+		e.preventDefault()
+		const profileUpdateOptions = {
+			name: username
+		}
+		if (userProfilePhoto) {
+			const uploadedImageResponse = await uploadImageAsyncMutation(userProfilePhoto)
+			profileUpdateOptions.profilePhoto = uploadedImageResponse?.data[0].id
+		}
+		await updateProfileAsyncMutation({profileId: parseInt(profileId), putOptions: profileUpdateOptions})
+		setUserProfilePhoto(false)
+		refetch()
+	}
 
 	if (isLoading) {
 		return <SpinnerLoader/>
@@ -31,44 +61,21 @@ function EditUserPage() {
 	console.log({user})
 
 	return (
-		<div className="flex justify-between align-top mx-auto max-w-screen-lg py-10">
-			<form
-				className="bg-white shadow-md border border-gray-200 rounded-lg mx-auto w-2/5 max-w-md p-4 sm:p-6 lg:p-8 dark:bg-gray-800 dark:border-gray-700">
-				<span className="text-sm font-medium text-gray-900 block mb-2 dark:text-gray-300">basic info</span>
-				<div>
-					<label htmlFor="userName"
-						className="text-sm font-medium text-gray-900 block mb-2 dark:text-gray-300">Your
-                        name *</label>
-					<input type="text" name="username" id="name"
-						className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
-						placeholder={"userName"} value={username} required="" onChange={e => setUsername(e.target.value)}/>
-				</div>
-				<div>
-					<label htmlFor="formFile"
-						className="form-label text-sm font-medium text-gray-900 block mb-2 dark:text-gray-300">Profile
-                        photo</label>
-					<input
-						className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
-						type="file" id="formFile" accept="image/*"
-						onChange={(e) => setUserProfilePhoto(e.target.files[0])}
-					/>
-				</div>
-				<button type="submit"
-					disabled={isLoading || isError}
-					className="disabled:opacity-70 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-					// onClick={handleSubmit}
-				>Save
-				</button>
-				<div>
-					<img src={user?.profilePhoto?.data.attributes.url} alt=""/>
-				</div>
-				{userProfilePhoto && (
-					<div>
-						<p>New Profile Photo preview:</p>
-						<img src={URL.createObjectURL(userProfilePhoto)} alt="new profile photo"/>
-					</div>)}
-			</form>
-		</div>
+		<>
+			{(isImageUploading || isProfileUpdateLoading) && <Loader />}
+			{(imageUploadError || isProfileUpdateError) && <p>Update error... Try again</p>}
+			<div className="flex justify-between align-top mx-auto max-w-screen-lg py-10">
+				<InfoForm
+					setName={setUsername}
+					name={username}
+					setNewPhoto={setUserProfilePhoto}
+					newPhoto={userProfilePhoto}
+					disabled={isError || isLoading}
+					photo={user?.data?.data?.attributes?.profilePhoto?.data?.attributes.url}
+					action={onSave}/>
+				<QuestionsAndAnswers companyId={user?.company?.id} profileId={parseInt(profileId)}/>
+			</div>
+		</>
 	)
 }
 

@@ -121,6 +121,7 @@ const api = {
 	getProfileByProfileID: (userId) => {
 		return axiosInstanceWithAuth.get(`/api/profiles/${userId}?populate=*`)
 	},
+
 	/**
      * Edit myProfile
      *
@@ -244,6 +245,51 @@ const api = {
      */
 	deleteProfileById: (profileId) => {
 		return axiosInstanceWithAuth.delete(`/api/profiles/${profileId}`)
+	},
+
+	/**
+	 * Deletes an answer by ID
+	 *
+	 * @param {Number} answerId
+	 * @returns {Promise<AxiosResponse<any>>}
+	 */
+	deleteAnswerById(answerId) {
+		return axiosInstanceWithAuth.delete(`/api/answers/${answerId}`)
+	},
+
+	/**
+	 * Returns promise to GET questions by company ID
+	 *
+	 * @param {Number} companyId
+	 * @returns {Promise<AxiosResponse<any>>}
+	 */
+	getQuestionsByCompanyId: (companyId) => {
+		return axiosInstanceWithAuth.get(`/api/questions?filters[company][id][$eq]=${companyId}&sort=order&populate=*`)
+	},
+
+	/**
+	 * Returns promise to GET answers by profile ID
+	 *
+	 * @param {Number} userId
+	 * @returns {Promise<AxiosResponse<any>>}
+	 */
+	getAnswersByProfileId: (userId) => {
+		return axiosInstanceWithAuth.get(`/api/answers?filters[profile][id][$eq]=${userId}&populate=*`)
+	},
+
+	/**
+	 * Updates profile
+	 *
+	 * @param {Number} profileId
+	 * @param {Object} options - Update parameters
+	 * @returns {Promise<AxiosResponse<any>>}
+	 */
+	editProfile: (profileId, putOptions) => {
+		return axiosInstanceWithAuth.put(`/api/profiles/${profileId}?populate=*`, {
+			data: {
+				...putOptions
+			}
+		})
 	},
 }
 

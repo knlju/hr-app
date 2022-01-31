@@ -1,72 +1,88 @@
-import React, {useEffect} from "react"
+import React, {useEffect, useState} from "react"
 import {useQuery} from "react-query"
 import api from "../../api"
 import Loader from "../shared/Loader"
 import {useNavigate} from "react-router"
+import {useSelector} from "react-redux"
+import {
+	useDeleteUserAnswerMutation,
+	useDeleteUserProfileMutation,
+	usePendingTeamMemberProfiles,
+	usePublishedTeamMemberProfiles
+} from "../../hooks"
+import SpinnerLoader from "../shared/SpinnerLoader"
+import DeleteUserModal from "../shared/DeleteUserModal"
+import UserCard from "../shared/UserCard"
+import InviteModal from "../InviteModal"
 
 export const TeamPage = () => {
-	const {data, isLoading, isError} = useQuery("getPublishedTeamMemberProfiles", api.getPublishedTeamMemberProfiles)
+	const companyId = useSelector(state => state.companies.userCompany.data.id)
+	const companySlug = useSelector(state => state.companies.userCompany.data.attributes.slug)
+	const {data: teamMembers, isLoading, isError, refetch} = usePublishedTeamMemberProfiles(companyId)
+	const [userToDelete, setUserToDelete] = useState(false)
+	const [inviteModalOpen, setInviteModalOpen] = useState(false)
 	const navigate = useNavigate()
 
-	function openUserModal() {
-		alert("Open modal")
-	}
+	const {mutateAsync: mutateDeleteUserAsync, isLoading: isDeleteUserLoading} = useDeleteUserProfileMutation()
+	const {mutateAsync: mutateDeleteAnswerAsync, isLoading: isDeleteAnswerLoading} = useDeleteUserAnswerMutation()
 
 	function openEditPage(e, userId) {
 		e.stopPropagation()
-		navigate(`/user/${userId}/edit`)
+		navigate(`/team/${userId}/edit`)
 	}
 
-	function deleteUser(e, userId) {
+	function openDeleteModal(e, user) {
 		e.stopPropagation()
-		alert("delete")
+		setUserToDelete(user)
+	}
+
+	function addNewTeamMember(e) {
+		setInviteModalOpen(true)
+	}
+
+	async function deleteUser() {
+		await mutateDeleteUserAsync(userToDelete.id)
+		await userToDelete.attributes?.answers?.data.forEach(async answer => {
+			return await mutateDeleteAnswerAsync(answer.id)
+		})
+		setUserToDelete(false)
+		refetch()
 	}
 
 	if (isLoading) {
 		return (
-			<Loader/>
+			<SpinnerLoader/>
 		)
 	}
 
 	if (isError) {
 		return (
-			<h1>
+			<p>
                 Loading error...
-			</h1>
+			</p>
 		)
 	}
 
-	console.log({data})
-	console.log("data.data.data:", data.data.data)
-
 	return (
-		<div className="flex flex-wrap">
-			{
-				data.data.data.map(user => (
-					<div key={user.id}
-						className="basis-1/3 grow-0 rounded-lg overflow-hidden shadow-lg text-violet-800 cursor-pointer"
-						onClick={openUserModal}
-					>
-						<div className="px-6 py-4">
-							<img className="w-full" src={user?.profilePhoto?.data.attributes.formats.medium}
-								alt="Sunset in the mountains"/>
-							<div className="font-bold text-xl mb-2">{user.attributes.name}</div>
-							<p className="text-gray-700 text-base">
-                                    Joined {user.attributes.createdAt}
-							</p>
-						</div>
-						<div className="flex justify-between px-6 pt-4 pb-2">
-							<div>
-								<button onClick={e => openEditPage(e, user.id)}>Edit</button>
-							</div>
-							<div>
-								<button onClick={e => deleteUser(e, user.id)}>Delete</button>
-							</div>
-						</div>
-					</div>
-				)
-				)
-			}
-		</div>
+		<>
+			{userToDelete &&
+				<DeleteUserModal disabled={isDeleteUserLoading || isDeleteAnswerLoading} onCancel={() => setUserToDelete(false)} onConfirm={deleteUser} user={userToDelete}/>}
+			{(isDeleteUserLoading || isDeleteAnswerLoading) && <Loader/>}
+			{inviteModalOpen && <InviteModal companySlug={companySlug} closeModal={() => setInviteModalOpen(false)} />}
+			<div className="flex justify-between py-5">
+				<h1>Team</h1>
+				<div>
+					<button onClick={addNewTeamMember}>+ Add New Team Member</button>
+				</div>
+			</div>
+			<div className="grid gap-5 lg:grid-cols-3 md:grid-cols-2 xs:grid-cols-1">
+				{
+					teamMembers?.data?.data?.map(user => (
+						<UserCard user={user} key={user.id} openDeleteModal={openDeleteModal} mainAction={openEditPage}
+							actionName="Edit"/>
+					))
+				}
+			</div>
+		</>
 	)
 }

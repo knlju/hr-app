@@ -306,6 +306,76 @@ const api = {
 			}
 		})
 	},
+
+	/**
+	 * Add Answer
+	 *
+	 * @returns {Promise<AxiosResponse<any>>}
+	 */
+	addAnswer: (payload) => {
+		// eslint-disable-next-line no-debugger
+		debugger
+		const {
+			questionId,
+			answer,
+			userProfile
+		} = payload
+		return axiosInstanceWithAuth.post("/api/answers/" , {
+			data: {
+				answer,
+				question: questionId,
+				profile: userProfile
+			}
+		})
+	},
+
+	/**
+	 * Add Image Answer
+	 *
+	 * @returns {Promise<AxiosResponse<any>>}
+	 */
+	addImageAnswer: async (payload) => {
+		const {
+			questionId,
+			userProfile,
+			imageToSend,
+		} = payload
+		const res = await api.uploadImage(imageToSend)
+		console.log("response od uploadImage")
+		console.log(res)
+		const answerImage = res.data[0].formats.thumbnail.url
+		return axiosInstanceWithAuth.post("/api/answers/" , {
+			data: {
+				answer: answerImage,
+				question: questionId,
+				profile: userProfile
+			}
+
+		})
+	},
+
+	/**
+	 * Add Answer
+	 *
+	 * @returns {Promise<AxiosResponse<any>>}
+	 */
+	updateAnswer: (payload) => {
+		// eslint-disable-next-line no-debugger
+		debugger
+		const {
+			answerId,
+			questionId,
+			answer,
+			userProfile
+		} = payload
+		return axiosInstanceWithAuth.put(`/api/answers/${answerId}` , {
+			data: {
+				answer,
+				question: questionId,
+				profile: userProfile
+			}
+		})
+	},
 }
 
 export default api

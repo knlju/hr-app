@@ -121,3 +121,25 @@ export const usePublishTeamMemberMutation = (options = {}) => {
 	},
 	options)
 }
+
+/**
+ * Returns useQuery hook for updating an answer
+ *
+ * @param {Object} options
+ * @returns {UseMutationResult<AxiosResponse<*>, unknown, void, unknown>}
+ */
+export const useUpdateAnswerMutation = (options = {}) => {
+	return useMutation(async (payload) => await api.updateAnswer(payload),
+		options)
+}
+
+/**
+ * Returns useQuery hook for POSTing an answer
+ *
+ * @param {Object} options
+ * @returns {UseMutationResult<AxiosResponse<*>, unknown, void, unknown>}
+ */
+export const usePostAnswerMutation = (options = {}) => {
+	return useMutation(async (payload) => await api.addAnswer(payload),
+		options)
+}

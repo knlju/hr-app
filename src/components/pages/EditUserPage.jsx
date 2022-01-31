@@ -12,7 +12,6 @@ import SpinnerLoader from "../shared/SpinnerLoader"
 import QuestionsAndAnswers from "../shared/QuestionsAndAnswers"
 import InfoForm from "../shared/InfoForm"
 import Loader from "../shared/Loader"
-import {useQueryClient} from "react-query"
 import DeleteUserModal from "../shared/DeleteUserModal"
 
 function EditUserPage() {
@@ -86,7 +85,6 @@ function EditUserPage() {
 	function openDeleteModal(e) {
 		e.stopPropagation()
 		setUserToDelete(user)
-		alert(user)
 	}
 
 	async function deleteUser() {

@@ -27,15 +27,17 @@ const api = {
      * @param {Number} company - ID of the company
      * @param {Number} user - ID of the user
      * @param {String} userRole - either 'comapny_user' or 'company_admin'
+     * @param {Number} profilePhoto - profile photo ID
      * @returns {Promise<AxiosResponse<any>>}
      */
-	createProfile: ({name, company, user, userRole}) => {
+	createProfile: ({name, company, user, userRole, profilePhoto = undefined}) => {
 		return axiosInstanceWithAuth.post("/api/profiles", {
 			data: {
 				name,
 				company,
 				user,
-				userRole
+				userRole,
+				profilePhoto
 			}
 		})
 	},
@@ -68,6 +70,88 @@ const api = {
 	},
 
 	/**
+     * GETs our company
+     *
+     * @returns {Promise<AxiosResponse<any>>}
+     */
+	getOurCompany: (companyID) => {
+		return axiosInstanceWithAuth.get("/api/companies/" + companyID + "?populate=*")
+	},
+	/**
+     * Edit our company
+     *
+     * @returns {Promise<AxiosResponse<any>>}
+     */
+	editOurCompany: async (payload) => {
+		console.log(payload)
+		const {
+			id,
+			name,
+			imageToSend,
+		} = payload
+		const res = await api.uploadImage(imageToSend)
+		console.log("response od uploadImage")
+		console.log(res)
+		const submitData = {
+			name,
+			logo: res.data[0].id
+		}
+		return axiosInstanceWithAuth.put("/api/companies/" + id, {
+			data: {
+				...submitData
+			}
+		})
+	},
+	/**
+     * GETs myProfile by user ID
+     *
+     * @returns {Promise<AxiosResponse<any>>}
+     */
+	getProfileByID: (userId) => {
+		// return axiosInstanceWithAuth.get("/api/profiles/me")
+		return axiosInstanceWithAuth.get(`/api/profiles?filters[user][id][$eq]=${userId}&populate=*`)
+		// get('/profiles?filters[user][id][$eq]=' + userStorage.user.id)
+	},
+
+	/**
+     * GETs profile by ID
+     *
+     * @returns {Promise<AxiosResponse<any>>}
+     */
+	getProfileByProfileID: (userId) => {
+		return axiosInstanceWithAuth.get(`/api/profiles/${userId}?populate=*`)
+	},
+
+	/**
+     * Edit myProfile
+     *
+     * @returns {Promise<AxiosResponse<any>>}
+     */
+	editMyProfile: async (payload) => {
+		const {
+			id,
+			userProfileData,
+			imageToSend
+		} = payload
+		const res = await api.uploadImage(imageToSend)
+		console.log("response od uploadImage")
+		console.log(res)
+		const submitData = {
+			...userProfileData,
+			profilePhoto: res.data[0].id
+		}
+		console.log("editMyProfile id", id, submitData)
+		//return await axiosInstanceWithAuth.put("/api/users/" + id, submitData) // example id 17
+		return await axiosInstanceWithAuth.put("/api/profiles/" + id, {
+			data: {
+				// profilePhoto: image.data,id
+				...submitData
+
+			},
+		}) // example id 17
+	},
+
+	/**
      * Calls endpoint for logging in user
      *
      * @param {String} email
@@ -80,6 +164,15 @@ const api = {
 			identifier: email,
 			password: password
 		})
+	},
+
+	/**
+     * GETs user logged in with JWT token
+     *
+     * @returns {Promise<AxiosResponse<any>>}
+     */
+	getCurrentUser: () => {
+		return axiosInstanceWithAuth.get("/api/users/me")
 	},
 
 	/**
@@ -106,7 +199,200 @@ const api = {
 					"Content-Type": "multipart/form-data"
 				}
 			})
-	}
+	},
+
+	// TODO: dodati paginaciju
+	/**
+     * Gets all pending populated profiles
+     *
+     * @returns {Promise<AxiosResponse<any>>}
+     */
+	getPublishedTeamMemberProfiles: (companyId = 7) => {
+		console.log({companyId})
+		return axiosInstanceWithAuth.get(`/api/profiles?filters[status][$eq]=published&filters[company][id][$eq]=${companyId}&sort=createdAt&populate=*`)
+	},
+
+	// TODO: i ovde dodati paginaciju
+	/**
+     * Gets all published populated profiles by company ID
+     * default company ID is the ID of our company 7
+     *
+     * @param {Number} companyId - Company ID, default 7
+     * @returns {Promise<AxiosResponse<any>>}
+     */
+	getPendingTeamMemberProfiles: (companyId = 7) => {
+		console.log({companyId})
+		return axiosInstanceWithAuth.get(`/api/profiles?filters[status][$eq]=pending&filters[company][id][$eq]=${companyId}&sort=createdAt&populate=*`)
+	},
+
+	// TODO: i ovde dodati paginaciju
+	/**
+     * Gets all published populated profiles by company ID
+     * default company ID is the ID of our company 7
+     *
+     * @param {Number} companyId - Company ID, default 7
+     * @returns {Promise<AxiosResponse<any>>}
+     */
+	getAllPendingProfiles: () => {
+		return axiosInstanceWithAuth.get(`/api/profiles?filters[status][$eq]=pending&sort=createdAt&populate=*&pagination[pageSize]=1000`)
+	},
+
+	/**
+     * Deletes a profile by ID
+     *
+     * @param {Number} profileId
+     * @returns {Promise<AxiosResponse<any>>}
+     */
+	deleteProfileById: (profileId) => {
+		return axiosInstanceWithAuth.delete(`/api/profiles/${profileId}`)
+	},
+
+	/**
+     * Deletes an answer by ID
+     *
+     * @param {Number} answerId
+     * @returns {Promise<AxiosResponse<any>>}
+     */
+	deleteAnswerById(answerId) {
+		return axiosInstanceWithAuth.delete(`/api/answers/${answerId}`)
+	},
+
+	/**
+     * Returns promise to GET questions by company ID
+     *
+     * @param {Number} companyId
+     * @returns {Promise<AxiosResponse<any>>}
+     */
+	getQuestionsByCompanyId: (companyId) => {
+		return axiosInstanceWithAuth.get(`/api/questions?filters[company][id][$eq]=${companyId}&sort=order&populate=*`)
+	},
+
+	/**
+     * Returns promise to GET answers by profile ID
+     *
+     * @param {Number} userId
+     * @returns {Promise<AxiosResponse<any>>}
+     */
+	getAnswersByProfileId: (userId) => {
+		return axiosInstanceWithAuth.get(`/api/answers?filters[profile][id][$eq]=${userId}&populate=*`)
+	},
+
+	/**
+     * Updates profile
+     *
+     * @param {Number} profileId
+     * @param {Object} options - Update parameters
+     * @returns {Promise<AxiosResponse<any>>}
+     */
+	editProfile: (profileId, putOptions) => {
+		//todo da li da populate i da hvatam sliku ovde ili ne hmm
+		return axiosInstanceWithAuth.put(`/api/profiles/${profileId}?populate=*`, {
+			data: {
+				...putOptions
+			}
+		})
+	},
+
+	/**
+     * Updates profile status to published
+     *
+     * @param {Number} profileId
+     * @returns {Promise<AxiosResponse<any>>}
+     */
+	publishProfile: (profileId) => {
+		return axiosInstanceWithAuth.put(`/api/profiles/${profileId}`, {
+			data: {
+				status: "published"
+			}
+		})
+	},
+
+	/**
+     * Add Answer
+     *
+     * @returns {Promise<AxiosResponse<any>>}
+     */
+	addAnswer: (payload) => {
+		// eslint-disable-next-line no-debugger
+		debugger
+		const {
+			questionId,
+			answer,
+			userProfile
+		} = payload
+		return axiosInstanceWithAuth.post("/api/answers/", {
+			data: {
+				answer,
+				question: questionId,
+				profile: userProfile
+			}
+		})
+	},
+
+	/**
+     * Add Image Answer
+     *
+     * @returns {Promise<AxiosResponse<any>>}
+     */
+	addImageAnswer: async (payload) => {
+		const {
+			questionId,
+			userProfile,
+			imageToSend,
+		} = payload
+		const res = await api.uploadImage(imageToSend)
+		console.log("response od uploadImage")
+		console.log(res)
+		const answerImage = res.data[0].formats.thumbnail.url
+		return axiosInstanceWithAuth.post("/api/answers/", {
+			data: {
+				answer: answerImage,
+				question: questionId,
+				profile: userProfile
+			}
+
+		})
+	},
+
+	/**
+     * Add Answer
+     *
+     * @returns {Promise<AxiosResponse<any>>}
+     */
+	updateAnswer: (payload) => {
+		// eslint-disable-next-line no-debugger
+		debugger
+		const {
+			answerId,
+			questionId,
+			answer,
+			userProfile
+		} = payload
+		return axiosInstanceWithAuth.put(`/api/answers/${answerId}`, {
+			data: {
+				answer,
+				question: questionId,
+				profile: userProfile
+			}
+		})
+	},
+
+	/**
+     * Sends a request for an invite
+     * Returns a Promise 
+     *
+     * @param email
+     * @param companySlug
+     * @returns {Promise<AxiosResponse<any>>}
+     */
+	inviteTeamMember: ({email, companySlug}) => {
+		// eslint-disable-next-line no-debugger
+		debugger
+		return axiosInstanceWithAuth.post("/api/invite", {
+			email,
+			companySlug
+		})
+	},
 }
 
 export default api

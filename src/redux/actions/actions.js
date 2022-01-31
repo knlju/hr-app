@@ -13,15 +13,19 @@ const actions = {
 	LOGOUT_SUCCESS : "LOGOUT_SUCCESS",
 	LOGOUT_ERROR : "LOGOUT_ERROR",
 
+	LOGIN_WITH_TOKEN_START : "LOGIN_WITH_TOKEN_START",
+	LOGIN_WITH_TOKEN_SUCCESS : "LOGIN_WITH_TOKEN_SUCCESS",
+	LOGIN_WITH_TOKEN_ERROR : "LOGIN_WITH_TOKEN_ERROR",
+
 	// Profile Actions
 
 	CREATE_PROFILE_START : "CREATE_PROFILE_START",
 	CREATE_PROFILE_SUCCESS : "CREATE_PROFILE_SUCCESS",
 	CREATE_PROFILE_ERROR : "CREATE_PROFILE_ERROR",
 
-	FETCH_PROFILE_START : "FETCH_PROFILE_START",
 	FETCH_PROFILE_SUCCESS : "FETCH_PROFILE_SUCCESS",
-	FETCH_PROFILE_ERROR : "FETCH_PROFILE_ERROR",
+
+	FETCH_IMAGE_SUCCESS: "FETCH_IMAGE_SUCCESS",
 
 	// Image actions
 
@@ -30,6 +34,9 @@ const actions = {
 	UPLOAD_IMAGE_ERROR : "UPLOAD_IMAGE_ERROR",
 
 	// Companies Actions
+
+	LOGOUT_REMOVE_COMPANY: "LOGOUT_REMOVE_COMPANY",
+	LOGIN_ADD_COMPANY: "LOGIN_ADD_COMPANY",
 
 	FETCH_COMPANIES_START : "FETCH_COMPANIES_START",
 	FETCH_COMPANIES_SUCCESS : "FETCH_COMPANIES_SUCCESS",
@@ -41,6 +48,7 @@ const actions = {
 }
 
 // ACTION CREATORS
+
 
 export const loginStart = (payload) => ({
 	type: actions.LOGIN_START,
@@ -83,6 +91,21 @@ export const logoutError = () => ({
 
 export const logoutSuccess = () => ({
 	type: actions.LOGOUT_SUCCESS,
+})
+
+export const loginWithTokenStart = (payload) => ({
+	type: actions.LOGIN_WITH_TOKEN_START,
+	payload
+})
+
+export const loginWithTokenError = (payload) => ({
+	type: actions.LOGIN_WITH_TOKEN_ERROR,
+	payload
+})
+
+export const loginWithTokenSuccess = (payload) => ({
+	type: actions.LOGIN_WITH_TOKEN_SUCCESS,
+	payload
 })
 
 export const fetchCompaniesStart = () => ({
@@ -141,6 +164,26 @@ export const uploadImageSuccess = (payload) => ({
 
 export const uploadImageError = (payload) => ({
 	type: actions.UPLOAD_IMAGE_ERROR,
+	payload,
+})
+
+export const logoutRemoveCompany = (payload) => ({
+	type: actions.LOGOUT_REMOVE_COMPANY,
+	payload,
+})
+
+export const loginAddCompany = (payload) => ({
+	type: actions.LOGIN_ADD_COMPANY,
+	payload,
+})
+
+export const fetchProfileSuccess = (payload) => ({
+	type: actions.FETCH_PROFILE_SUCCESS,
+	payload,
+})
+
+export const fetchImageSuccess = (payload) => ({
+	type: actions.FETCH_IMAGE_SUCCESS,
 	payload,
 })
 

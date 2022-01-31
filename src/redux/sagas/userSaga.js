@@ -10,7 +10,12 @@ import actions, {
 	createProfileSuccess,
 	createCompanyStart,
 	createProfileStart,
-	uploadImageStart, uploadImageSuccess, uploadImageError,
+	uploadImageStart,
+	uploadImageSuccess,
+	uploadImageError,
+	loginWithTokenSuccess,
+	loginWithTokenError,
+	logoutRemoveCompany, loginAddCompany, fetchProfileSuccess, fetchImageSuccess,
 } from "../actions/actions"
 import api from "../../api"
 
@@ -20,6 +25,7 @@ function* login({email, password}) {
 		if (data) {
 			localStorage.setItem("token", data.jwt)
 			yield put(loginSuccess(data.user))
+			yield call(fetchPopulatedUser, data.user.id)
 		} else {
 			// TODO: da li ovo treba da se proverava? :)
 			yield put(loginError("Login epic Fail"))
@@ -29,7 +35,34 @@ function* login({email, password}) {
 	}
 }
 
-// TODO: polako s register
+function* loginWithToken() {
+	try {
+		const {data} = yield call(api.getCurrentUser)
+		if (data) {
+			yield put(loginWithTokenSuccess(data))
+			yield call(fetchPopulatedUser, data.id)
+		} else {
+			localStorage.removeItem("token")
+			yield put(loginWithTokenError("Login data parse failure"))
+		}
+	} catch (error) {
+		localStorage.removeItem("token")
+		yield put(loginWithTokenError(error.message))
+	}
+}
+
+function* fetchPopulatedUser(id) {
+	try {
+		const {data} = yield call(api.getProfileByID, id)
+		yield put(loginAddCompany(data.data[0].attributes?.company))
+		yield put(fetchProfileSuccess(data.data[0]))
+		yield put(fetchImageSuccess(data.data[0].attributes?.profilePhoto.data))
+	} catch (e) {
+		// Rollback
+		console.log({e})
+	}
+}
+
 function* register(payload) {
 	try {
 		const {username, email, password} = payload
@@ -59,7 +92,12 @@ function* uploadImage(payload) {
 		const image = payload
 		const data = yield call(api.uploadImage, image)
 		if (data) {
-			yield put(uploadImageSuccess(data))
+			const {id, ...payloadData} = data.data[0]
+			const payload = {
+				id: id,
+				attributes: payloadData
+			}
+			yield put(uploadImageSuccess(payload))
 		} else {
 			yield put(uploadImageError("Upload Failed"))
 		}
@@ -71,8 +109,6 @@ function* uploadImage(payload) {
 function* uploadImageWatcher() {
 	while (true) {
 		const {payload} = yield take(actions.UPLOAD_IMAGE_START)
-		// eslint-disable-next-line no-debugger
-		debugger
 		yield call(uploadImage, payload)
 	}
 }
@@ -86,7 +122,7 @@ function* createNewProfile({name, company, user, userRole, profilePhoto = undefi
 		}
 		const {data} = yield call(api.createProfile, requestConfig)
 		if (data) {
-			yield put(createProfileSuccess(data.data.attributes))
+			yield put(createProfileSuccess(data.data))
 		} else {
 			yield put(createProfileError("Data error"))
 		}
@@ -98,8 +134,6 @@ function* createNewProfile({name, company, user, userRole, profilePhoto = undefi
 function* createNewProfileWatcher() {
 	while (true) {
 		const {payload} = yield take(actions.CREATE_PROFILE_START)
-		// eslint-disable-next-line no-debugger
-		debugger
 		yield createNewProfile(payload)
 	}
 }
@@ -108,6 +142,7 @@ function* logout() {
 	try {
 		yield call(api.logoutUser)
 		yield put(logoutSuccess())
+		yield put(logoutRemoveCompany())
 	} catch (error) {
 		yield put(logoutError(error.message))
 	}
@@ -118,6 +153,13 @@ function* loginWatcher() {
 	while (true) {
 		const {payload} = yield take(actions.LOGIN_START)
 		yield call(login, payload)
+	}
+}
+
+function* loginWithTokenWatcher() {
+	while (true) {
+		const {payload} = yield take(actions.LOGIN_WITH_TOKEN_START)
+		yield call(loginWithToken, payload)
 	}
 }
 
@@ -155,18 +197,16 @@ function* registerOrchestrator(payload) {
 				return
 			}
 
-			company = yield select(state => state.companies.createdCompany.id)
+			company = yield select(state => state.companies.userCompany.id)
 		}
 
 		if (Object.prototype.hasOwnProperty.call(payload, "image")) {
-			// eslint-disable-next-line no-debugger
-			debugger
 			const {image} = payload
 			yield put(uploadImageStart(image))
 
 			const {error: uploadImageError} = yield race({
-				success: take(actions.CREATE_COMPANY_SUCCESS),
-				error: take(actions.CREATE_COMPANY_ERROR)
+				success: take(actions.UPLOAD_IMAGE_SUCCESS),
+				error: take(actions.UPLOAD_IMAGE_ERROR)
 			})
 
 			if (uploadImageError) {
@@ -201,5 +241,5 @@ function* registerOrchestrator(payload) {
 }
 
 export default function* () {
-	yield all([loginWatcher(), logoutWatcher(), registerWatcher(), uploadImageWatcher(), createNewProfileWatcher()])
+	yield all([loginWatcher(), loginWithTokenWatcher(), logoutWatcher(), registerWatcher(), uploadImageWatcher(), createNewProfileWatcher()])
 }

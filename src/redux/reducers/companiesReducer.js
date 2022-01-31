@@ -2,7 +2,7 @@ import actions from "../actions/actions"
 
 const initialState = {
 	companies: [],
-	createdCompany: null,
+	userCompany: null,
 	isLoading: false,
 	error: false
 }
@@ -34,10 +34,10 @@ export default (state = initialState, {type, payload}) => {
 			isLoading: true
 		}
 	case actions.CREATE_COMPANY_SUCCESS:
-		console.log(actions.FETCH_COMPANIES_SUCCESS)
+		console.log(actions.CREATE_COMPANY_SUCCESS)
 		return {
 			...state,
-			createdCompany: payload.data,
+			userCompany: payload.data,
 			isLoading: false,
 			error: false
 		}
@@ -46,6 +46,17 @@ export default (state = initialState, {type, payload}) => {
 			...state,
 			isLoading: false,
 			error: payload
+		}
+	case actions.LOGIN_ADD_COMPANY:
+		return {
+			...state,
+			userCompany: payload,
+			isLoading: true
+		}
+	case actions.LOGOUT_REMOVE_COMPANY:
+		return {
+			...state,
+			userCompany: null
 		}
 	default:
 		return state

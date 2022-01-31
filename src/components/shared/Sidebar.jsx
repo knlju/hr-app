@@ -50,8 +50,6 @@ const Sidebar = () => {
 	// const {data} = useQuery("getMyProfile", ()=>api.getMyProfile(userId))
 	// console.log("proveravam datu za korisnika", userTokenId)
 
-	console.log("proveravam datu za korisnika", data)
-	
 	useEffect(() => {
 		if (isLoggedIn) {
 			if(data && data.data && data.data.data[0] && data.data.data[0].id) {
@@ -60,7 +58,6 @@ const Sidebar = () => {
 				setUserName(data.data.data[0].attributes.name)
 				setCompanyName(data.data.data[0].attributes?.company?.data?.attributes.name)
 				// setUserPhoto(data.data.data[0].attributes.profilePhoto.data)
-				console.log("proveravam datu za korisnika", data)
 			}
 		}
 	}, [data])

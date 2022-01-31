@@ -121,6 +121,7 @@ const api = {
 	getProfileByProfileID: (userId) => {
 		return axiosInstanceWithAuth.get(`/api/profiles/${userId}?populate=*`)
 	},
+
 	/**
      * Edit myProfile
      *
@@ -244,6 +245,136 @@ const api = {
      */
 	deleteProfileById: (profileId) => {
 		return axiosInstanceWithAuth.delete(`/api/profiles/${profileId}`)
+	},
+
+	/**
+	 * Deletes an answer by ID
+	 *
+	 * @param {Number} answerId
+	 * @returns {Promise<AxiosResponse<any>>}
+	 */
+	deleteAnswerById(answerId) {
+		return axiosInstanceWithAuth.delete(`/api/answers/${answerId}`)
+	},
+
+	/**
+	 * Returns promise to GET questions by company ID
+	 *
+	 * @param {Number} companyId
+	 * @returns {Promise<AxiosResponse<any>>}
+	 */
+	getQuestionsByCompanyId: (companyId) => {
+		return axiosInstanceWithAuth.get(`/api/questions?filters[company][id][$eq]=${companyId}&sort=order&populate=*`)
+	},
+
+	/**
+	 * Returns promise to GET answers by profile ID
+	 *
+	 * @param {Number} userId
+	 * @returns {Promise<AxiosResponse<any>>}
+	 */
+	getAnswersByProfileId: (userId) => {
+		return axiosInstanceWithAuth.get(`/api/answers?filters[profile][id][$eq]=${userId}&populate=*`)
+	},
+
+	/**
+	 * Updates profile
+	 *
+	 * @param {Number} profileId
+	 * @param {Object} options - Update parameters
+	 * @returns {Promise<AxiosResponse<any>>}
+	 */
+	editProfile: (profileId, putOptions) => {
+		//todo da li da populate i da hvatam sliku ovde ili ne hmm
+		return axiosInstanceWithAuth.put(`/api/profiles/${profileId}?populate=*`, {
+			data: {
+				...putOptions
+			}
+		})
+	},
+
+	/**
+	 * Updates profile status to published
+	 *
+	 * @param {Number} profileId
+	 * @returns {Promise<AxiosResponse<any>>}
+	 */
+	publishProfile: (profileId) => {
+		return axiosInstanceWithAuth.put(`/api/profiles/${profileId}`, {
+			data: {
+				status: "published"
+			}
+		})
+	},
+
+	/**
+	 * Add Answer
+	 *
+	 * @returns {Promise<AxiosResponse<any>>}
+	 */
+	addAnswer: (payload) => {
+		// eslint-disable-next-line no-debugger
+		debugger
+		const {
+			questionId,
+			answer,
+			userProfile
+		} = payload
+		return axiosInstanceWithAuth.post("/api/answers/" , {
+			data: {
+				answer,
+				question: questionId,
+				profile: userProfile
+			}
+		})
+	},
+
+	/**
+	 * Add Image Answer
+	 *
+	 * @returns {Promise<AxiosResponse<any>>}
+	 */
+	addImageAnswer: async (payload) => {
+		const {
+			questionId,
+			userProfile,
+			imageToSend,
+		} = payload
+		const res = await api.uploadImage(imageToSend)
+		console.log("response od uploadImage")
+		console.log(res)
+		const answerImage = res.data[0].formats.thumbnail.url
+		return axiosInstanceWithAuth.post("/api/answers/" , {
+			data: {
+				answer: answerImage,
+				question: questionId,
+				profile: userProfile
+			}
+
+		})
+	},
+
+	/**
+	 * Add Answer
+	 *
+	 * @returns {Promise<AxiosResponse<any>>}
+	 */
+	updateAnswer: (payload) => {
+		// eslint-disable-next-line no-debugger
+		debugger
+		const {
+			answerId,
+			questionId,
+			answer,
+			userProfile
+		} = payload
+		return axiosInstanceWithAuth.put(`/api/answers/${answerId}` , {
+			data: {
+				answer,
+				question: questionId,
+				profile: userProfile
+			}
+		})
 	},
 }
 

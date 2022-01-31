@@ -269,12 +269,13 @@ const api = {
 
 	/**
      * Returns promise to GET answers by profile ID
+	 * populates and sorts by time answered
      *
      * @param {Number} userId
      * @returns {Promise<AxiosResponse<any>>}
      */
 	getAnswersByProfileId: (userId) => {
-		return axiosInstanceWithAuth.get(`/api/answers?filters[profile][id][$eq]=${userId}&populate=*`)
+		return axiosInstanceWithoutAuth.get(`/api/answers?filters[profile][id][$eq]=${userId}&populate=*&sort=createdAt`)
 	},
 
 	/**
@@ -386,12 +387,19 @@ const api = {
      * @returns {Promise<AxiosResponse<any>>}
      */
 	inviteTeamMember: ({email, companySlug}) => {
-		// eslint-disable-next-line no-debugger
-		debugger
 		return axiosInstanceWithAuth.post("/api/invite", {
 			email,
 			companySlug
 		})
+	},
+
+	/**
+     * GETs all profiles
+     *
+     * @returns {Promise<AxiosResponse<any>>}
+     */
+	getAllProfiles: (page) => {
+		return axiosInstanceWithoutAuth.get(`/api/profiles?pagination[page]=${page}&populate=*`)
 	},
 }
 

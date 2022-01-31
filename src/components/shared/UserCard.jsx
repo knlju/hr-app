@@ -2,7 +2,7 @@ import React from "react"
 import {formatDate} from "../../utils"
 import PropTypes from "prop-types"
 
-function UserCard({user, openDeleteModal, mainAction, actionName}) {
+function UserCard({user, openDeleteModal, mainAction, actionName, noActions = false}) {
 	return (
 		<div key={user.id}
 			className="p-2 rounded-lg overflow-hidden shadow text-violet-800">
@@ -21,20 +21,24 @@ function UserCard({user, openDeleteModal, mainAction, actionName}) {
                     Joined {formatDate(user.attributes.createdAt)}
 				</p>
 			</div>
-			<div className="flex justify-between p-2 pt-4 pb-2">
-				<div>
-					<button className="bg-transparent hover:bg-violet-500 text-violet-800 font-semibold hover:text-white py-2 px-4 border border-violet-500 hover:border-transparent rounded"
-						onClick={e => mainAction(e, user.id)}>
-						{actionName}
-					</button>
-				</div>
-				<div>
-					<button className="bg-transparent hover:bg-violet-500 text-violet-800 font-semibold hover:text-white py-2 px-4 border border-violet-500 hover:border-transparent rounded"
-						onClick={e => openDeleteModal(e, user)}>
-                        Delete
-					</button>
-				</div>
-			</div>
+			{
+				!noActions && (
+					<div className="flex justify-between p-2 pt-4 pb-2">
+						<div>
+							<button className="bg-transparent hover:bg-violet-500 text-violet-800 font-semibold hover:text-white py-2 px-4 border border-violet-500 hover:border-transparent rounded"
+								onClick={e => mainAction(e, user.id)}>
+								{actionName}
+							</button>
+						</div>
+						<div>
+							<button className="bg-transparent hover:bg-violet-500 text-violet-800 font-semibold hover:text-white py-2 px-4 border border-violet-500 hover:border-transparent rounded"
+								onClick={e => openDeleteModal(e, user)}>
+								Delete
+							</button>
+						</div>
+					</div>
+				)
+			}
 		</div>
 	)
 }
@@ -43,7 +47,8 @@ UserCard.propTypes = {
 	user: PropTypes.object,
 	openDeleteModal: PropTypes.func,
 	mainAction: PropTypes.func,
-	actionName: PropTypes.string
+	actionName: PropTypes.string,
+	noActions: PropTypes.bool,
 }
 
 export default UserCard

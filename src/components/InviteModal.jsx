@@ -18,10 +18,7 @@ function InviteModal({closeModal, companySlug}) {
 
 	return (
 		<Modal closeModal={closeModal}>
-			<div
-				className="inline-block align-bottom bg-white rounded-lg
-				text-left overflow-hidden shadow-xl transform transition-all
-				sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+			<div>
 				{isLoading && <p>Loading</p>}
 				{isError && <p>Error</p>}
 				<form onSubmit={handleSubmit}>

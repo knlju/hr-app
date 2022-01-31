@@ -7,6 +7,18 @@ import api from "../api"
  * @param {Number} company
  * @returns {UseQueryResult<AxiosResponse<*>, unknown>}
  */
+export const useGetAllProfilesQuery = (page, options = {}) => {
+	return useQuery(["getAllProfiles", page],
+		() => api.getAllProfiles(page),
+		options)
+}
+
+/**
+ * useQuery hook for getting published team member profiles
+ *
+ * @param {Number} company
+ * @returns {UseQueryResult<AxiosResponse<*>, unknown>}
+ */
 export const usePublishedTeamMemberProfiles = (company) => {
 	return useQuery(["getPublishedTeamMemberProfiles", company],
 		() => api.getPublishedTeamMemberProfiles(company))
@@ -72,15 +84,15 @@ export const useQuestionsQuery = (companyId = 7, options = {}) => {
 }
 
 /**
- * Returns useQuery hook for fetching answers by user ID
+ * Returns useQuery hook for fetching answers by profile ID
  *
- * @param {Number} userId
+ * @param {Number} profileId
  * @param {Object} options
  * @returns {UseQueryResult<AxiosResponse<*>, unknown>}
  */
-export const useAnswersQuery = (userId, options = {}) => {
-	return useQuery(["getAnswersQuery", userId],
-		() => api.getAnswersByProfileId(userId),
+export const useAnswersQuery = (profileId, options = {}) => {
+	return useQuery(["getAnswersQuery", profileId],
+		() => api.getAnswersByProfileId(profileId),
 		options)
 }
 

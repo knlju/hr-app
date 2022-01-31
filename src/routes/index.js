@@ -1,7 +1,7 @@
 import {Route, Routes} from "react-router-dom"
 import LoginPage from "../components/pages/LoginPage"
 import RegisterPage from "../components/pages/RegisterPage"
-import {HomePage} from "../components/pages/HomePage"
+import {MainWrapper} from "../components/pages/MainWrapper"
 import ProtectedRoutes from "./ProtectedRoutes"
 import { PendingPage } from "../components/pages/PendingPage"
 import { TeamPage } from "../components/pages/TeamPage"
@@ -10,10 +10,11 @@ import { Company } from "../components/pages/Company"
 import { MyProfile } from "../components/pages/MyProfile"
 import EditUserPage from "../components/pages/EditUserPage"
 import JoinPage from "../components/pages/JoinPage"
+import CompanyWall from "../components/pages/CompanyWall"
 
 const createRoutes = () => (
 	<Routes>
-		<Route path="/" element={<HomePage/>}>
+		<Route element={<MainWrapper/>}>
 			<Route element={<ProtectedRoutes adminOnly />}>
 				<Route path="/team" element={<TeamPage/>}/>
 				<Route path="/team/pending" element={<PendingPage/>}/>
@@ -30,6 +31,7 @@ const createRoutes = () => (
 				<Route path="/register" element={<RegisterPage/>}/>
 				<Route path="/join/:slug" element={<JoinPage/>}/>
 			</Route>
+			<Route path="/" element={<CompanyWall />}/>
 			<Route path="*" element={<div><h1>Yay 404</h1></div>}/>
 		</Route>
 	</Routes>

@@ -5,6 +5,7 @@ import { useState } from "react"
 import { useSelector } from "react-redux"
 import { useMutation, useQuery } from "react-query"
 import api from "../../../api"
+import Modal from "../../shared/Modal"
 
 const _extractQuestionById = (id, arr) => {
 	let selected = null
@@ -107,10 +108,10 @@ function QuestionModal({ setModalClose, modalId }) {
 		jsxAnswerInput = (
 			<div>
 				<label htmlFor="answer"
-					className="text-sm font-medium text-gray-900 block mb-2 dark:text-gray-300">Question name</label>
+					className="text-sm font-medium text-violet-800 block mb-0 dark:text-gray-300">Place for you answer</label>
 				<input type="text" name="answer"
-					className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
-					placeholder="odgovor" required="" value={answer}
+					className="bg-gray-50 border border-gray-300 text-violet-800 text-sm lg:text-lg rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
+					placeholder="Your answer..." required="" value={answer}
 					onChange={(e) => {setAnswer(e.target.value)}}/>
 			</div>
 		)
@@ -118,9 +119,9 @@ function QuestionModal({ setModalClose, modalId }) {
 		jsxAnswerInput = (
 			<div>
 				<label htmlFor="formFile"
-					className="form-label text-sm font-medium text-gray-900 block mb-2 dark:text-gray-300">Place for your picture</label>
+					className="form-label text-sm font-medium text-violet-800 block mb-0 dark:text-gray-300">Place for your picture</label>
 				<input
-					className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white 
+					className="bg-gray-50 border border-gray-300 text-violet-800 text-sm lg:text-lg rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white 
 						relative
 						file:bg-blue-500
 						file:rounded-md file:text-white file:px-4 file:py-1
@@ -133,37 +134,37 @@ function QuestionModal({ setModalClose, modalId }) {
 	//
     
 	return (
-		<div className="modalBackground">
-			<div className="modalContainer">
-				<div className="titleCloseBtn">
-					<button
-						onClick={() => {
-							setModalClose()
-						}}
-					>
-            X
-					</button>
-				</div>
-				<div className="title">
-					<h1>Are You Sure You Want to Continue?</h1>
-				</div>
-				<p>{question}</p>
+		<Modal closeModal={()=>{}}>
+			<div className="modalBackground">
+				<div className="modalContainer">
+					<div className="flex justify-between items-center mb-3">
+						<h1 className="text-lg text-violet-800">Answer The Question</h1>
+						<button className=""
+							onClick={() => {
+								setModalClose()
+							}}
+						>
+							<i className="fas fa-times text-violet-800"></i>
+						</button>
+					</div>
+					<p className="text-base lg:text-lg text-violet-800 mb-5">{question}</p>
 
-				{jsxAnswerInput}
+					{jsxAnswerInput}
 
-				<div className="footer">
-					<button
-						onClick={() => {
-							setModalClose()
-						}}
-						id="cancelBtn"
-					>
+					<div className="footer mt-5">
+						<button className="text-white"
+							onClick={() => {
+								setModalClose()
+							}}
+							id="cancelBtn"
+						>
             Cancel
-					</button>
-					<button type="button" onClick={handleAnswer}>SUBMIT</button>
+						</button>
+						<button className="text-white bg-violet-800 hover:bg-violet-600" type="button" onClick={handleAnswer}>SUBMIT</button>
+					</div>
 				</div>
 			</div>
-		</div>
+		</Modal>
 	)
 }
 

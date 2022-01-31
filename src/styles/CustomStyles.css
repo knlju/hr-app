@@ -76,13 +76,13 @@ li {
 @media screen and (max-width: 1366px) {
   .main {
     padding-left: 0;
-    width: 100vw;
+    width: 100%;
   }
   .main__content {
     padding: 24px;
     position: relative;
     background-color: #f3f4fa;
-    z-index: 100;
+    z-index: 2;
   }
 }
 .sidebar {

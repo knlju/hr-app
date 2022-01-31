@@ -8,6 +8,7 @@ import DraggableListItem from "./DraggableListItem"
 const DraggableList = props => {
 
 	const [data, setdata] = useState(props.data)
+	console.log("--------------", data)
     
 
 	const [dragStartIndex, setdragStartIndex] = useState(null)

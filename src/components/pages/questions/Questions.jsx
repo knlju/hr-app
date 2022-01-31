@@ -6,10 +6,13 @@ import { useSelector } from "react-redux"
 import { Link } from "react-router-dom"
 import SingleQuestion from "./SingleQuestion"
 import QuestionModal from "./QuestionModal"
+import DeleteUserModal from "../../shared/DeleteUserModal"
+import Modal from "../../shared/Modal"
 
 export const Questions = () => {
 	const [modalOpen, setModalOpen] = useState(false)
 	const [modalId, setModalId] = useState(null)
+
 	
 	const routeFreshnes = useSelector(state=>state.user.routeFreshnes)
 
@@ -18,6 +21,9 @@ export const Questions = () => {
 	const companyID = useSelector(defaultState => defaultState.user.profile.attributes.company.data.id)
 	
 	const [questions, setQuestions] = useState([])
+	//for modal
+	// const [questionToDelete, setQuestionToDelete] = useState(null)
+	// const [questionDeleteModal, setQuestionDeleteModal] = useState(true)
 
 	const {data, refetch} = useQuery("getQuestions", async ()=>{
 		if (isLoggedIn) {
@@ -58,13 +64,19 @@ export const Questions = () => {
 	)
 
 	// if (questions.length<=0) return <h3>Loading...</h3>
-
+	/*
+			{questionDeleteModal &&
+                <DeleteUserModal onCancel={() => setQuestionDeleteModal(true)} modalId={modalId}
+                />}
+*/
 	return (
 		<>
-			
+		
+			{/* {questionDeleteModal &&<DeleteUserModal onCancel={() => setQuestionDeleteModal(false)}
+			/>} */}
 			{modalOpen && <QuestionModal setModalClose={() => {setModalOpen(false)}} modalId={modalId} />}
-			<div className="flex flex-col items-center">
-				<Link to={"/add-question"}><button className="bg-white hover:bg-gray-200 mb-3 rounded-lg shadow-lg text-violet-800 py-2 px-4">ADD QUESTION</button></Link>
+			<div className="flex flex-col items-center full md:w-4/5 mx-auto">
+				<Link to={"/add-question"}><button className="bg-white hover:bg-gray-200 mb-5 rounded-lg shadow-lg text-violet-800 py-2 px-4">ADD QUESTION</button></Link>
 			
 				{questions.length > 0
 					? questions.map((question) => {
@@ -77,7 +89,12 @@ export const Questions = () => {
 								setModalOpen={(id) => {
 									setModalOpen(true)
 									setModalId(id)
-								}}/>
+								}}
+								// setQuestionDeleteModal={(id) => {
+								// 	setQuestionDeleteModal(true)
+								// 	setModalId(id)
+								// }}
+							/>
 						)
 					})
 					: null}

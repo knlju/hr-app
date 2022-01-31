@@ -18,7 +18,6 @@ const AddQuestion = (props) => {
 	const [questionName, setQuestionName] = useState("")
 	const [questionType, setQuestionType] = useState("text")
 	const [questionOrder, setQuestionOrder] = useState("")
-	const [title, setTitle] = useState("ADD QUESTION")
 	const navigate = useNavigate()
 	const [questionsLength, setQuestionsLength] = useState(null)
 
@@ -140,43 +139,45 @@ const AddQuestion = (props) => {
 
 	return (
 		<div className="ui main text-center">
-			<h2 className="inline-block bg-white mb-3 rounded-lg shadow-lg text-violet-800 py-2 px-4">{title}</h2>
+			<h2 className="inline-block bg-white mb-3 rounded-lg shadow-lg text-violet-800 py-2 px-4">{modeEdit ? "Edit question" : "Add question"}</h2>
 
-			<div>
-				<div className="flex justify-between items-center mx-auto max-w-screen-lg py-10">
-					<div
-						className="bg-white shadow-md border border-gray-200 rounded-lg w-2/5 max-w-md p-4 sm:p-6 lg:p-8 dark:bg-gray-800 dark:border-gray-700 mx-auto">
-						<form className="space-y-6" action="#">
-							<div>
-								<label htmlFor="name"
-									className="text-sm font-medium text-gray-900 block mb-2 dark:text-gray-300">Question name</label>
-								<input type="text" name="name" id="name"
-									className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
-									placeholder="name@company.com" required="" value={questionName}
-									onChange={(e) => setQuestionName(e.target.value)}/>
-							</div>
-							<div>
-								<label htmlFor="questionType"
-									className="form-label text-sm font-medium text-gray-900 block mb-2 dark:text-gray-300">Question type</label>
-								{/* TODO: maybe use radiobutton instead of select here */}
-								<select
-									className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
-									value={questionType} onChange={(e) => setQuestionType(e.target.value)} id="questionType">
-									<option value="text">Text</option>
-									<option value="long_text">Long text</option>
-									<option value="image">Image</option>
-								</select>
-							</div>
+			{/* <div> */}
+			<div className="flex justify-between items-center mx-auto max-w-screen-lg py-10">
+				<div
+					className="bg-white  rounded-lg shadow-lg w-full max-w-md p-4 sm:p-6 lg:p-8 dark:bg-gray-800 dark:border-gray-700 mx-auto">
+					<form className="space-y-6" action="#">
+						<div>
+							<label htmlFor="name"
+								className="text-lg font-medium text-violet-800 block mb-2 dark:text-gray-300">Question name</label>
+							<input type="text" name="name" id="name"
+								className="bg-gray-50 border border-gray-300 text-violet-800 text-sm lg:text-lg rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
+								placeholder="New Question" required="" value={questionName}
+								onChange={(e) => setQuestionName(e.target.value)}/>
+						</div>
+						<div>
+							<label htmlFor="questionType"
+								className="form-label text-lg font-medium text-violet-800 block mb-2 dark:text-gray-300">Question type</label>
+							{/* TODO: maybe use radiobutton instead of select here */}
+							<select
+								className="bg-gray-50 border border-gray-300 text-violet-800 text-sm lg:text-lg rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
+								value={questionType} onChange={(e) => setQuestionType(e.target.value)} id="questionType">
+								<option value="text">Text</option>
+								<option value="long_text">Long text</option>
+								<option value="image">Image</option>
+							</select>
+						</div>
 							
-							<button type="submit"
-								className="w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-								onClick={handleQuestion}>ADD
-							</button>
+						<button type="submit"
+							className="w-full text-white inline-block bg-violet-800 hover:bg-violet-600 mb-5 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+							onClick={handleQuestion}>ADD
+						</button>
+						<div>
 							<Link to="/questions" className="text-sm hover:underline dark:text-blue-500">back</Link>
-						</form>
-					</div>
+						</div>
+					</form>
 				</div>
 			</div>
+			{/* </div> */}
 		</div>
 	)
 

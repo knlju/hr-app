@@ -13,6 +13,12 @@ import QuestionsAndAnswers from "../shared/QuestionsAndAnswers"
 import InfoForm from "../shared/InfoForm"
 import Loader from "../shared/Loader"
 import DeleteUserModal from "../shared/DeleteUserModal"
+import InputPair from "../shared/InputPair"
+
+const STATUS = [
+	{id: "pending", attributes: {name: "pending"}},
+	{id: "published", attributes: {name: "published"}}
+]
 
 function EditUserPage() {
 
@@ -22,6 +28,7 @@ function EditUserPage() {
 	const {data: user, isLoading, isError, refetch} = useUserProfileQuery(parseInt(profileId), {
 		onSuccess: user => {
 			setUsername(user.data.data.attributes.name)
+			setSelectedStatus(user.data.data.attributes.status)
 		},
 		enabled: false
 	})
@@ -47,6 +54,7 @@ function EditUserPage() {
 	const [username, setUsername] = useState("Loading username..")
 	const [userProfilePhoto, setUserProfilePhoto] = useState(false)
 	const [userToDelete, setUserToDelete] = useState(false)
+	const [selectedStatus, setSelectedStatus] = useState(false)
 
 	const {mutateAsync: mutateDeleteUserAsync, isLoading: isDeleteUserLoading} = useDeleteUserProfileMutation()
 	const {mutateAsync: mutateDeleteAnswerAsync, isLoading: isDeleteAnswerLoading} = useDeleteUserAnswerMutation()
@@ -63,6 +71,9 @@ function EditUserPage() {
 		if (userProfilePhoto) {
 			const uploadedImageResponse = await uploadImageAsyncMutation(userProfilePhoto)
 			profileUpdateOptions.profilePhoto = uploadedImageResponse?.data[0].id
+		}
+		if (selectedStatus) {
+			profileUpdateOptions.status = selectedStatus
 		}
 		await updateProfileAsyncMutation({profileId: parseInt(profileId), putOptions: profileUpdateOptions})
 		setUserProfilePhoto(false)
@@ -96,6 +107,8 @@ function EditUserPage() {
 		navigateAfterAction()
 	}
 
+	useEffect(() => console.log({selectedStatus}), [selectedStatus])
+
 	if (isLoading) {
 		return <SpinnerLoader/>
 	}
@@ -120,19 +133,35 @@ function EditUserPage() {
 				bg-white shadow-md border border-gray-200 rounded-lg mx-auto p-4 sm:p-6 lg:p-8
 				dark:bg-gray-800 dark:border-gray-700 text-white"
 			>
-				<div>
-                    Moderate team member entry
-				</div>
-				<div className="flex justify-end align-top gap-2">
-					<button
-						className="disabled:opacity-70 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-						onClick={approveTeamMember}>Approve
-					</button>
-					<button
-						className="disabled:opacity-70 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-						onClick={openDeleteModal}>Delete
-					</button>
-				</div>
+				{
+					(!isLoading &&
+                        user?.data?.data?.attributes.status === "pending") ? (
+							<>
+								<div>
+                                Moderate team member entry
+								</div>
+								<div className="flex justify-end align-top gap-2">
+									<button
+										className="disabled:opacity-70 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+										onClick={approveTeamMember}>Approve
+									</button>
+									<button
+										className="disabled:opacity-70 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+										onClick={openDeleteModal}>Delete
+									</button>
+								</div>
+							</>
+						) : (<>
+							<div>
+                            Edit Team Member
+							</div>
+							<div className="flex justify-end align-top gap-2">
+								<InputPair type="select" answer={selectedStatus}
+									setAnswer={e => setSelectedStatus(e.target.value)}
+									question="Status" selectOptions={STATUS}/>
+							</div>
+						</>)
+				}
 			</div>
 			<div
 				className="flex justify-between align-top mx-auto max-w-screen-lg py-10"

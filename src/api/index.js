@@ -248,42 +248,42 @@ const api = {
 	},
 
 	/**
-	 * Deletes an answer by ID
-	 *
-	 * @param {Number} answerId
-	 * @returns {Promise<AxiosResponse<any>>}
-	 */
+     * Deletes an answer by ID
+     *
+     * @param {Number} answerId
+     * @returns {Promise<AxiosResponse<any>>}
+     */
 	deleteAnswerById(answerId) {
 		return axiosInstanceWithAuth.delete(`/api/answers/${answerId}`)
 	},
 
 	/**
-	 * Returns promise to GET questions by company ID
-	 *
-	 * @param {Number} companyId
-	 * @returns {Promise<AxiosResponse<any>>}
-	 */
+     * Returns promise to GET questions by company ID
+     *
+     * @param {Number} companyId
+     * @returns {Promise<AxiosResponse<any>>}
+     */
 	getQuestionsByCompanyId: (companyId) => {
 		return axiosInstanceWithAuth.get(`/api/questions?filters[company][id][$eq]=${companyId}&sort=order&populate=*`)
 	},
 
 	/**
-	 * Returns promise to GET answers by profile ID
-	 *
-	 * @param {Number} userId
-	 * @returns {Promise<AxiosResponse<any>>}
-	 */
+     * Returns promise to GET answers by profile ID
+     *
+     * @param {Number} userId
+     * @returns {Promise<AxiosResponse<any>>}
+     */
 	getAnswersByProfileId: (userId) => {
 		return axiosInstanceWithAuth.get(`/api/answers?filters[profile][id][$eq]=${userId}&populate=*`)
 	},
 
 	/**
-	 * Updates profile
-	 *
-	 * @param {Number} profileId
-	 * @param {Object} options - Update parameters
-	 * @returns {Promise<AxiosResponse<any>>}
-	 */
+     * Updates profile
+     *
+     * @param {Number} profileId
+     * @param {Object} options - Update parameters
+     * @returns {Promise<AxiosResponse<any>>}
+     */
 	editProfile: (profileId, putOptions) => {
 		//todo da li da populate i da hvatam sliku ovde ili ne hmm
 		return axiosInstanceWithAuth.put(`/api/profiles/${profileId}?populate=*`, {
@@ -294,11 +294,11 @@ const api = {
 	},
 
 	/**
-	 * Updates profile status to published
-	 *
-	 * @param {Number} profileId
-	 * @returns {Promise<AxiosResponse<any>>}
-	 */
+     * Updates profile status to published
+     *
+     * @param {Number} profileId
+     * @returns {Promise<AxiosResponse<any>>}
+     */
 	publishProfile: (profileId) => {
 		return axiosInstanceWithAuth.put(`/api/profiles/${profileId}`, {
 			data: {
@@ -308,10 +308,10 @@ const api = {
 	},
 
 	/**
-	 * Add Answer
-	 *
-	 * @returns {Promise<AxiosResponse<any>>}
-	 */
+     * Add Answer
+     *
+     * @returns {Promise<AxiosResponse<any>>}
+     */
 	addAnswer: (payload) => {
 		// eslint-disable-next-line no-debugger
 		debugger
@@ -320,7 +320,7 @@ const api = {
 			answer,
 			userProfile
 		} = payload
-		return axiosInstanceWithAuth.post("/api/answers/" , {
+		return axiosInstanceWithAuth.post("/api/answers/", {
 			data: {
 				answer,
 				question: questionId,
@@ -330,10 +330,10 @@ const api = {
 	},
 
 	/**
-	 * Add Image Answer
-	 *
-	 * @returns {Promise<AxiosResponse<any>>}
-	 */
+     * Add Image Answer
+     *
+     * @returns {Promise<AxiosResponse<any>>}
+     */
 	addImageAnswer: async (payload) => {
 		const {
 			questionId,
@@ -344,7 +344,7 @@ const api = {
 		console.log("response od uploadImage")
 		console.log(res)
 		const answerImage = res.data[0].formats.thumbnail.url
-		return axiosInstanceWithAuth.post("/api/answers/" , {
+		return axiosInstanceWithAuth.post("/api/answers/", {
 			data: {
 				answer: answerImage,
 				question: questionId,
@@ -355,10 +355,10 @@ const api = {
 	},
 
 	/**
-	 * Add Answer
-	 *
-	 * @returns {Promise<AxiosResponse<any>>}
-	 */
+     * Add Answer
+     *
+     * @returns {Promise<AxiosResponse<any>>}
+     */
 	updateAnswer: (payload) => {
 		// eslint-disable-next-line no-debugger
 		debugger
@@ -368,12 +368,29 @@ const api = {
 			answer,
 			userProfile
 		} = payload
-		return axiosInstanceWithAuth.put(`/api/answers/${answerId}` , {
+		return axiosInstanceWithAuth.put(`/api/answers/${answerId}`, {
 			data: {
 				answer,
 				question: questionId,
 				profile: userProfile
 			}
+		})
+	},
+
+	/**
+     * Sends a request for an invite
+     * Returns a Promise 
+     *
+     * @param email
+     * @param companySlug
+     * @returns {Promise<AxiosResponse<any>>}
+     */
+	inviteTeamMember: ({email, companySlug}) => {
+		// eslint-disable-next-line no-debugger
+		debugger
+		return axiosInstanceWithAuth.post("/api/invite", {
+			email,
+			companySlug
 		})
 	},
 }

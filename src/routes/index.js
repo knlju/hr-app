@@ -9,6 +9,7 @@ import { Questions } from "../components/pages/Questions"
 import { Company } from "../components/pages/Company"
 import { MyProfile } from "../components/pages/MyProfile"
 import EditUserPage from "../components/pages/EditUserPage"
+import JoinPage from "../components/pages/JoinPage"
 
 const createRoutes = () => (
 	<Routes>
@@ -27,6 +28,7 @@ const createRoutes = () => (
 			<Route element={<ProtectedRoutes loggedOutOnly />}>
 				<Route path="/login" element={<LoginPage/>}/>
 				<Route path="/register" element={<RegisterPage/>}/>
+				<Route path="/join/:slug" element={<JoinPage/>}/>
 			</Route>
 			<Route path="*" element={<div><h1>Yay 404</h1></div>}/>
 		</Route>

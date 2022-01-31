@@ -143,3 +143,15 @@ export const usePostAnswerMutation = (options = {}) => {
 	return useMutation(async (payload) => await api.addAnswer(payload),
 		options)
 }
+
+/**
+ * Invites a team member
+ * mutation takes an object {email, companySlug}
+ *
+ * @param {Object} options
+ * @returns {UseMutationResult<unknown, unknown, void, unknown>}
+ */
+export const useInviteMutation = (options = {}) => {
+	return useMutation(async ({email, companySlug}) => await api.inviteTeamMember({email, companySlug}),
+		options)
+}

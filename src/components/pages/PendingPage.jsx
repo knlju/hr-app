@@ -9,8 +9,8 @@ import Loader from "../shared/Loader"
 
 export const PendingPage = () => {
 
-	const userId = useSelector(state => state.companies.userCompany.data.id)
-	const {data: teamMembers, isLoading, isError, refetch} = usePendingTeamMemberProfiles(userId)
+	const companyId = useSelector(state => state.companies.userCompany.data.id)
+	const {data: teamMembers, isLoading, isError, refetch} = usePendingTeamMemberProfiles(companyId)
 	const [userToDelete, setUserToDelete] = useState(false)
 	const navigate = useNavigate()
 

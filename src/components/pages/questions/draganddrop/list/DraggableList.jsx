@@ -1,34 +1,20 @@
-import React, { useState } from "react"
+import React, {useState} from "react"
 import PropTypes from "prop-types"
 
 import "./draggable-list.css"
 
 import DraggableListItem from "./DraggableListItem"
-import { useEffect } from "react"
-import { useMutation } from "react-query"
+import {useEffect} from "react"
+import {useMutation} from "react-query"
 import api from "../../../../../api"
-import { useSelector } from "react-redux"
-import { useParams } from "react-router"
+import {useSelector} from "react-redux"
+import {useParams} from "react-router"
+import Loader from "../../../../shared/Loader"
+import SpinnerLoader from "../../../../shared/SpinnerLoader"
 
 const DraggableList = props => {
 
-	const companyID = useSelector(defaultState => defaultState.user.profile.attributes.company.data.id)
-	const [questionName, setQuestionName] = useState("")
-	const [questionType, setQuestionType] = useState("text")
-	const [questionOrder, setQuestionOrder] = useState("")
-
-
-
-
-
-
-
-	const [data, setdata] = useState(props.data)
-
-	useEffect(()=>{
-		setdata(props.data)
-	}, [props.data])
-    
+	const [questionList, setquestionList] = useState(props.data)
 
 	const [dragStartIndex, setdragStartIndex] = useState(null)
 
@@ -38,34 +24,34 @@ const DraggableList = props => {
 	// update list when item dropped
 	const onDrop = (dropIndex) => {
 		// get draged item
-		const dragItem = data[dragStartIndex]
+		const dragItem = questionList[dragStartIndex]
 
-
-
-		// delete draged item in list
-		let list = [...data]
-		if(dragStartIndex - dropIndex > 0) {
-			const tmp = list[dragStartIndex].attributes.order
-			list[dragStartIndex].attributes.order = list[dropIndex].attributes.order
-			for(let i=dropIndex + 1; i<dragStartIndex; i++) {
+		// update order in the list
+		let list = [...questionList]
+		if (dragStartIndex > dropIndex) {
+			const tmp = list[dropIndex].attributes.order
+			for (let i = dropIndex; i < dragStartIndex; i++) {
 				list[i].attributes.order = list[i + 1].attributes.order
 			}
-			// list[dropIndex].attributes.order
+			list[dragStartIndex].attributes.order = tmp
+		} else {
+			const tmp = list[dropIndex - 1].attributes.order
+			for (let i = dropIndex - 1; i > dragStartIndex; i--) {
+				list[i].attributes.order = list[i - 1].attributes.order
+			}
+			list[dragStartIndex].attributes.order = tmp
 		}
 
-		list.splice(dragStartIndex, 1)
-
-
-
 		// update list
+		list.splice(dragStartIndex, 1)
 		if (dragStartIndex < dropIndex) {
-			setdata([
+			setquestionList([
 				...list.slice(0, dropIndex - 1),
 				dragItem,
 				...list.slice(dropIndex - 1, list.length)
 			])
 		} else {
-			setdata([
+			setquestionList([
 				...list.slice(0, dropIndex),
 				dragItem,
 				...list.slice(dropIndex, list.length)
@@ -73,42 +59,33 @@ const DraggableList = props => {
 		}
 	}
 
-	/////pokusaj ubacivanja nove liste pitanja
-	console.log("pitanja iz dragable liste", data)
-
-	
-
-	// useEffect(() => {
-	// 	const arr = data
-	// 	arr.forEach(question => {
-	// 		setQuestionName(question.attributes.text)
-	// 		setQuestionType(question.attributes.type)
-	// 		setQuestionOrder(question.attributes.order)
-			
-	// 	})
-	// }, [data])
-	
-
-	console.log("lllllllllllllLLLLLLL", questionOrder)
+	console.log("pitanja iz dragable liste", questionList)
 
 	const {
-		mutate
-	} = useMutation((payload)=>{ 
-		api.postNewQuestionsOrder(payload)
+		mutateAsync,
+		isLoading: isUpdatingQuestionOrder,
+	} = useMutation((payload) => {
+		api.putNewQuestionsOrder(payload)
 	})
 
-	const handleNewOrder = (e)=> {
+	const handleNewOrder = async (e) => {
 		e.preventDefault()
-		data.forEach(question =>{
-			mutate({id: question.id, order: question.attributes.order})
-		})
+
+		for (let i = 0; i <questionList.length; i++) {
+			// delete old order
+			await mutateAsync({id: questionList[i].id, order: (i + 20)})
+			// put new order
+			await mutateAsync({id: questionList[i].id, order: questionList[i].attributes.order})
+		}
+		alert("done!")
 	}
 
 	return (
 		<>
+			{isUpdatingQuestionOrder && <SpinnerLoader/>}
 			<ul className="draggable-list">
 				{
-					data.map((item, index) => {
+					questionList.map((item, index) => {
 						let key = index
 						if (item.id) {
 							key = item.id
@@ -123,15 +100,15 @@ const DraggableList = props => {
 								{
 									props.renderItemContent(item)
 								}
-                        
+
 							</DraggableListItem>
 						)
 					})
 				}
-			
+
 				<DraggableListItem
-					key={data.length}
-					index={data.length}
+					key={questionList.length}
+					index={questionList.length}
 					draggale={false}
 					onDrop={(index) => onDrop(index)}
 				/>

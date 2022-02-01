@@ -264,6 +264,22 @@ const api = {
 		return axiosInstanceWithAuth.get("/api/questions?filters[company][id][$eq]="+companyID+"&populate=*")
 	},
 	/**
+     * Update new Questions
+     *
+     * @returns {Promise<AxiosResponse<any>>}
+     */
+	postNewQuestionsOrder: (payload) => {
+		const {
+			id,
+			order
+		}=payload
+		return axiosInstanceWithAuth.put("/api/questions/" + id, {
+			data: {
+				order: order
+			}
+		})
+	},
+	/**
      * GETs Questions
      *
      * @returns {Promise<AxiosResponse<any>>}

@@ -20,23 +20,25 @@ export const Questions = () => {
 	
 	const [questions, setQuestions] = useState([])
 
-	// const {data, refetch, isLoading} = useQuery("getQuestions", async ()=>{
-	// 	if (isLoggedIn) {
-	// 		const token = await localStorage.getItem("token")
-	// 		if (token) {
-	// 			return api.getQuestions(companyID)
-	// 		}
-	// 		return false
+	const {data, refetch, isLoading} = useQuery("getQuestions", async ()=>{
+		if (isLoggedIn) {
+			const token = await localStorage.getItem("token")
+			if (token) {
+				return api.getQuestions(companyID)
+			}
+			return false
+		}
+		return false
+	})
+
+	// const {data, refetch, isLoading} = useGetCompanyQuestions(isLoggedIn, companyID, {
+	// 	onSuccess: data => {
+	// 		const sortedQuestions = data.data.data.sort(compare)
+	// 		setQuestions(sortedQuestions)
 	// 	}
-	// 	return false
 	// })
 
-	const {data, refetch, isLoading} = useGetCompanyQuestions(isLoggedIn, companyID, {
-		onSuccess: data => {
-			const sortedQuestions = data.data.data.sort(compare)
-			setQuestions(sortedQuestions)
-		}
-	})
+	console.log("pitanja izlistana prvi put", data)
 
 	function compare(a, b) {
 		if (a.attributes.order < b.attributes.order) {
@@ -52,12 +54,13 @@ export const Questions = () => {
 		refetch()
 	}, [routeFreshnes])
 	
-	// useEffect(() => {
-	// 	if (data) {
-	// 		const sortedQuestions = data.data.data.sort(compare)
-	// 		setQuestions(sortedQuestions)
-	// 	}
-	// }, [data])
+	useEffect(() => {
+		if (data) {
+			const sortedQuestions = data.data.data.sort(compare)
+			setQuestions(sortedQuestions)
+			// setQuestions(data.data.data)
+		}
+	}, [data])
 
 	const cbRefresh = ()=> (
 		refetch()
@@ -79,7 +82,6 @@ export const Questions = () => {
 	}
 
 
-
 	return (
 		<>
 			{modalOpen && <QuestionModal setModalClose={() => {setModalOpen(false)}} modalId={modalId} />}
@@ -90,7 +92,7 @@ export const Questions = () => {
 					data={questions}
 					renderItemContent={(item) => DraggableQuestion(item)}
 				/> : "There is no posted questions."}	
-				
+
 			</div>
 		</>
 	)

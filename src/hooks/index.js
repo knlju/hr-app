@@ -59,3 +59,21 @@ export const useGetMyProfile = (isLoggedIn, options = {}) => {
 		return false
 	}, options)
 }
+/**
+ * * Returns useQuery hook for fetching questions by companyID
+ * 
+ * @param {boolean} isLoggedIn 
+ * @returns 
+ */
+export const useGetCompanyQuestions = (isLoggedIn, companyID, options = {}) => {
+	return useQuery("getMyProfile", async ()=>{
+		if (isLoggedIn) {
+			const token = await localStorage.getItem("token")
+			if (token) {
+				return api.getQuestions(companyID)
+			}
+			return false
+		}
+		return false
+	}, options)
+}

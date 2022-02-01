@@ -4,11 +4,15 @@ import PropTypes from "prop-types"
 import "./draggable-list.css"
 
 import DraggableListItem from "./DraggableListItem"
+import { useEffect } from "react"
 
 const DraggableList = props => {
 
 	const [data, setdata] = useState(props.data)
-	console.log("--------------", data)
+
+	useEffect(()=>{
+		setdata(props.data)
+	}, [props.data])
     
 
 	const [dragStartIndex, setdragStartIndex] = useState(null)
@@ -41,29 +45,30 @@ const DraggableList = props => {
 		}
 	}
 
-	
-
 	return (
 		<ul className="draggable-list">
 			{
-				data.map((item, index) => (
-					<DraggableListItem
-						key={index}
-						index={index}
-						onDragStart={(index) => onDragStart(index)}
-						onDrop={(index) => onDrop(index)}
-					>
-						{
-							props.renderItemContent(item)
-						}
+				data.map((item, index) => {
+					let key = index
+					if (item.id) {
+						key = item.id
+					}
+					return (
+						<DraggableListItem
+							key={key}
+							index={index}
+							onDragStart={(index) => onDragStart(index)}
+							onDrop={(index) => onDrop(index)}
+						>
+							{
+								props.renderItemContent(item)
+							}
                         
-					</DraggableListItem>
-				))
+						</DraggableListItem>
+					)
+				})
 			}
-			{/*
-                add last item so you can drag item to last position
-                last item dont need onDragStart because it can not be draged
-            */}
+			
 			<DraggableListItem
 				key={data.length}
 				index={data.length}

@@ -25,7 +25,7 @@ function DeleteUserModal({onConfirm, onCancel, user, modeQuestion}) {
 							<div className="mt-2">
 								<p className="text-sm text-gray-500">
 									{/* Are you sure you want to permanently delete {user.attributes.name}&apos;s account? */}
-									{/* {questionToDelete ? "Are you sure you want to permanently delete this question" : `Are you sure you want to permanently delete ${user.attributes.name}&apos;s account?`} */}
+									{modeQuestion ? "Are you sure you want to permanently delete this question" : `Are you sure you want to permanently delete ${user.attributes.name}&apos;s account?`}
 								</p>
 							</div>
 						</div>

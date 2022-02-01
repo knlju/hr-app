@@ -5,15 +5,12 @@ import { useMutation, useQuery } from "react-query"
 import api from "../../../api"
 import { useDispatch, useSelector } from "react-redux"
 import { Link } from "react-router-dom"
-// import Modal from "../../shared/Modal"
 
 const AddQuestion = (props) => { 
 	const dispatch = useDispatch()
 	let { id } = useParams()
 	id = parseInt(id)
-	console.log("route param id:", id)
 	const modeEdit = props.modeEdit
-	console.log("modeEdit", modeEdit)
 	const [uniqueOrders, setUniqueOrders] = useState({})
 	const [questionName, setQuestionName] = useState("")
 	const [questionType, setQuestionType] = useState("text")
@@ -21,16 +18,10 @@ const AddQuestion = (props) => {
 	const navigate = useNavigate()
 	const [questionsLength, setQuestionsLength] = useState(null)
 
-	// const {data} = useQuery("getQuestions", async ()=>{
-	// 	const token = await localStorage.getItem("token")
-	// 	if (token) {
-	// 		return api.getQuestions()
-	// 	}
-	// 	return false
-	// })
+
 	const isLoggedIn = useSelector(defaultState => defaultState.user.isLoggedIn)
 	const companyID = useSelector(defaultState => defaultState.user.profile.attributes.company.data.id)
-	// console.log("foooking company ID", companyID)
+
 	const {data, refetch} = useQuery("getAllQuestions", async ()=>{
 		if (isLoggedIn) {
 			const token = await localStorage.getItem("token")
@@ -41,11 +32,10 @@ const AddQuestion = (props) => {
 		}
 		return false
 	})
-	console.log("foooking dataaaaaaa", data)
+
 	useEffect(() => {
 		if (data && data.data && data.data.data) {
-			console.log(data)
-			const arr = data.data.data // arr od svih pitanaj svih kompanija
+			const arr = data.data.data 
 			arr.forEach(question => {
 				const order = question.attributes.order
 				setUniqueOrders((uniqueOrders) => {
@@ -54,11 +44,7 @@ const AddQuestion = (props) => {
 						[order]: true
 					}
 				})
-				// console.log(question)
-				// console.log(question.id)
-				// console.log(id === question.id)
 				if (question.id === id) {
-					// console.log(id === question.id)
 					setQuestionName(question.attributes.text)
 					setQuestionType(question.attributes.type)
 					setQuestionOrder(question.attributes.order)
@@ -80,11 +66,7 @@ const AddQuestion = (props) => {
 		}
 	})
 
-
 	const _makeUniqueOrder = ()=> {
-		console.log("_makeUniqueOrder")
-		console.log("uniqueOrders")
-		console.log(uniqueOrders)
 		let ord = 0
 		let exit = false
 		while (exit === false) {
@@ -94,7 +76,6 @@ const AddQuestion = (props) => {
 				exit = true
 			}
 		}
-		console.log("_makeUniqueOrder will return", ord)
 		return ord
 	}
 
@@ -103,7 +84,6 @@ const AddQuestion = (props) => {
 		e.preventDefault()
 		if(modeEdit === true) {
 			// EDIT
-			console.log("klik na submit edit")
 			const payload = {
 				id,
 				text: questionName, 
@@ -115,13 +95,11 @@ const AddQuestion = (props) => {
 			navigate("/questions")
 		} else {
 			// ADD
-			console.log("klik na submit add")
 			const payload = {
 				companyID,
 				text: questionName, 
 				type: questionType,
 				order: _makeUniqueOrder()
-				// order: questionsLength
 			}
 			mutate(payload)
 
@@ -141,7 +119,6 @@ const AddQuestion = (props) => {
 		<div className="ui main text-center">
 			<h2 className="inline-block bg-white mb-3 rounded-lg shadow-lg text-violet-800 py-2 px-4">{modeEdit ? "Edit question" : "Add question"}</h2>
 
-			{/* <div> */}
 			<div className="flex justify-between items-center mx-auto max-w-screen-lg py-10">
 				<div
 					className="bg-white  rounded-lg shadow-lg w-full max-w-md p-4 sm:p-6 lg:p-8 dark:bg-gray-800 dark:border-gray-700 mx-auto">
@@ -157,7 +134,6 @@ const AddQuestion = (props) => {
 						<div>
 							<label htmlFor="questionType"
 								className="form-label text-lg font-medium text-violet-800 block mb-2 dark:text-gray-300">Question type</label>
-							{/* TODO: maybe use radiobutton instead of select here */}
 							<select
 								className="bg-gray-50 border border-gray-300 text-violet-800 text-sm lg:text-lg rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
 								value={questionType} onChange={(e) => setQuestionType(e.target.value)} id="questionType">
@@ -177,7 +153,6 @@ const AddQuestion = (props) => {
 					</form>
 				</div>
 			</div>
-			{/* </div> */}
 		</div>
 	)
 

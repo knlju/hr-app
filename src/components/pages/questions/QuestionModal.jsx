@@ -1,11 +1,11 @@
 import React, { useEffect } from "react"
 import PropTypes from "prop-types"
-import "./Modal.css"
 import { useState } from "react"
 import { useSelector } from "react-redux"
 import { useMutation, useQuery } from "react-query"
 import api from "../../../api"
 import Modal from "../../shared/Modal"
+import ReactDOM from "react-dom"
 
 const _extractQuestionById = (id, arr) => {
 	let selected = null
@@ -29,15 +29,11 @@ const _extractQuestionType = (id, arr) => {
 function QuestionModal({ setModalClose, modalId }) {
 	const [question, setQuestion] = useState("")
 	const [answer, setAnswer] = useState("")
-	// const [answerLongText, setAnswerLongText] = useState("")
 	const [answerImage, setAnswerImage] = useState(null)
 	const [questionType, setQuestionType] = useState("")
 	const isLoggedIn = useSelector(defaultState => defaultState.user.isLoggedIn)
 	const companyID = useSelector(defaultState => defaultState.user.profile.attributes.company.data.id)
 	const userProfile = useSelector(defaultState => defaultState.user.profile.id)
-	console.log("-----------------------------",userProfile)
-
-
 
 	const {data, refetch} = useQuery("getQuestions", async ()=>{
 		if (isLoggedIn) {
@@ -52,12 +48,10 @@ function QuestionModal({ setModalClose, modalId }) {
 
 	useEffect(() => {
 		if (data && data.data && data.data.data) {
-			// const text = 
 			setQuestion(_extractQuestionById(modalId, data.data.data))
 			setQuestionType(_extractQuestionType(modalId, data.data.data))
 		}
 	}, [data])
-
 
 
 	const {
@@ -66,23 +60,18 @@ function QuestionModal({ setModalClose, modalId }) {
 		if(questionType === "text" || questionType === "long_text") {
 			api.addAnswer(payload)
 				.then((response)=>{
-				// if (true) { // TODO treba provera da li je response uspeo
 					setModalClose()
-				// }
 				})
 		} else if(questionType === "image") {
 			api.addImageAnswer(payload)
 				.then((response)=>{
-				// if (true) { // TODO treba provera da li je response uspeo
 					setModalClose()
-				// }
 				})
 		}
 	})
 
 	const handleAnswer = (e)=> {
 		e.preventDefault()
-		console.log("klik za answer")
 		if(questionType === "text" || questionType === "long_text") {
 			const payload = {
 				questionId: modalId,
@@ -93,7 +82,6 @@ function QuestionModal({ setModalClose, modalId }) {
 		} else if(questionType === "image") {
 			const payload = {
 				questionId: modalId,
-				// answer: answerImage,
 				imageToSend: answerImage,
 				userProfile: userProfile
 			}
@@ -102,7 +90,6 @@ function QuestionModal({ setModalClose, modalId }) {
 		
 	}
 
-	//
 	let jsxAnswerInput = null
 	if (questionType === "text" || questionType === "long_text") {
 		jsxAnswerInput = (
@@ -131,40 +118,36 @@ function QuestionModal({ setModalClose, modalId }) {
 		)
 	}
 
-	//
-    
-	return (
+	return ReactDOM.createPortal(
 		<Modal closeModal={()=>{}}>
-			<div className="modalBackground">
-				<div className="modalContainer">
-					<div className="flex justify-between items-center mb-3">
-						<h1 className="text-lg text-violet-800">Answer The Question</h1>
-						<button className=""
-							onClick={() => {
-								setModalClose()
-							}}
-						>
-							<i className="fas fa-times text-violet-800"></i>
-						</button>
-					</div>
-					<p className="text-base lg:text-lg text-violet-800 mb-5">{question}</p>
+			<div className="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all p-6 flex-col sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+				<div className="flex justify-between items-center mb-3">
+					<h1 className="text-lg text-violet-800">Answer The Question</h1>
+					<button className=""
+						onClick={() => {
+							setModalClose()
+						}}
+					>
+						<i className="fas fa-times text-violet-800"></i>
+					</button>
+				</div>
+				<p className="text-base lg:text-lg text-violet-800 mb-5">{question}</p>
 
-					{jsxAnswerInput}
+				{jsxAnswerInput}
 
-					<div className="footer mt-5">
-						<button className="text-white"
-							onClick={() => {
-								setModalClose()
-							}}
-							id="cancelBtn"
-						>
+				<div className="mt-5 flex justify-center items-center gap-6">
+					<button className="text-white bg-red-700 hover:bg-red-500 rounded-lg px-4 py-2"
+						onClick={() => {
+							setModalClose()
+						}}
+					>
             Cancel
-						</button>
-						<button className="text-white bg-violet-800 hover:bg-violet-600" type="button" onClick={handleAnswer}>SUBMIT</button>
-					</div>
+					</button>
+					<button className="text-white bg-violet-800 hover:bg-violet-600 rounded-lg px-4 py-2" type="button" onClick={handleAnswer}>SUBMIT</button>
 				</div>
 			</div>
-		</Modal>
+		</Modal>,
+		document.getElementById("portal")
 	)
 }
 

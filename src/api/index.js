@@ -303,7 +303,6 @@ const api = {
 				type,
 				order
 			}
-			
 		})
 	},
 	/**
@@ -345,18 +344,14 @@ const api = {
 	addImageAnswer: async (payload) => {
 		const {
 			questionId,
-			// answer,
 			userProfile,
 			imageToSend,
 		} = payload
 		const res = await api.uploadImage(imageToSend)
-		console.log("response od uploadImage")
-		console.log(res)
 		const answerImage = res.data[0].formats.thumbnail.url
 		return axiosInstanceWithAuth.post("/api/answers/" , {
 			data: {
 				answer: answerImage, 
-				// answer: JSON.stringify(answerImage), 
 				question: questionId,
 				profile: userProfile
 			}

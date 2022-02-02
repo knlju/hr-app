@@ -14,12 +14,13 @@ import SpinnerLoader from "../../../../shared/SpinnerLoader"
 
 const DraggableList = props => {
 
-	const [questionList, setquestionList] = useState(props.data)
+	const [questionList, setQuestionList] = useState(props.data)
 
-	const [dragStartIndex, setdragStartIndex] = useState(null)
+	const [dragStartIndex, setDragStartIndex] = useState(null)
+	const [movedQuestions, setMovedQuestions] = useState()
 
 	// get index of draged item
-	const onDragStart = (index) => setdragStartIndex(index)
+	const onDragStart = (index) => setDragStartIndex(index)
 
 	// update list when item dropped
 	const onDrop = (dropIndex) => {
@@ -41,17 +42,23 @@ const DraggableList = props => {
 			}
 			list[dragStartIndex].attributes.order = tmp
 		}
+		//
+		// const dragRange = {
+		// 	from: Math.min(dragStartIndex, dropIndex),
+		// 	to: Math.max(dragStartIndex, dropIndex),
+		// }
+		// setMovedQuestions(list.filter((question, i) => i > dragRange.from))
 
 		// update list
 		list.splice(dragStartIndex, 1)
 		if (dragStartIndex < dropIndex) {
-			setquestionList([
+			setQuestionList([
 				...list.slice(0, dropIndex - 1),
 				dragItem,
 				...list.slice(dropIndex - 1, list.length)
 			])
 		} else {
-			setquestionList([
+			setQuestionList([
 				...list.slice(0, dropIndex),
 				dragItem,
 				...list.slice(dropIndex, list.length)
@@ -64,8 +71,8 @@ const DraggableList = props => {
 	const {
 		mutateAsync,
 		isLoading: isUpdatingQuestionOrder,
-	} = useMutation((payload) => {
-		api.putNewQuestionsOrder(payload)
+	} = useMutation(async (payload) => {
+		return await api.putNewQuestionsOrder(payload)
 	})
 
 	const handleNewOrder = async (e) => {
@@ -73,16 +80,21 @@ const DraggableList = props => {
 
 		for (let i = 0; i <questionList.length; i++) {
 			// delete old order
-			await mutateAsync({id: questionList[i].id, order: (i + 20)})
+			await mutateAsync({id: questionList[i].id, order: -(i + 40)})
+		}
+
+		for (let i = 0; i < questionList.length; i++) {
 			// put new order
 			await mutateAsync({id: questionList[i].id, order: questionList[i].attributes.order})
 		}
+
+		// TODO prikazati notifikaciju umesto ovoga
 		alert("done!")
 	}
 
 	return (
 		<>
-			{isUpdatingQuestionOrder && <SpinnerLoader/>}
+			{isUpdatingQuestionOrder && <Loader/>}
 			<ul className="draggable-list">
 				{
 					questionList.map((item, index) => {

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react"
 import { useNavigate, useParams } from "react-router"
 import PropTypes from "prop-types"
-import { useMutation, useQuery } from "react-query"
+import {useMutation, useQuery, useQueryClient} from "react-query"
 import api from "../../../api"
 import { useDispatch, useSelector } from "react-redux"
 import { Link } from "react-router-dom"
@@ -18,6 +18,7 @@ const AddQuestion = (props) => {
 	const navigate = useNavigate()
 	const [questionsLength, setQuestionsLength] = useState(null)
 
+	const queryClient = useQueryClient()
 
 	const isLoggedIn = useSelector(defaultState => defaultState.user.isLoggedIn)
 	const companyID = useSelector(defaultState => defaultState.user.profile.attributes.company.data.id)
@@ -31,6 +32,11 @@ const AddQuestion = (props) => {
 			return false
 		}
 		return false
+	}, {
+		onSuccess: () => {
+			//TODO: ni ovde ne radi
+			queryClient.invalidateQueries("getQuestions")
+		}
 	})
 
 	useEffect(() => {

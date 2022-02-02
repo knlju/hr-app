@@ -1,5 +1,5 @@
 import jwtDecode from "jwt-decode"
-import {useQuery} from "react-query"
+import {useMutation, useQuery} from "react-query"
 import api from "../api"
 
 /**
@@ -48,11 +48,11 @@ export const useUserProfileQuery = (profileId, options = {}) => {
 export const useGetMyProfile = (isLoggedIn, options = {}) => {
 	return useQuery("getMyProfile", async ()=>{
 		if (isLoggedIn) {
-			const token = await localStorage.getItem("token")
+			const token = localStorage.getItem("token")
 			if (token) {
 				const tokenDecoded = jwtDecode(token)
 				const userId = tokenDecoded.id
-				return api.getProfileByID(userId)
+				return await api.getProfileByID(userId)
 			}
 			return false
 		}
@@ -77,3 +77,26 @@ export const useGetCompanyQuestions = (isLoggedIn, companyID, options = {}) => {
 		return false
 	}, options)
 }
+
+/**
+ * Returns mutation for deleting answer by ID
+ *
+ * @param options
+ * @returns {UseMutationResult<unknown, unknown, void, unknown>}
+ */
+export const useDeleteUserAnswerMutation = (options = {}) => {
+	return useMutation(async (id) => await api.deleteAnswerById(id), options)
+}
+
+/**
+ * Returns mutation for deleting answer by ID
+ *
+ * @param options
+ * @returns {UseMutationResult<unknown, unknown, void, unknown>}
+ */
+export const useDeleteQuestionMutation = (options = {}) => {
+	return useMutation(async (id) => {
+		return await api.deleteQuestion({id})
+	}, options)
+}
+

@@ -5,9 +5,13 @@ import api from "../../../api"
 import DeleteUserModal from "../../shared/DeleteUserModal"
 import { useSelector } from "react-redux"
 import "../../../styles/CustomStyles.css"
+import {useDeleteQuestionMutation, useDeleteUserAnswerMutation} from "../../../hooks"
+import {useQueryClient} from "react-query"
 
 const SingleQuestion = (props) => {
-	
+
+	const queryClient = useQueryClient()
+
 	const navigate = useNavigate()
 	const isAdmin = useSelector(defaultState => defaultState.user.profile.attributes.userRole)
 	const [admin, setAdmin] = useState("")
@@ -20,7 +24,18 @@ const SingleQuestion = (props) => {
 	}, [])
 
 	const [questionDeleteModal, setQuestionDeleteModal] = useState(false)
-	
+
+	const {mutateAsync: deleteAnswerAsync} = useDeleteUserAnswerMutation()
+	const {mutateAsync: deleteQuestionAsync} = useDeleteQuestionMutation({
+		onSuccess: deletedQuestion => {
+			deletedQuestion?.data?.data.attributes?.answers?.data?.forEach(async answer => {
+				return await deleteAnswerAsync(answer.id)
+			})
+			// TODO: ovo ne radi
+			queryClient.invalidateQueries("getQuestions")
+		}
+	})
+
 	const question = props.question
 	const id = question.id
 	const type = question.attributes.type
@@ -31,8 +46,9 @@ const SingleQuestion = (props) => {
 		navigate(`/edit-question/${id}`)
 	}
 
-	const handleDelete = (id) => {
-		api.deleteQuestion({id})
+	const handleDelete = async (id) => {
+		await deleteQuestionAsync(id)
+
 		navigate("/questions")
 		setQuestionDeleteModal(false)
 		if (typeof props.cbRefresh === "function") {

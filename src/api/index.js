@@ -331,8 +331,19 @@ const api = {
 		const {
 			id,
 		} = payload
-		return axiosInstanceWithAuth.delete("/api/questions/" +id)
+		return axiosInstanceWithAuth.delete(`/api/questions/${id}?populate=*`)
 	},
+
+	/**
+	 * Deletes an answer by ID
+	 *
+	 * @param {Number} answerId
+	 * @returns {Promise<AxiosResponse<any>>}
+	 */
+	deleteAnswerById(answerId) {
+		return axiosInstanceWithAuth.delete(`/api/answers/${answerId}`)
+	},
+
 	/**
      * Add Answer
      *

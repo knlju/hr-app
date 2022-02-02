@@ -1,4 +1,5 @@
 import {useMutation, useQuery} from "react-query"
+import jwtDecode from "jwt-decode"
 import api from "../api"
 
 /**
@@ -155,3 +156,55 @@ export const useInviteMutation = (options = {}) => {
 	return useMutation(async ({email, companySlug}) => await api.inviteTeamMember({email, companySlug}),
 		options)
 }
+
+/**
+ * * Returns useQuery hook for fetching user by Token
+ *
+ * @param {boolean} isLoggedIn
+ * @returns
+ */
+export const useGetMyProfile = (isLoggedIn, options = {}) => {
+	return useQuery("getMyProfile", async ()=>{
+		if (isLoggedIn) {
+			const token = localStorage.getItem("token")
+			if (token) {
+				const tokenDecoded = jwtDecode(token)
+				const userId = tokenDecoded.id
+				return await api.getProfileByID(userId)
+			}
+			return false
+		}
+		return false
+	}, options)
+}
+/**
+ * * Returns useQuery hook for fetching questions by companyID
+ *
+ * @param {boolean} isLoggedIn
+ * @returns
+ */
+export const useGetCompanyQuestions = (isLoggedIn, companyID, options = {}) => {
+	return useQuery("getMyProfile", async ()=>{
+		if (isLoggedIn) {
+			const token = await localStorage.getItem("token")
+			if (token) {
+				return api.getQuestions(companyID)
+			}
+			return false
+		}
+		return false
+	}, options)
+}
+
+/**
+ * Returns mutation for deleting answer by ID
+ *
+ * @param options
+ * @returns {UseMutationResult<unknown, unknown, void, unknown>}
+ */
+export const useDeleteQuestionMutation = (options = {}) => {
+	return useMutation(async (id) => {
+		return await api.deleteQuestion({id})
+	}, options)
+}
+

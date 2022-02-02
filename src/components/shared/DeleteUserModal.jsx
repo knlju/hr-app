@@ -2,7 +2,7 @@ import React from "react"
 import ReactDOM from "react-dom"
 import Modal from "./Modal"
 
-function DeleteUserModal({onConfirm, onCancel, user, disabled}) {
+function DeleteUserModal({onConfirm, onCancel, user, modeQuestion, disabled}) {
 	return ReactDOM.createPortal(
 		<Modal closeModal={onCancel}>
 			<div
@@ -19,11 +19,13 @@ function DeleteUserModal({onConfirm, onCancel, user, disabled}) {
 						</div>
 						<div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
 							<h3 className="text-lg leading-6 font-medium text-gray-900" id="modal-title">
-                                    Delete account
+								{/* Delete account */}
+								{modeQuestion ? `Delete question` : `Delete account`}
 							</h3>
 							<div className="mt-2">
 								<p className="text-sm text-gray-500">
-                                        Are you sure you want to permanently delete {user.attributes.name}&apos;s account?
+									{/* Are you sure you want to permanently delete {user.attributes.name}&apos;s account? */}
+									{modeQuestion ? "Are you sure you want to permanently delete this question" : `Are you sure you want to permanently delete ${user.attributes.name}&apos;s account?`}
 								</p>
 							</div>
 						</div>

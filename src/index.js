@@ -13,6 +13,8 @@ import {QueryClient, QueryClientProvider} from "react-query"
 
 const queryClient = new QueryClient()
 
+console.log(React.version)
+
 ReactDOM.render(
 	<React.StrictMode>
 		<Provider store={store}>

@@ -130,22 +130,24 @@ const api = {
 	editMyProfile: async (payload) => {
 		const {
 			id,
-			userProfileData,
+			username,
 			imageToSend
 		} = payload
 		const res = await api.uploadImage(imageToSend)
 		console.log("response od uploadImage")
 		console.log(res)
-		const submitData = {
-			...userProfileData,
-			profilePhoto: res.data[0].id
-		}
-		console.log("editMyProfile id", id, submitData)
+		const profilePhoto =  res.data[0].id
+		// const submitData = {
+		// 	username,
+		// 	profilePhoto: res.data[0].id
+		// }
+		console.log("editMyProfile id-------------", id)
 		//return await axiosInstanceWithAuth.put("/api/users/" + id, submitData) // example id 17
 		return await axiosInstanceWithAuth.put("/api/profiles/" + id, {
 			data: {
 				// profilePhoto: image.data,id
-				...submitData
+				name: username,
+				profilePhoto
 
 			},
 		}) // example id 17
@@ -379,7 +381,7 @@ const api = {
 
 	/**
      * Sends a request for an invite
-     * Returns a Promise 
+     * Returns a Promise
      *
      * @param email
      * @param companySlug
@@ -392,6 +394,92 @@ const api = {
 			email,
 			companySlug
 		})
+	},
+	/**
+     * GETs ALL Questions
+     *
+     * @returns {Promise<AxiosResponse<any>>}
+     */
+	getAllQuestions: () => {
+		return axiosInstanceWithAuth.get("/api/questions")
+	},
+	/**
+     * GETs Questions
+     *
+     * @returns {Promise<AxiosResponse<any>>}
+     */
+	getQuestions: (companyID) => {
+		return axiosInstanceWithAuth.get(`/api/questions?filters[company][id][$eq]=${companyID}&populate=*&sort=order`)
+	},
+	/**
+     * Update new Questions
+     *
+     * @returns {Promise<AxiosResponse<any>>}
+     */
+	putNewQuestionsOrder: (payload) => {
+		console.log("putNewQuestionsOrder")
+		const {
+			id,
+			order
+		}=payload
+		return axiosInstanceWithAuth.put("/api/questions/" + id, {
+			data: {
+				order: order
+			}
+		})
+	},
+	/**
+     * GETs Questions
+     *
+     * @returns {Promise<AxiosResponse<any>>}
+     */
+	addQuestions: (payload) => {
+		const {
+			companyID,
+			text,
+			type,
+			order
+		} = payload
+		return axiosInstanceWithAuth.post("/api/questions",{
+			data: {
+				text,
+				type,
+				order,
+				company: companyID
+			}
+		})
+	},
+
+	/**
+     * Edit Questions
+     *
+     * @returns {Promise<AxiosResponse<any>>}
+     */
+	editQuestions: (payload) => {
+		const {
+			id,
+			text,
+			type,
+			order
+		} = payload
+		return axiosInstanceWithAuth.put("/api/questions/" +id,{
+			data: {
+				text,
+				type,
+				order
+			}
+		})
+	},
+	/**
+     * Edit Questions
+     *
+     * @returns {Promise<AxiosResponse<any>>}
+     */
+	deleteQuestion: (payload) => {
+		const {
+			id,
+		} = payload
+		return axiosInstanceWithAuth.delete(`/api/questions/${id}?populate=*`)
 	},
 }
 

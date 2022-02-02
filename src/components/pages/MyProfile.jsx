@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react"
 import { useMutation, useQuery } from "react-query"
 import api from "../../api"
-import jwtDecode from "jwt-decode"
 import { useSelector } from "react-redux"
+import SpinnerLoader from "../shared/SpinnerLoader"
+import { useGetMyProfile } from "../../hooks"
 
 //TODO: dodati InfoForm i ovde
 //TODO: ipak je reset password umesto new password ili tako nesto...
@@ -10,56 +11,27 @@ export const MyProfile = () => {
 
 	const isLoggedIn = useSelector(defaultState => defaultState.user.isLoggedIn)
 
-	const {data} = useQuery("getMyProfile", async ()=>{
-		if (isLoggedIn) {
-			const token = await localStorage.getItem("token")
-			if (token) {
-				const tokenDecoded = jwtDecode(token)
-				const userId = tokenDecoded.id
-				// const userId = 327 // laziranje
-				return api.getProfileByID(userId)
+	const [userName, setUserName] = useState("")
+	const [userEmail, setUserEmail] = useState("")
+	const [userProfilePhoto, setUserProfilePhoto] = useState(null)
+	const [profileId, setProfileId] = useState(null)
+	const [image, setImage] = useState(null)
+
+	const {data, isLoading, isError, refetch} = useGetMyProfile(isLoggedIn, {
+		onSuccess: data => {
+			if(data && data.data && data.data.data[0] && data.data.data[0].id) {
+				setProfileId(data.data.data[0].id)
+				setImage(data.data.data[0].attributes.profilePhoto.data.attributes.formats.thumbnail.url)
+				setUserEmail(data.data.data[0].attributes.user.data.attributes.email)
+				setUserName(data.data.data[0].attributes.name)
 			}
-			return false
 		}
-		return false
 	})
 
-	const initialState = {
-		email: "",
-		username: ""
-	}
-	const [state, setState] = useState(initialState)
-	const [userProfilePhoto, setUserProfilePhoto] = useState(null)
-
-
-	const handleChange = (e)=> {
-		const target = e.target
-		const value = target.type === "checkbox" ? target.checked : target.value
-		const name = target.name
-		setState({
-			[name]: value
-		})
-	}
-
-	let id = null
 
 	useEffect(() => {
-		console.log("data se promenio za my profil")
-		console.log(data)
-		console.log("id", id)
-		if (isLoggedIn) {
-			if(data && data.data && data.data.data[0] && data.data.data[0].id) {
-				// znaci da je response succes
-				// znaci da su podaci stigli u validnoj formi
-				id = data.data.data[0].id // sad upisujemo pravi id koji dobijemo iz data
-				const preparedFormData = {}
-				console.log(data)
-				preparedFormData.email = data.data.data[0].attributes.user.data.attributes.email
-				preparedFormData.username = data.data.data[0].attributes.user.data.attributes.username
-				setState(preparedFormData)
-			}
-		}
-	}, [data])
+		refetch()
+	}, [])
 
 
 	const {
@@ -68,17 +40,26 @@ export const MyProfile = () => {
 		api.editMyProfile(payload)
 	})
 
-	const handleSubmit = ()=> {
+	const handleSubmit = (e)=> {
+		e.preventDefault()
 		console.log("klik na submit")
-		console.log(id)
-		if (id) {
+		console.log(profileId)
+		if (profileId) {
 			const payload = {
-				id: id,
-				userProfileData: state,
+				id: profileId,
+				username: userName,
 				imageToSend: userProfilePhoto
 			}
 			mutate(payload)
 		}
+	}
+
+	if (isLoading) {
+		return <SpinnerLoader/>
+	}
+
+	if (isError) {
+		return <p>Loading error...</p>
 	}
 
 

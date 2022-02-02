@@ -1,9 +1,9 @@
 const sidebarNav = [
 	{
 		link: "/",
-		section: "home",
+		section: "company wall",
 		icon: <i className='fas fa-home fa-fw mr-3'></i>,
-		text: "Home"
+		text: "company wall"
 	},
 	// TODO: fix highlighting
 	{

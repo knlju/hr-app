@@ -5,6 +5,8 @@ import { useSelector } from "react-redux"
 import SpinnerLoader from "../shared/SpinnerLoader"
 import { useGetMyProfile } from "../../hooks"
 
+//TODO: dodati InfoForm i ovde
+//TODO: ipak je reset password umesto new password ili tako nesto...
 export const MyProfile = () => {
 
 	const isLoggedIn = useSelector(defaultState => defaultState.user.isLoggedIn)
@@ -14,7 +16,7 @@ export const MyProfile = () => {
 	const [userProfilePhoto, setUserProfilePhoto] = useState(null)
 	const [profileId, setProfileId] = useState(null)
 	const [image, setImage] = useState(null)
-	
+
 	const {data, isLoading, isError, refetch} = useGetMyProfile(isLoggedIn, {
 		onSuccess: data => {
 			if(data && data.data && data.data.data[0] && data.data.data[0].id) {
@@ -68,10 +70,10 @@ export const MyProfile = () => {
 				<div>
 					<label htmlFor="userName"
 						className="text-sm font-medium text-gray-900 block mb-2 dark:text-gray-300">Your
-                                username *</label>
+                                name *</label>
 					<input type="text" name="username" id="name"
 						className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
-						placeholder={"userName"} value={userName} required="" onChange={(e) => setUserName(e.target.value)}/>
+						placeholder={"userName"} value={state.username} required="" onChange={handleChange}/>
 				</div>
 				<div>
 					<label htmlFor="formFile"
@@ -81,17 +83,16 @@ export const MyProfile = () => {
 						className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
 						type="file" id="formFile" accept="image/*" onChange={(e) => setUserProfilePhoto(e.target.files[0])}/>
 				</div>
-				<button
+				<button type="submit"
 					className=" text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
 					onClick={handleSubmit}
 				>Save
 				</button>
-				<img src={image} alt="" />
 			</div>
 			<div className="bg-white shadow-md border border-gray-200 rounded-lg mx-auto w-2/5 max-w-md p-4 sm:p-6 lg:p-8 dark:bg-gray-800 dark:border-gray-700">
 				<span className="text-sm font-medium text-gray-900 block mb-2 dark:text-gray-300">security</span>
 				<div>
-					<span className="text-sm font-medium text-gray-300 block mb-2 dark:text-gray-300">email: {userEmail}</span>
+					<span className="text-sm font-medium text-gray-300 block mb-2 dark:text-gray-300">email: {state.email}</span>
 				</div>
 				<div>
 					<label htmlFor="password"

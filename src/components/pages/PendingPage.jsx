@@ -1,25 +1,21 @@
 import React, {useState} from "react"
-import Loader from "../shared/Loader"
 import {useNavigate} from "react-router"
 import DeleteUserModal from "../shared/DeleteUserModal"
-import {usePendingTeamMemberProfiles} from "../../hooks"
+import {useDeleteUserAnswerMutation, useDeleteUserProfileMutation, usePendingTeamMemberProfiles} from "../../hooks"
 import UserCard from "../shared/UserCard"
-import {useMutation, useQueryClient} from "react-query"
-import api from "../../api"
 import SpinnerLoader from "../shared/SpinnerLoader"
+import {useSelector} from "react-redux"
+import Loader from "../shared/Loader"
 
 export const PendingPage = () => {
-	const {data: teamMembers, isLoading, isError} = usePendingTeamMemberProfiles()
+
+	const companyId = useSelector(state => state.companies.userCompany.data.id)
+	const {data: teamMembers, isLoading, isError, refetch} = usePendingTeamMemberProfiles(companyId)
 	const [userToDelete, setUserToDelete] = useState(false)
-	const queryClient = useQueryClient()
 	const navigate = useNavigate()
 
-	const deleteUserProfile = useMutation((id) => api.deleteProfileById(id), {
-		onSuccess: (e) => {
-			console.log({e})
-			queryClient.invalidateQueries("getPendingTeamMemberProfiles")
-		}
-	})
+	const {mutateAsync: mutateDeleteUserAsync, isLoading: isDeleteUserLoading} = useDeleteUserProfileMutation()
+	const {mutateAsync: mutateDeleteAnswerAsync, isLoading: isDeleteAnswerLoading} = useDeleteUserAnswerMutation()
 
 	function openEditPage(e, userId) {
 		e.stopPropagation()
@@ -31,9 +27,13 @@ export const PendingPage = () => {
 		setUserToDelete(user)
 	}
 
-	function deleteUser() {
-		deleteUserProfile.mutate(userToDelete.id)
+	async function deleteUser() {
+		await mutateDeleteUserAsync(userToDelete.id)
+		await userToDelete.attributes?.answers?.data.forEach(async answer => {
+			return await mutateDeleteAnswerAsync(answer.id)
+		})
 		setUserToDelete(false)
+		refetch()
 	}
 
 	if (isLoading) {
@@ -50,17 +50,15 @@ export const PendingPage = () => {
 		)
 	}
 
-	console.log({teamMembers})
-	console.log("data.data.data:", teamMembers.data.data)
-
 	return (
 		<div className="grid gap-5 lg:grid-cols-3 md:grid-cols-2 xs:grid-cols-1">
 			{userToDelete &&
-                <DeleteUserModal onCancel={() => setUserToDelete(false)} onConfirm={deleteUser} user={userToDelete}
-                />}
+                <DeleteUserModal disabled={isDeleteUserLoading || isDeleteAnswerLoading} onCancel={() => setUserToDelete(false)} onConfirm={deleteUser} user={userToDelete} />}
+			{(isDeleteUserLoading || isDeleteAnswerLoading) && <Loader/>}
 			{
-				teamMembers.data.data.map(user => (
-					<UserCard user={user} key={user.id} openDeleteModal={openDeleteModal} mainAction={openEditPage} actionName="Details" />
+				teamMembers?.data?.data?.map(user => (
+					<UserCard user={user} key={user.id} openDeleteModal={openDeleteModal} mainAction={openEditPage}
+						actionName="Details"/>
 				))
 			}
 		</div>

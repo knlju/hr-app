@@ -9,7 +9,7 @@ import {useGetMyProfile} from "../../hooks"
 import SpinnerLoader from "../shared/SpinnerLoader"
 
 export const Company = () => {
-	const isLoggedIn = useSelector(defaultState => defaultState.user.isLoggedIn)
+	// const isLoggedIn = useSelector(defaultState => defaultState.user.isLoggedIn)
 	const [companyName, setCompanyName] = useState("")
 	const [companyLogo, setCompanyLogo] = useState(null)
 
@@ -18,14 +18,14 @@ export const Company = () => {
 	const [companyID, setCompanyID] = useState(null)
 
 	//TODO prvo nalazim userID pa zatim u useru putanju do kompani ID, nakon toga pozivam api.companyID
-	const {data: userProfile, isLoading, isError} = useGetMyProfile()
+	const {data: userProfile, isError} = useGetMyProfile()
 	useEffect(() => {
 		if (userProfile) {
 			setCompanyID(userProfile.data.data[0].attributes?.company?.data?.id)
 		}
 	}, [userProfile])
 
-	const {data:company} = useQuery(["getOurCompany",companyID],
+	const {data:company, isLoading} = useQuery(["getOurCompany",companyID],
 		()=>api.getOurCompany(companyID),{
 			enabled: !!companyID,
 			onSuccess: company => {
@@ -58,7 +58,7 @@ export const Company = () => {
 	}
 
 	if (isLoading) {
-		return <SpinnerLoader />
+		return <SpinnerLoader/>
 	}
 
 	if (isError) {

@@ -83,15 +83,12 @@ const api = {
      * @returns {Promise<AxiosResponse<any>>}
      */
 	editOurCompany: async (payload) => {
-		console.log(payload)
 		const {
 			id,
 			name,
 			imageToSend,
 		} = payload
 		const res = await api.uploadImage(imageToSend)
-		console.log("response od uploadImage")
-		console.log(res)
 		const submitData = {
 			name,
 			logo: res.data[0].id
@@ -108,9 +105,7 @@ const api = {
      * @returns {Promise<AxiosResponse<any>>}
      */
 	getProfileByID: (userId) => {
-		// return axiosInstanceWithAuth.get("/api/profiles/me")
 		return axiosInstanceWithAuth.get(`/api/profiles?filters[user][id][$eq]=${userId}&populate=*`)
-		// get('/profiles?filters[user][id][$eq]=' + userStorage.user.id)
 	},
 
 	/**
@@ -134,18 +129,9 @@ const api = {
 			imageToSend
 		} = payload
 		const res = await api.uploadImage(imageToSend)
-		console.log("response od uploadImage")
-		console.log(res)
 		const profilePhoto =  res.data[0].id
-		// const submitData = {
-		// 	username,
-		// 	profilePhoto: res.data[0].id
-		// }
-		console.log("editMyProfile id-------------", id)
-		//return await axiosInstanceWithAuth.put("/api/users/" + id, submitData) // example id 17
 		return await axiosInstanceWithAuth.put("/api/profiles/" + id, {
 			data: {
-				// profilePhoto: image.data,id
 				name: username,
 				profilePhoto
 
@@ -343,8 +329,6 @@ const api = {
 			imageToSend,
 		} = payload
 		const res = await api.uploadImage(imageToSend)
-		console.log("response od uploadImage")
-		console.log(res)
 		const answerImage = res.data[0].formats.thumbnail.url
 		return axiosInstanceWithAuth.post("/api/answers/", {
 			data: {
@@ -417,7 +401,6 @@ const api = {
      * @returns {Promise<AxiosResponse<any>>}
      */
 	putNewQuestionsOrder: (payload) => {
-		console.log("putNewQuestionsOrder")
 		const {
 			id,
 			order

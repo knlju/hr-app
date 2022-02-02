@@ -17,20 +17,9 @@ const Sidebar = () => {
 
 	const [userName, setUserName] = useState("")
 	const [companyName, setCompanyName] = useState("")
+	const [userProfilePhoto, setUserProfilePhoto] = useState(null)
 	const [activeIndex, setActiveIndex] = useState(0)
 	const location = useLocation()
-
-	// const token = localStorage.getItem("token")
-	// const [userTokenId, setUserTokenId] = useState(null)
-	
-	
-	// useEffect(() => {
-	// 	const token = localStorage.getItem("token")
-	// 	if(token) {
-	// 		const userIDDecoded = jwtDecode(token)
-	// 		setUserTokenId(userIDDecoded)
-	// 	}
-	// }, [])
 
 	const {data} = useQuery("getMyProfile", async ()=>{
 		if (isLoggedIn) {
@@ -38,7 +27,6 @@ const Sidebar = () => {
 			if (token) {
 				const tokenDecoded = jwtDecode(token)
 				const userId = tokenDecoded.id
-				// const userId = 327
 				return api.getProfileByID(userId)
 			}
 			return false
@@ -46,40 +34,17 @@ const Sidebar = () => {
 		return false
 	})
 
-	// let userId = 327
-	// let tekenDecoded = jwtDecode(localStorage.getItem("token"))
-	// console.log("tekenDecoded")
-	// console.log(tekenDecoded)
-	// if (tekenDecoded && tekenDecoded.id) {
-	// 	userId = tekenDecoded.id
-	// }
-
-	// const userId = "479"
-	// const {data} = useQuery("getMyProfile", ()=>api.getMyProfile(userId))
-	// console.log("proveravam datu za korisnika", userTokenId)
-
-	// console.log("proveravam datu za korisnika", data)
 	
 	useEffect(() => {
 		if (isLoggedIn) {
 			if(data && data.data && data.data.data[0] && data.data.data[0].id) {
-				// znaci da su podaci stigli u validnoj formi
-				console.log(data)
 				setUserName(data.data.data[0].attributes.name)
 				setCompanyName(data.data.data[0].attributes?.company?.data?.attributes.name)
-				// setUserPhoto(data.data.data[0].attributes.profilePhoto.data)
-				console.log("proveravam datu za korisnika", data)
+				setUserProfilePhoto(data.data.data[0].attributes.profilePhoto.data?.attributes.formats.thumbnail.url)
 			}
 		}
 	}, [data])
 
-
-	// const [activeIndex, setActiveIndex] = useState(0)
-	// const location = useLocation()
-	// const user = useSelector(defaultState => defaultState.user)
-	// console.log("isprobavam usera", user)
-	
-	// const [userPhoto, setUserPhoto] = useState("")
 
 	useEffect(() => {
 		const curPath = window.location.pathname.split("/")[1]
@@ -107,7 +72,6 @@ const Sidebar = () => {
 			<div className='sidebar'>
 				<div className="sidebar__logo">
 					<div>
-						{/* <img src="https://images.unsplash.com/photo-1516397281156-ca07cf9746fc?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=870&q=80" alt="" /> */}
 						<p className="text-xl font-medium text-white">.teamHUB</p>
 					</div>
 					<div className="sidebar-close" onClick={closeSidebar}>
@@ -139,7 +103,7 @@ const Sidebar = () => {
 							<div className="flex justify-between items-center gap-1">
 								<div className="flex align-center justify-start text-sm">
 									<div className="flex items-center focus:outline-none">
-										<img className="w-8 h-8 rounded-full mr-4" src="http://i.pravatar.cc/300" alt="Avatar of User"/>
+										<img className="w-8 h-8 rounded-full mr-4" src={userProfilePhoto} alt={userName}/>
 									</div>
 									<div className="flex-col">
 										<p>{userName}</p>

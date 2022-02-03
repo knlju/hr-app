@@ -1,6 +1,6 @@
 import Sidebar from "../shared/Sidebar"
 import { Outlet } from "react-router"
-import TopNav from "./TopNav"
+import TopNav from "../shared/TopNav"
 
 export const MainLayout = () => {
 	return (

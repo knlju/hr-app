@@ -12,14 +12,14 @@ function UserModal({user, closeModal}) {
 
 	return (
 		<Modal closeModal={closeModal}>
-			<div className=" p-5">
-				<div onClick={closeModal}>
+			<div className="">
+				<div className="float-right cursor-pointer pr-3" onClick={closeModal}>
 					x
 				</div>
+				<div>
+					<img src={user.attributes?.profilePhoto?.data?.attributes.url} alt=""/>
+				</div>
 				<div className="flex">
-					<div>
-						<img src={user.attributes?.profilePhoto?.data?.attributes.url} alt=""/>
-					</div>
 					<div className="p-3">
 						{user.attributes.name}
 					</div>
@@ -33,6 +33,7 @@ function UserModal({user, closeModal}) {
 					)}
 					{
 						answers?.data?.data?.map(answer => {
+							if (!answer.attributes?.question?.data) return null
 							return (
 								<>
 									<div>
@@ -51,7 +52,6 @@ function UserModal({user, closeModal}) {
 											}
 										</div>
 									</div>
-									{/*<div key={answer.id}>{JSON.stringify(answer)}</div>*/}
 								</>)
 						})
 					}

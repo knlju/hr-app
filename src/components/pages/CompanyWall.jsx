@@ -27,7 +27,7 @@ function CompanyWall(props) {
 			<div className="grid gap-5 lg:grid-cols-3 md:grid-cols-2 xs:grid-cols-1">
 				{
 					users.data.data.map(user => (
-						<div key={user.id} onClick={() => setModalUser(user)}>
+						<div key={user.id} className="cursor-pointer" onClick={() => setModalUser(user)}>
 							<UserCard user={user} noActions/>
 						</div>
 					))

@@ -1,22 +1,23 @@
 import React from "react"
 import PropTypes from "prop-types"
+import {INPUT_TYPES} from "../../constants"
 
 // factory
 function InputPair({question, answer, setAnswer, type, selectOptions}) {
 
-	if (type === "text") {
-		return <TextInput question={question} answer={answer} setAnswer={setAnswer} />
+	if (type === INPUT_TYPES.text) {
+		return <TextInput question={question} answer={answer} setAnswer={setAnswer}/>
 	}
 
-	if (type === "longtext") {
+	if (type === INPUT_TYPES.longtext) {
 		return <LongTextInput question={question} answer={answer} setAnswer={setAnswer}/>
 	}
 
-	if (type === "image") {
+	if (type === INPUT_TYPES.image) {
 		return <ImageQAInput question={question} image={answer} setImage={setAnswer}/>
 	}
 
-	if (type === "select") {
+	if (type === INPUT_TYPES.select) {
 		return <SelectInput question={question} answer={answer} setAnswer={setAnswer} options={selectOptions}/>
 	}
 
@@ -108,7 +109,7 @@ const SelectInput = ({question, answer, setAnswer, options}) => (
 		<select
 			className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
 			value={answer} onChange={setAnswer} id="formCompanies">
-			{options.map(option => (
+			{options?.map(option => (
 				<option key={option.id} value={option.id}>{option.attributes.name}</option>
 			))}
 		</select>

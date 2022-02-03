@@ -394,12 +394,16 @@ const api = {
 	},
 
 	/**
-     * GETs all profiles
-     *
-     * @returns {Promise<AxiosResponse<any>>}
-     */
-	getAllProfiles: (page) => {
-		return axiosInstanceWithoutAuth.get(`/api/profiles?pagination[page]=${page}&populate=*`)
+	 * GETs all profiles filtered by criteria
+	 *
+	 * @param {Number} page
+	 * @param {Number} company
+	 * @param {String} sort
+	 * @param {String} order - asc or desc
+	 * @returns {Promise<AxiosResponse<any>>}
+	 */
+	getAllFilteredProfiles: ({page, company, sort, order}) => {
+		return axiosInstanceWithoutAuth.get(`/api/profiles?pagination[page]=${page}&filters[company][id][$eq]=${company}&sort=${sort}:${order}&populate=*`)
 	},
 }
 

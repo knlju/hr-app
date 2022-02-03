@@ -1,17 +1,74 @@
-import React, {useState} from "react"
-import {useGetAllProfilesQuery, usePublishedTeamMemberProfiles} from "../../hooks"
+import React, {useEffect, useState} from "react"
+import {useGetAllCompanies, useGetAllFilteredProfilesQuery} from "../../hooks"
 import Loader from "../shared/Loader"
 import UserCard from "../shared/UserCard"
 import UserModal from "../UserModal"
+import InputPair from "../shared/InputPair"
+import {INPUT_TYPES} from "../../constants"
 
-function CompanyWall(props) {
+const SORT = [
+	{
+		id: "createdAt",
+		attributes: {
+			name: "Created at"
+		}
+	},
+	{
+		id: "updatedAt",
+		attributes: {
+			name: "Updated at"
+		}
+	},
+	{
+		id: "publishedAt",
+		attributes: {
+			name: "Published at"
+		}
+	},
+]
+
+const ORDER = [
+	{
+		id: "asc",
+		attributes: {
+			name: "asc"
+		}
+	},
+	{
+		id: "desc",
+		attributes: {
+			name: "desc"
+		}
+	},
+]
+
+function CompanyWall() {
 
 	const [modalUser, setModalUser] = useState(null)
 	const [page, setPage] = useState(1)
+	const [selectedCompany, setSelectedCompany] = useState(7)
+	const [order, setOrder] = useState("desc")
+	const [sort, setSort] = useState("createdAt")
 
 	const {
-		data: users, isLoading: usersLoading, isError: usersError, isPreviousData, isFetching
-	} = useGetAllProfilesQuery(page, { keepPreviousData : true })
+		data: users, isLoading: usersLoading, isError: usersError, isPreviousData, isFetching, refetch
+	} = useGetAllFilteredProfilesQuery({
+		page: page,
+		company: selectedCompany,
+		sort,
+		order
+	},
+	{
+		keepPreviousData: true,
+	})
+
+	const {
+		data: companies
+	} = useGetAllCompanies()
+
+	useEffect(() => {
+		refetch()
+	}, [selectedCompany])
 
 	if (usersLoading) {
 		return <Loader/>
@@ -23,10 +80,36 @@ function CompanyWall(props) {
 
 	return (
 		<>
+			<div>
+				<div>
+					<InputPair
+						question="Select a company"
+						answer={selectedCompany}
+						setAnswer={e => setSelectedCompany(e.target.value)}
+						selectOptions={companies?.data?.data}
+						type={INPUT_TYPES.select}/>
+				</div>
+				<div>
+					<InputPair
+						question="Sort by"
+						answer={sort}
+						setAnswer={e => setSort(e.target.value)}
+						selectOptions={SORT}
+						type={INPUT_TYPES.select}/>
+				</div>
+				<div>
+					<InputPair
+						question="Order"
+						answer={order}
+						setAnswer={e => setOrder(e.target.value)}
+						selectOptions={ORDER}
+						type={INPUT_TYPES.select}/>
+				</div>
+			</div>
 			{modalUser && <UserModal user={modalUser} closeModal={() => setModalUser(null)}/>}
 			<div className="grid gap-5 lg:grid-cols-3 md:grid-cols-2 xs:grid-cols-1">
 				{
-					users.data.data.map(user => (
+					users?.data?.data?.map(user => (
 						<div key={user.id} className="cursor-pointer" onClick={() => setModalUser(user)}>
 							<UserCard user={user} noActions/>
 						</div>

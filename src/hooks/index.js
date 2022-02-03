@@ -4,12 +4,16 @@ import api from "../api"
 /**
  * useQuery hook for getting published team member profiles
  *
- * @param {Number} company
+ * @param {Number} page
+ * @param {Number} company - companyId
+ * @param {String} sort
+ * @param {String} order - either asc or desc
+ * @param {Object} options - useQuery options
  * @returns {UseQueryResult<AxiosResponse<*>, unknown>}
  */
-export const useGetAllProfilesQuery = (page, options = {}) => {
-	return useQuery(["getAllProfiles", page],
-		() => api.getAllProfiles(page),
+export const useGetAllFilteredProfilesQuery = ({page, company, sort, order}, options = {}) => {
+	return useQuery(["getAllProfiles", {page, company, sort, order}],
+		() => api.getAllFilteredProfiles({page, company, sort, order}),
 		options)
 }
 
@@ -166,4 +170,9 @@ export const usePostAnswerMutation = (options = {}) => {
 export const useInviteMutation = (options = {}) => {
 	return useMutation(async ({email, companySlug}) => await api.inviteTeamMember({email, companySlug}),
 		options)
+}
+
+export const useGetAllCompanies = (options = {}) => {
+	return useQuery("getAllCompaniesQuery",
+		async () => await api.getAllCompanies(), options)
 }

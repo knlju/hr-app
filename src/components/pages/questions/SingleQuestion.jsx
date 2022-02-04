@@ -7,6 +7,7 @@ import { useSelector } from "react-redux"
 import "../../../styles/CustomStyles.css"
 import {useDeleteQuestionMutation, useDeleteUserAnswerMutation} from "../../../hooks"
 import {useQueryClient} from "react-query"
+import Alert from "../../shared/Alert"
 
 const SingleQuestion = (props) => {
 
@@ -46,10 +47,20 @@ const SingleQuestion = (props) => {
 		navigate(`/edit-question/${id}`)
 	}
 
+	const [alert, setAlert] = useState({ show: false })
+	const handleAlert = ({ type, text }) => {
+		setAlert({ show: true, type, text })
+		setTimeout(() => {
+			setAlert({ show: false })
+		}, 3000)
+	}
+
 	const handleDelete = async (id) => {
 		await deleteQuestionAsync(id)
-
-		navigate("/questions")
+		handleAlert({ type: "danger", text: "Question deleted successfully!" })
+		setTimeout(() => {
+			navigate("/questions")
+		}, 2000)
 		setQuestionDeleteModal(false)
 		if (typeof props.cbRefresh === "function") {
 			props.cbRefresh()
@@ -58,9 +69,10 @@ const SingleQuestion = (props) => {
 
 	return (
 		<>
+			{alert.show && <Alert type={alert.type} text={alert.text} />}
 			{questionDeleteModal &&<DeleteUserModal onCancel={() => setQuestionDeleteModal(false)} modeQuestion={true}onConfirm={()=>{handleDelete(id)}}
 			/>}
-			<div className="flex items-center justify-between w-full bg-white rounded-lg shadow-lg text-violet-800 px-4 py-4 dark:bg-black">
+			<div className="flex items-center justify-between w-full bg-white rounded-lg shadow-lg text-gray-900 px-4 py-4 dark:bg-black">
 				<div className="flex items-center gap-2 mr-1">
 					<button className="flex mr-2">
 						<i className="fas fa-bars cursor-pointer text-sm"></i>
@@ -90,7 +102,7 @@ const SingleQuestion = (props) => {
 							<button className="tooltip" onClick={() => {
 								props.setModalOpen(id)
 							}}>
-								<i className="far fa-eye hover:text-black cursor-pointer"></i>
+								<i className="far fa-eye hover:text-cyan-800 cursor-pointer"></i>
 								<span className="tooltiptext">answer</span>
 							</button>
 						</div>

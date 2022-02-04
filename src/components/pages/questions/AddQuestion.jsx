@@ -6,6 +6,7 @@ import api from "../../../api"
 import { useDispatch, useSelector } from "react-redux"
 import { Link } from "react-router-dom"
 import Alert from "../../shared/Alert"
+import InputPair from "../../shared/InputPair"
 
 const AddQuestion = (props) => { 
 	const dispatch = useDispatch()
@@ -23,6 +24,12 @@ const AddQuestion = (props) => {
 
 	const isLoggedIn = useSelector(defaultState => defaultState.user.isLoggedIn)
 	const companyID = useSelector(defaultState => defaultState.user.profile.attributes.company.data.id)
+
+	const TYPE = [
+		{id: "text", attributes: {name: "text"}},
+		{id: "long_text", attributes: {name: "long_text"}},
+		{id: "image", attributes: {name: "image"}}
+	]
 
 	const {data, refetch} = useQuery("getAllQuestions", async ()=>{
 		if (isLoggedIn) {
@@ -92,7 +99,7 @@ const AddQuestion = (props) => {
 		setAlert({ show: true, type, text })
 		setTimeout(() => {
 			setAlert({ show: false })
-		}, 4000)
+		}, 3000)
 	}
 
 
@@ -107,8 +114,9 @@ const AddQuestion = (props) => {
 				order: questionOrder
 			}
 			mutate(payload)
-			handleAlert({ type: "success", text: "Question edited successfully!" })
-			// navigate("/questions")
+			setTimeout(() => {
+				handleAlert({ type: "success", text: "Question edited successfully!" })
+			}, 1000)
 			setTimeout(() => {
 				navigate("/questions")
 			}, 2000)
@@ -125,9 +133,9 @@ const AddQuestion = (props) => {
 					order: _makeUniqueOrder()
 				}
 				mutate(payload)
-			
-				handleAlert({ type: "success", text: "Question added successfully!" })
-				// navigate("/questions")
+				setTimeout(() => {
+					handleAlert({ type: "success", text: "Question added successfully!" })
+				}, 1000)
 				setTimeout(() => {
 					navigate("/questions")
 				}, 2000)
@@ -142,38 +150,26 @@ const AddQuestion = (props) => {
 	return (
 		<>
 			{alert.show && <Alert type={alert.type} text={alert.text} />}
-		
 			<div className="ui main text-center">
-				<h2 className="inline-block bg-white mb-3 rounded-lg shadow-lg text-violet-800 py-2 px-4">{modeEdit ? "Edit question" : "Add question"}</h2>
+				<h2 className="inline-block bg-white mb-3 rounded-lg shadow-lg text-gray-900 py-2 px-4">{modeEdit ? "Edit question" : "Add question"}</h2>
 
 				<div className="flex justify-between items-center mx-auto max-w-screen-lg py-10">
 					<div
 						className="bg-white  rounded-lg shadow-lg w-full max-w-md p-4 sm:p-6 lg:p-8 dark:bg-gray-800 dark:border-gray-700 mx-auto">
 						<form className="space-y-6" action="#">
 							<div>
-								<label htmlFor="name"
-									className="text-lg font-medium text-violet-800 block mb-2 dark:text-gray-300">Question name</label>
-								
-								<input type="text" name="name" id="name"
-									className="bg-gray-50 border border-gray-300 text-violet-800 text-sm lg:text-lg rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
-									placeholder="New Question" required="" value={questionName}
-									onChange={(e) => setQuestionName(e.target.value)}/>
-								{error && <span className="text-xs text-red-700">Postavljas pitanje bez pitanja?</span> }
+								<InputPair type="text" inputValue={questionName}
+									setInputValue={e => setQuestionName(e.target.value)} labelText="Question name"></InputPair>
+								{error && <span className="text-xs text-red-700">Please, enter a question name</span> }
 							</div>
 							<div>
-								<label htmlFor="questionType"
-									className="form-label text-lg font-medium text-violet-800 block mb-2 dark:text-gray-300">Question type</label>
-								<select
-									className="bg-gray-50 border border-gray-300 text-violet-800 text-sm lg:text-lg rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
-									value={questionType} onChange={(e) => setQuestionType(e.target.value)} id="questionType">
-									<option value="text">Text</option>
-									<option value="long_text">Long text</option>
-									<option value="image">Image</option>
-								</select>
+								<InputPair type="select" inputValue={questionType}
+									setInputValue={e => setQuestionType(e.target.value)}
+									labelText="Question type" selectOptions={TYPE}/>
 							</div>
 							
 							<button type="submit"
-								className="w-full text-white inline-block bg-violet-800 hover:bg-violet-600 mb-5 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+								className="w-full text-white inline-block bg-gray-900 hover:bg-gray-900 mb-5 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
 								onClick={handleQuestion}>{modeEdit ? "Save" : "Add"}
 							</button>
 							<div>

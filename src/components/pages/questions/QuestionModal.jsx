@@ -7,6 +7,8 @@ import api from "../../../api"
 import Modal from "../../shared/Modal"
 import ReactDOM from "react-dom"
 import Alert from "../../shared/Alert"
+import InputPair from "../../shared/InputPair"
+import { useGetCompanyQuestions } from "../../../hooks"
 
 const _extractQuestionById = (id, arr) => {
 	let selected = null
@@ -32,29 +34,31 @@ function QuestionModal({ setModalClose, modalId }) {
 	const [answer, setAnswer] = useState("")
 	const [answerImage, setAnswerImage] = useState(null)
 	const [questionType, setQuestionType] = useState("")
-	const isLoggedIn = useSelector(defaultState => defaultState.user.isLoggedIn)
+	// const isLoggedIn = useSelector(defaultState => defaultState.user.isLoggedIn)
 	const companyID = useSelector(defaultState => defaultState.user.profile.attributes.company.data.id)
 	const userProfile = useSelector(defaultState => defaultState.user.profile.id)
 
 	const [error, setError] = useState(false)
 
-	const {data, refetch} = useQuery("getQuestions", async ()=>{
-		if (isLoggedIn) {
-			const token = await localStorage.getItem("token")
-			if (token) {
-				return api.getQuestions(companyID)
-			}
-			return false
+	// const {data, refetch} = useQuery("getQuestions", async ()=>{
+	// 		const token = await localStorage.getItem("token")
+	// 		if (token) {
+	// 			return api.getQuestions(companyID)
+	// 		}
+	// })
+	const {data: company_questions} = useGetCompanyQuestions(companyID, {
+		onSuccess: company_questions => {
+			setQuestion(_extractQuestionById(modalId, company_questions.data.data))
+			setQuestionType(_extractQuestionType(modalId, company_questions.data.data))
 		}
-		return false
 	})
 
-	useEffect(() => {
-		if (data && data.data && data.data.data) {
-			setQuestion(_extractQuestionById(modalId, data.data.data))
-			setQuestionType(_extractQuestionType(modalId, data.data.data))
-		}
-	}, [data])
+	// useEffect(() => {
+	// 	if (data && data.data && data.data.data) {
+	// 		setQuestion(_extractQuestionById(modalId, data.data.data))
+	// 		setQuestionType(_extractQuestionType(modalId, data.data.data))
+	// 	}
+	// }, [data])
 
 
 	const {
@@ -64,13 +68,18 @@ function QuestionModal({ setModalClose, modalId }) {
 			
 			api.addAnswer(payload)
 				.then((response)=>{
-					setModalClose()
+					setTimeout(() => {
+						setModalClose()
+					}, 1000)
 				})
 			
 		} else if(questionType === "image") {
 			api.addImageAnswer(payload)
 				.then((response)=>{
-					setModalClose()
+					setTimeout(() => {
+						setModalClose()
+					}, 1000)
+					
 				})
 		}
 	})
@@ -94,7 +103,10 @@ function QuestionModal({ setModalClose, modalId }) {
 					userProfile: userProfile
 				}
 				mutate(payload)
-				handleAlert({ type: "success", text: "Answer added successfully!" })
+				
+				setTimeout(() => {
+					handleAlert({ type: "success", text: "Answer added successfully!" })
+				}, 1000)
 			}
 		} else if(questionType === "image") {
 			if(!answerImage && answerImage === null) {
@@ -106,7 +118,9 @@ function QuestionModal({ setModalClose, modalId }) {
 					userProfile: userProfile
 				}
 				mutate(payload)
-				handleAlert({ type: "success", text: "Image added successfully!" })
+				setTimeout(() => {
+					handleAlert({ type: "success", text: "Image added successfully!" })
+				}, 1000)
 			}
 		}
 		
@@ -116,24 +130,17 @@ function QuestionModal({ setModalClose, modalId }) {
 	if (questionType === "text" || questionType === "long_text") {
 		jsxAnswerInput = (
 			<div>
-				<label htmlFor="answer"
-					className="text-sm font-medium text-violet-800 block mb-0 dark:text-gray-300">Place for you answer</label>
-				<input type="text" name="answer"
-					className="bg-gray-50 border border-gray-300 text-violet-800 text-sm lg:text-lg rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
-					placeholder="Your answer..." required="" value={answer}
-					onChange={(e) => {setAnswer(e.target.value)}}/>
-				{error && <span className="text-xs text-red-700">Nisi odgovorio na pitanje!</span> }
+				<InputPair type="text" inputValue={answer}
+					setInputValue={e => setAnswer(e.target.value)} labelText="Your answer"></InputPair>
+				{error && <span className="text-xs text-red-700">Please, enter your answer.</span> }
 			</div>
 		)
 	} else if (questionType === "image") {
 		jsxAnswerInput = (
 			<div>
-				<label htmlFor="formFile"
-					className="form-label text-sm font-medium text-violet-800 block mb-0 dark:text-gray-300">Place for your picture</label>
-				<input
-					className="relative bg-gray-50 border border-gray-300 text-violet-800 text-sm lg:text-base rounded-md focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white file:bg-violet-800 file:text-white file:border-0 file:rounded-md file:px-2 file:py-1 file:absolute file:top-1.5 file:right-1"
-					type="file" id="formFile" accept="image/*" onChange={(e) => setAnswerImage(e.target.files[0])}/>
-				{error && <span className="text-xs text-red-700">Nisi ubacio sliku!</span> }
+				<InputPair type="image" inputValue={answerImage}
+					setInputValue={e => setAnswerImage(e.target.files[0])} labelText="Place for your picture"></InputPair>
+				{error && <span className="text-xs text-red-700">Please, upload your picture.</span> }
 			</div>
 		)
 	}
@@ -144,16 +151,16 @@ function QuestionModal({ setModalClose, modalId }) {
 			
 			<div className="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all p-6 flex-col sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
 				<div className="flex justify-between items-center mb-3">
-					<h1 className="text-lg text-violet-800">Answer The Question</h1>
+					<h1 className="text-lg text-gray-900">Answer The Question</h1>
 					<button className=""
 						onClick={() => {
 							setModalClose()
 						}}
 					>
-						<i className="fas fa-times text-violet-800"></i>
+						<i className="fas fa-times text-gray-900"></i>
 					</button>
 				</div>
-				<p className="text-base lg:text-lg text-violet-800 mb-5">{question}</p>
+				<p className="text-base lg:text-lg text-gray-900 mb-5">{question}</p>
 
 				{jsxAnswerInput}
 				{alert.show && <Alert type={alert.type} text={alert.text} />}
@@ -166,7 +173,7 @@ function QuestionModal({ setModalClose, modalId }) {
 					>
             Cancel
 					</button>
-					<button className="text-white bg-violet-800 hover:bg-violet-600 rounded-lg px-4 py-2" type="button" onClick={handleAnswer}>SUBMIT</button>
+					<button className="text-white bg-gray-900 hover:bg-gray-600 rounded-lg px-4 py-2" type="button" onClick={handleAnswer}>SUBMIT</button>
 				</div>
 			</div>
 			

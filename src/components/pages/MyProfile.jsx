@@ -3,7 +3,7 @@ import { useMutation, useQuery } from "react-query"
 import api from "../../api"
 import { useSelector } from "react-redux"
 import SpinnerLoader from "../shared/SpinnerLoader"
-import { useAlert, useGetMyProfile } from "../../hooks"
+import { useAlert, useGetMyProfile, usePostImageMutation, useUserProfileQuery } from "../../hooks"
 import Alert from "../shared/Alert"
 import InfoForm from "../shared/InfoForm"
 import Loader from "../shared/Loader"
@@ -38,7 +38,7 @@ export const MyProfile = () => {
 		setAlert({ show: true, type, text })
 		setTimeout(() => {
 			setAlert({ show: false })
-		}, 4000)
+		}, 3000)
 	}
 	
 
@@ -61,6 +61,7 @@ export const MyProfile = () => {
 		api.editPassword(payload)
 	})
 
+
 	const handleSubmit = async (e)=> {
 		e.preventDefault()
 		if (profileId) {
@@ -71,7 +72,10 @@ export const MyProfile = () => {
 			}
 			await mutateAsync(payload)
 		}
-		handleAlert({ type: "success", text: "Profile successfully changed!" })
+		
+		setTimeout(() => {
+			handleAlert({ type: "success", text: "Profile successfully changed!" })
+		}, 1000)
 	}
 	const handlePassword = async (e)=> {
 		e.preventDefault()
@@ -84,7 +88,10 @@ export const MyProfile = () => {
 			}
 			await password(payload)
 		}
-		handleAlert({ type: "success", text: "Password successfully changed!" })
+		setTimeout(() => {
+			handleAlert({ type: "success", text: "Password successfully changed!" })
+		}, 1000)
+		
 	}
 
 	if (isLoading) {
@@ -112,33 +119,32 @@ export const MyProfile = () => {
 					disabled={editLoading}
 				/>
 				<div className="bg-white shadow-md border border-gray-200 rounded-lg mx-auto w-2/5 max-w-md p-4 sm:p-6 lg:p-8 dark:bg-gray-800 dark:border-gray-700">
-					<span className="text-lg font-medium text-violet-800 block mb-2 dark:text-gray-300">Security</span>
+					<span className="text-lg font-medium text-gray-900 block mb-2 dark:text-gray-300">Security</span>
 					<div>
-						<span className="text-sm font-medium text-violet-800 block mb-2 dark:text-gray-300">Your email: {userEmail}</span>
+						<span className="text-sm font-medium text-gray-900 block mb-2 dark:text-gray-300">Your email: {userEmail}</span>
 					</div>
 					<div className="mb-5">
 						<label htmlFor="password"
-							className="text-sm font-medium text-violet-800 block mb-0 dark:text-gray-300">Current
+							className="text-sm font-medium text-gray-900 block mb-0 dark:text-gray-300">Current
                                 password</label>
 						<input type="password" name="password" id="password" placeholder="••••••••"
-							className="bg-gray-50 border border-gray-300 text-violet-800 text-sm lg:text-base rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
+							className="bg-gray-50 border border-gray-300 text-gray-900 text-sm lg:text-base rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
 							required="" value={oldPassword}
 							onChange={(e) => setOldPassword(e.target.value)}/>
 					</div>
 					<div className="mb-5">
 						<label htmlFor="confirmPassword"
-							className="text-sm font-medium text-violet-800 block mb-0 dark:text-gray-300">New
+							className="text-sm font-medium text-gray-900 block mb-0 dark:text-gray-300">New
                                 password</label>
 						<input type="password" name="confirmPassword" id="confirmPassword" placeholder="••••••••"
-							className="bg-gray-50 border border-gray-300 text-violet-800 text-sm lg:text-base rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
+							className="bg-gray-50 border border-gray-300 text-gray-900 text-sm lg:text-base rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
 							required="" value={newPassword}
 							onChange={(e) => setNewPassword(e.target.value)}/>
 					</div>
 					<button type="submit"
-						className=" text-white bg-violet-800 hover:bg-violet-600 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" onClick={handlePassword}>Save
+						className=" text-white bg-gray-900 hover:bg-gray-700 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-700 dark:hover:bg-blue-700 dark:focus:ring-blue-900" onClick={handlePassword}>Save
 					</button>
 				</div>
-				{/* <img src={image} alt="" /> */}
 			</div>
 		</>
 	)

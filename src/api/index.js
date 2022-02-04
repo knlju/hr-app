@@ -134,9 +134,8 @@ const api = {
 			data: {
 				name: username,
 				profilePhoto
-
 			},
-		}) // example id 17
+		})
 	},
 
 	/**

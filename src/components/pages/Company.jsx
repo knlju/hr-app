@@ -7,6 +7,7 @@ import InfoForm from "../shared/InfoForm"
 import Loader from "../shared/Loader"
 import {useGetMyProfile} from "../../hooks"
 import SpinnerLoader from "../shared/SpinnerLoader"
+import Alert from "../shared/Alert"
 
 export const Company = () => {
 	// const isLoggedIn = useSelector(defaultState => defaultState.user.isLoggedIn)
@@ -17,7 +18,6 @@ export const Company = () => {
 
 	const [companyID, setCompanyID] = useState(null)
 
-	//TODO prvo nalazim userID pa zatim u useru putanju do kompani ID, nakon toga pozivam api.companyID
 	const {data: userProfile, isError} = useGetMyProfile()
 	useEffect(() => {
 		if (userProfile) {
@@ -45,16 +45,24 @@ export const Company = () => {
 	} = useMutation((payload) => {
 		api.editOurCompany(payload)
 	})
-
+	const [alert, setAlert] = useState({ show: false })
+	const handleAlert = ({ type, text }) => {
+		setAlert({ show: true, type, text })
+		setTimeout(() => {
+			setAlert({ show: false })
+		}, 4000)
+	}
 	const handleSubmit = (e) => {
 		e.preventDefault()
-		console.log("klik na submit")
 		const payload = {
 			id: companyID,
 			name: companyName,
 			imageToSend: companyLogo
 		}
 		mutate(payload)
+		setTimeout(() => {
+			handleAlert({ type: "success", text: "Company info successfully changed!" })
+		}, 1000)
 	}
 
 	if (isLoading) {
@@ -67,19 +75,22 @@ export const Company = () => {
 
 	// TODO sredi company
 	return (
-		<div className="flex justify-between align-top mx-auto max-w-screen-lg py-10">
-			{editLoading && <Loader />}
-			{editError && <p>Update error... Try again</p>}
-			<InfoForm
-				isCompany={true}
-				name={companyName}
-				setName={setCompanyName}
-				action={handleSubmit}
-				photo={company?.data?.data?.attributes?.logo?.data?.attributes.url}
-				newPhoto={companyLogo}
-				setNewPhoto={setCompanyLogo}
-				disabled={editLoading}
-			/>
-		</div>
+		<>
+			{alert.show && <Alert type={alert.type} text={alert.text} />}
+			<div className="flex justify-between align-top mx-auto max-w-screen-lg py-10">
+				{editLoading && <Loader />}
+				{editError && <p>Update error... Try again</p>}
+				<InfoForm
+					isCompany={true}
+					name={companyName}
+					setName={setCompanyName}
+					action={handleSubmit}
+					photo={company?.data?.data?.attributes?.logo?.data?.attributes.url}
+					newPhoto={companyLogo}
+					setNewPhoto={setCompanyLogo}
+					disabled={editLoading}
+				/>
+			</div>
+		</>
 	)
 }

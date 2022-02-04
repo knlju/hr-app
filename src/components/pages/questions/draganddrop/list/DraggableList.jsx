@@ -11,6 +11,7 @@ import {useSelector} from "react-redux"
 import {useParams} from "react-router"
 import Loader from "../../../../shared/Loader"
 import SpinnerLoader from "../../../../shared/SpinnerLoader"
+import Alert from "../../../../shared/Alert"
 
 const DraggableList = props => {
 
@@ -74,6 +75,13 @@ const DraggableList = props => {
 	} = useMutation(async (payload) => {
 		return await api.putNewQuestionsOrder(payload)
 	})
+	const [alert, setAlert] = useState({ show: false })
+	const handleAlert = ({ type, text }) => {
+		setAlert({ show: true, type, text })
+		setTimeout(() => {
+			setAlert({ show: false })
+		}, 3000)
+	}
 
 	const handleNewOrder = async (e) => {
 		e.preventDefault()
@@ -89,12 +97,14 @@ const DraggableList = props => {
 		}
 
 		// TODO prikazati notifikaciju umesto ovoga
-		alert("done!")
+		handleAlert({ type: "success", text: "Order updated successfully!" })
 	}
 
 	return (
 		<>
 			{isUpdatingQuestionOrder && <Loader/>}
+
+			{alert.show && <Alert type={alert.type} text={alert.text} />}
 			<ul className="draggable-list w-full">
 				{
 					questionList.map((item, index) => {
@@ -126,7 +136,7 @@ const DraggableList = props => {
 				/>
 			</ul>
 			<button type="submit"
-				className="w-1/5 text-white inline-block bg-violet-800 hover:bg-violet-600 mb-5 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+				className="w-1/5 text-white inline-block bg-gray-900 hover:bg-gray-700 mb-5 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
 				onClick={handleNewOrder}>Save new order
 			</button>
 		</>

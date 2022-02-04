@@ -183,16 +183,12 @@ export const useGetMyProfile = (isLoggedIn, options = {}) => {
  * @param {boolean} isLoggedIn
  * @returns
  */
-export const useGetCompanyQuestions = (isLoggedIn, companyID, options = {}) => {
-	return useQuery("getMyProfile", async ()=>{
-		if (isLoggedIn) {
-			const token = await localStorage.getItem("token")
-			if (token) {
-				return api.getQuestions(companyID)
-			}
-			return false
+export const useGetCompanyQuestions = (companyID, options = {}) => {
+	return useQuery("getQuestions", async ()=>{
+		const token = await localStorage.getItem("token")
+		if (token) {
+			return api.getQuestions(companyID)
 		}
-		return false
 	}, options)
 }
 

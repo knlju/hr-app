@@ -36,11 +36,11 @@ InputPair.propTypes = {
 const ImageQAInput = ({labelText, image, setImage}) => (
 	<div>
 		<label htmlFor="formFile"
-			className="form-label text-sm font-medium text-gray-900 block mb-2 dark:text-gray-300">
+			className="form-label mb-0 text-sm font-medium text-gray-900 block dark:text-gray-300">
 			{labelText}
 		</label>
 		<input
-			className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
+			className="relative bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white file:bg-gray-900 file:text-white file:border-0 file:rounded-md file:px-2 file:py-1 file:absolute file:top-1.5 file:right-1"
 			type="file" id="formFile" accept="image/*"
 			onChange={setImage}
 		/>

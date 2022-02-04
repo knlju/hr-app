@@ -67,14 +67,13 @@ const Sidebar = () => {
 
 	return (
 		<>
-			{/* novi sidebar */}
-			<div className='sidebar'>
-				<div className="sidebar__logo">
+			<div className="sidebar bg-green-200 dark:bg-gray-900">
+				<div className="sidebar__logo flex items-start justify-between h-20 mt-5">
 					<div>
-						<p className="text-xl font-medium text-white">.teamHUB</p>
+						<p className="text-xl font-medium text-white">.team <span className="p-1 rounded-md bg-orange-600">HUB</span> </p>
 					</div>
-					<div className="sidebar-close" onClick={closeSidebar}>
-						<i className="fas fa-times"/>
+					<div className="sidebar-close cursor-pointer" onClick={closeSidebar}>
+						<i className="fas fa-times text-orange-600 text-base"/>
 					</div>
 				</div>
 				<div className="sidebar__menu">
@@ -92,31 +91,38 @@ const Sidebar = () => {
 							</Link>
 						))
 					}
-					<div className="sidebar__menu__item flex-col items-start">
-						<ToggleTheme/>
-						{user.isLoggedIn ?
-							<div className="flex justify-between items-center gap-1">
-								<div className="flex align-center justify-start text-sm">
+					<ToggleTheme/>
+					{/* <div className="sidebar__menu__item"> */}
+					{user.isLoggedIn ?
+						<div className="sidebar__menu__item">
+							{/* <div className="flex align-center justify-start text-sm">
 									<div className="flex items-center focus:outline-none">
-										<img className="w-8 h-8 rounded-full mr-4" src={userProfilePhoto}
+										<img className="w-10 h-10 rounded-full mr-4" src={userProfilePhoto}
 											alt={userName}/>
 									</div>
-									<div className="flex-col">
+									<div className="flex-col text-gray-900 dark:text-white gap-1">
 										<p>{userName}</p>
 										<p>{companyName}</p>
 									</div>
-								</div>
-								<div className="sidebar__menu__item__logout ml-3">
-									<Logout/>
-								</div>
-							</div> : <div className="flex-col gap-1">
-								<Link className="sidebar__menu__item" onClick={closeSidebar} to="/login"><i
-									className="fas fa-user-lock"/>Login</Link>
-								<Link className="sidebar__menu__item" onClick={closeSidebar} to="/register"><i
-									className="fas fa-sign-in-alt"/>Register</Link>
+								</div> */}
+							<div className="">
+								<Logout/>
 							</div>
-						}
-					</div>
+						</div> 
+						: <div className="sidebar__menu__item flex-col items-start justify-center gap-1">
+							<Link className="sidebar__menu__item-login flex items-center" onClick={closeSidebar} to="/login">
+								<i className="sidebar__menu__item__icon fas fa-user-lock mr-3"/>
+								<div className="sidebar__menu__item__txt">
+									Login
+								</div></Link>
+							<Link className="sidebar__menu__item-register flex items-center" onClick={closeSidebar} to="/register">
+								<i className="sidebar__menu__item__icon fas fa-sign-in-alt mr-3"/>
+								<div className="sidebar__menu__item__txt">
+									Register
+								</div></Link>
+						</div>
+					}
+					{/* </div> */}
 				</div>
 			</div>
 		</>

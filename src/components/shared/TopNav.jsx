@@ -1,23 +1,20 @@
-import jwtDecode from "jwt-decode"
-import React from "react"
-import { useQuery } from "react-query"
+import React, { useState } from "react"
 import { useSelector } from "react-redux"
-import api from "../../api"
+import { useGetMyProfile } from "../../hooks"
 
 const TopNav = () => {
 	const isLoggedIn = useSelector(defaultState => defaultState.user.isLoggedIn)
+	const [userName, setUserName] = useState("")
+	const [image, setImage] = useState(null)
+	
 
-	const {data} = useQuery("getMyProfile", async ()=>{
-		if (isLoggedIn) {
-			const token = await localStorage.getItem("token")
-			if (token) {
-				const tokenDecoded = jwtDecode(token)
-				const userId = tokenDecoded.id
-				return api.getProfileByID(userId)
+	const {data} = useGetMyProfile(isLoggedIn, {
+		onSuccess: data => {
+			if(data && data.data && data.data.data[0] && data.data.data[0].id) {
+				setImage(data.data.data[0].attributes.profilePhoto.data?.attributes.formats.thumbnail.url)
+				setUserName(data.data.data[0]?.attributes.name)
 			}
-			return false
 		}
-		return false
 	})
 
 	const openSidebar = () => {
@@ -28,14 +25,15 @@ const TopNav = () => {
 		<div className='flex items-center justify-between mb-11'>
 			<div className="flex items-center justify-start text-sm">
 				<div className="flex items-center focus:outline-none">
-					<img className="w-10 h-10 rounded-full mr-4" src={data?.data?.data[0]?.attributes.profilePhoto.data?.attributes.formats?.thumbnail.url} alt={data?.data?.data[0]?.attributes.name}/>
+					<img className="w-10 h-10 rounded-full mr-4" src={isLoggedIn ? image : "https://cdn.cloudflare.steamstatic.com/steamcommunity/public/images/avatars/56/566629c9c0cc8b7a1b1e945a268266dc594ec6f5_full.jpg"} alt={userName}/>
 				</div>
 				<div className="flex">
-					<p className="text-violet-800 text-lg">{data?.data?.data[0]?.attributes.name}</p>
+					
+					<p className="text-gray-900 text-lg dark:text-white">{isLoggedIn ? userName : "Avatar"}</p>
 				</div>
 			</div>
 			<div className="sidebar-toggle" onClick={openSidebar}>
-				<i className="fas fa-bars"/>
+				<i className="fas fa-bars text-gray-900 text-base dark:text-white"/>
 			</div>
 		</div>
 	)

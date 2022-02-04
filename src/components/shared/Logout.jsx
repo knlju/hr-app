@@ -20,7 +20,10 @@ export const Logout = () => {
 	return (
 		<>
 			<button onClick={handleLogout}>
-				<i className="fas fa-sign-out-alt"></i>
+				<i className="sidebar__menu__item__icon fas fa-sign-out-alt mr-3"></i> 
+				<div className="sidebar__menu__item__txt">
+									Logout
+				</div>
 			</button>
 		</>
 	)

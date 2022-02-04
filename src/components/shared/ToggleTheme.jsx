@@ -19,7 +19,7 @@ const ToggleTheme = () => {
 	return (
 		<div>
 			
-			<div className="flex justify-center items-center gap-1" onClick={handleToggle}>
+			<div className="flex justify-start pl-5 items-center gap-1" onClick={handleToggle}>
 				<i className="fas fa-sun"></i>
 
 				<div className={`relative rounded-full w-8 h-4 transition duration-200 ease-linear ${toggle === true ? "bg-green-400" : "bg-gray-400"}`}>

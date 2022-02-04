@@ -301,8 +301,6 @@ const api = {
      * @returns {Promise<AxiosResponse<any>>}
      */
 	addAnswer: (payload) => {
-		// eslint-disable-next-line no-debugger
-		debugger
 		const {
 			questionId,
 			answer,
@@ -346,8 +344,6 @@ const api = {
      * @returns {Promise<AxiosResponse<any>>}
      */
 	updateAnswer: (payload) => {
-		// eslint-disable-next-line no-debugger
-		debugger
 		const {
 			answerId,
 			questionId,
@@ -464,6 +460,23 @@ const api = {
 		} = payload
 		return axiosInstanceWithAuth.delete(`/api/questions/${id}?populate=*`)
 	},
+	/**
+     * Edit Password
+     *
+     * @returns {Promise<AxiosResponse<any>>}
+     */
+	editPassword: (payload) => {
+		const {
+			id,
+			password,
+			passwordConfirmation
+		} = payload
+		return axiosInstanceWithAuth.post("api/auth/reset-password", {
+			code: id,
+			password,
+			passwordConfirmation
+		})
+	}
 }
 
 export default api

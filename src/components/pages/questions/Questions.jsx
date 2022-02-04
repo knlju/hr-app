@@ -38,7 +38,6 @@ export const Questions = () => {
 	// 	}
 	// })
 
-	console.log("pitanja izlistana prvi put", data)
 
 	function compare(a, b) {
 		if (a.attributes.order < b.attributes.order) {

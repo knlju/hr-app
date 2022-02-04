@@ -3,8 +3,10 @@ import { useMutation, useQuery } from "react-query"
 import api from "../../api"
 import { useSelector } from "react-redux"
 import SpinnerLoader from "../shared/SpinnerLoader"
-import { useGetMyProfile } from "../../hooks"
+import { useAlert, useGetMyProfile } from "../../hooks"
 import Alert from "../shared/Alert"
+import InfoForm from "../shared/InfoForm"
+import Loader from "../shared/Loader"
 
 //TODO: dodati InfoForm i ovde
 //TODO: ipak je reset password umesto new password ili tako nesto...
@@ -17,6 +19,9 @@ export const MyProfile = () => {
 	const [userProfilePhoto, setUserProfilePhoto] = useState(null)
 	const [profileId, setProfileId] = useState(null)
 	const [image, setImage] = useState(null)
+
+	const [oldPassword, setOldPassword] = useState("")
+	const [newPassword, setNewPassword] = useState("")
 
 	const {data, isLoading, isError, refetch} = useGetMyProfile(isLoggedIn, {
 		onSuccess: data => {
@@ -33,22 +38,30 @@ export const MyProfile = () => {
 		setAlert({ show: true, type, text })
 		setTimeout(() => {
 			setAlert({ show: false })
-		}, 2000)
+		}, 4000)
 	}
+	
 
 
-	// useEffect(() => {
-	// 	refetch()
-	// }, [])
+	useEffect(() => {
+		refetch()
+	}, [])
 
 
 	const {
-		mutate
+		mutateAsync,
+		isLoading: editLoading,
+		isError: editError
 	} = useMutation((payload)=>{ 
 		api.editMyProfile(payload)
 	})
+	const {
+		mutateAsync: password,
+	} = useMutation((payload)=>{ 
+		api.editPassword(payload)
+	})
 
-	const handleSubmit = (e)=> {
+	const handleSubmit = async (e)=> {
 		e.preventDefault()
 		if (profileId) {
 			const payload = {
@@ -56,9 +69,22 @@ export const MyProfile = () => {
 				username: userName,
 				imageToSend: userProfilePhoto
 			}
-			mutate(payload)
+			await mutateAsync(payload)
 		}
 		handleAlert({ type: "success", text: "Profile successfully changed!" })
+	}
+	const handlePassword = async (e)=> {
+		e.preventDefault()
+		if (profileId) {
+			const payload = {
+				id: profileId,
+				// code: "privateCode",
+				password: newPassword,
+				passwordConfirmation: newPassword
+			}
+			await password(payload)
+		}
+		handleAlert({ type: "success", text: "Password successfully changed!" })
 	}
 
 	if (isLoading) {
@@ -73,57 +99,46 @@ export const MyProfile = () => {
 	return (
 		<>
 			{alert.show && <Alert type={alert.type} text={alert.text} />}
-			<div className="flex justify-between align-top mx-auto max-w-screen-lg py-10">
+			{editLoading && <Loader />}
+			{editError && <p>Update error... Try again</p>}
+			<div className="flex justify-between items-start mx-auto max-w-screen-lg py-10">
+				<InfoForm
+					name={userName}
+					setName={setUserName}
+					action={handleSubmit}
+					photo={image}
+					newPhoto={userProfilePhoto}
+					setNewPhoto={setUserProfilePhoto}
+					disabled={editLoading}
+				/>
 				<div className="bg-white shadow-md border border-gray-200 rounded-lg mx-auto w-2/5 max-w-md p-4 sm:p-6 lg:p-8 dark:bg-gray-800 dark:border-gray-700">
-					<span className="text-sm font-medium text-gray-900 block mb-2 dark:text-gray-300">basic info</span>
+					<span className="text-lg font-medium text-violet-800 block mb-2 dark:text-gray-300">Security</span>
 					<div>
-						<label htmlFor="userName"
-							className="text-sm font-medium text-gray-900 block mb-2 dark:text-gray-300">Your
-                                name *</label>
-						<input type="text" name="username" id="name"
-							className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
-							placeholder={"userName"} value={userName} required="" onChange={(e) => setUserName(e.target.value)}/>
+						<span className="text-sm font-medium text-violet-800 block mb-2 dark:text-gray-300">Your email: {userEmail}</span>
 					</div>
-					<div>
-						<label htmlFor="formFile"
-							className="form-label text-sm font-medium text-gray-900 block mb-2 dark:text-gray-300">Profile
-                                photo</label>
-						<input
-							className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
-							type="file" id="formFile" accept="image/*" onChange={(e) => setUserProfilePhoto(e.target.files[0])}/>
-					</div>
-					<button type="submit"
-						className=" text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-						onClick={handleSubmit}
-					>Save
-					</button>
-				</div>
-				<div className="bg-white shadow-md border border-gray-200 rounded-lg mx-auto w-2/5 max-w-md p-4 sm:p-6 lg:p-8 dark:bg-gray-800 dark:border-gray-700">
-					<span className="text-sm font-medium text-gray-900 block mb-2 dark:text-gray-300">security</span>
-					<div>
-						<span className="text-sm font-medium text-gray-300 block mb-2 dark:text-gray-300">email: {userEmail}</span>
-					</div>
-					<div>
+					<div className="mb-5">
 						<label htmlFor="password"
-							className="text-sm font-medium text-gray-900 block mb-2 dark:text-gray-300">Current
-                                password *</label>
+							className="text-sm font-medium text-violet-800 block mb-0 dark:text-gray-300">Current
+                                password</label>
 						<input type="password" name="password" id="password" placeholder="••••••••"
-							className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
-							required="" />
+							className="bg-gray-50 border border-gray-300 text-violet-800 text-sm lg:text-base rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
+							required="" value={oldPassword}
+							onChange={(e) => setOldPassword(e.target.value)}/>
 					</div>
-					<div>
+					<div className="mb-5">
 						<label htmlFor="confirmPassword"
-							className="text-sm font-medium text-gray-900 block mb-2 dark:text-gray-300">New
-                                password *</label>
+							className="text-sm font-medium text-violet-800 block mb-0 dark:text-gray-300">New
+                                password</label>
 						<input type="password" name="confirmPassword" id="confirmPassword" placeholder="••••••••"
-							className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
-							required="" />
+							className="bg-gray-50 border border-gray-300 text-violet-800 text-sm lg:text-base rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
+							required="" value={newPassword}
+							onChange={(e) => setNewPassword(e.target.value)}/>
 					</div>
 					<button type="submit"
-						className=" text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Save
+						className=" text-white bg-violet-800 hover:bg-violet-600 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" onClick={handlePassword}>Save
 					</button>
 				</div>
-				<img src={image} alt="" />
+				{/* <img src={image} alt="" /> */}
 			</div>
 		</>
 	)

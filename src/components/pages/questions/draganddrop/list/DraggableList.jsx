@@ -95,7 +95,7 @@ const DraggableList = props => {
 	return (
 		<>
 			{isUpdatingQuestionOrder && <Loader/>}
-			<ul className="draggable-list">
+			<ul className="draggable-list w-full">
 				{
 					questionList.map((item, index) => {
 						let key = index

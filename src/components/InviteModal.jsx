@@ -31,7 +31,7 @@ function InviteModal({closeModal, companySlug}) {
                                     Invite
 							</h3>
 							<div className="mt-2">
-								<InputPair question="email" answer={email} setAnswer={e => setEmail(e.target.value)} type="text" />
+								<InputPair labelText="email" inputValue={email} setInputValue={e => setEmail(e.target.value)} type="text" />
 							</div>
 						</div>
 					</div>

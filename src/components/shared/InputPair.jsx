@@ -2,22 +2,22 @@ import React from "react"
 import PropTypes from "prop-types"
 
 // factory
-function InputPair({question, answer, setAnswer, type, selectOptions}) {
+function InputPair({labelText, inputValue, setInputValue, type, selectOptions}) {
 
 	if (type === "text") {
-		return <TextInput question={question} answer={answer} setAnswer={setAnswer} />
+		return <TextInput labelText={labelText} inputValue={inputValue} setInputValue={setInputValue}/>
 	}
 
 	if (type === "longtext") {
-		return <LongTextInput question={question} answer={answer} setAnswer={setAnswer}/>
+		return <LongTextInput labelText={labelText} inputValue={inputValue} setInputValue={setInputValue}/>
 	}
 
 	if (type === "image") {
-		return <ImageQAInput question={question} image={answer} setImage={setAnswer}/>
+		return <ImageQAInput labelText={labelText} image={inputValue} setImage={setInputValue}/>
 	}
 
 	if (type === "select") {
-		return <SelectInput question={question} answer={answer} setAnswer={setAnswer} options={selectOptions}/>
+		return <SelectInput labelText={labelText} inputValue={inputValue} setInputValue={setInputValue} options={selectOptions}/>
 	}
 
 	return null
@@ -26,18 +26,18 @@ function InputPair({question, answer, setAnswer, type, selectOptions}) {
 //TODO: dodati validaciju
 
 InputPair.propTypes = {
-	question: PropTypes.string,
-	answer: PropTypes.any,
-	setAnswer: PropTypes.func,
+	labelText: PropTypes.string,
+	inputValue: PropTypes.any,
+	setInputValue: PropTypes.func,
 	type: PropTypes.any,
 	selectOptions: PropTypes.array,
 }
 
-const ImageQAInput = ({question, image, setImage}) => (
+const ImageQAInput = ({labelText, image, setImage}) => (
 	<div>
 		<label htmlFor="formFile"
 			className="form-label text-sm font-medium text-gray-900 block mb-2 dark:text-gray-300">
-			{question}
+			{labelText}
 		</label>
 		<input
 			className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
@@ -51,35 +51,35 @@ const ImageQAInput = ({question, image, setImage}) => (
 )
 
 ImageQAInput.propTypes = {
-	question: PropTypes.string,
+	labelText: PropTypes.string,
 	image: PropTypes.any,
 	setImage: PropTypes.func,
 }
 
-const TextInput = ({question, answer, setAnswer}) => (
+const TextInput = ({labelText, inputValue, setInputValue}) => (
 	<div>
 		<label htmlFor="userName"
 			className="text-sm font-medium text-gray-900 block mb-2 dark:text-gray-300">
-			{question}
+			{labelText}
 		</label>
 		<input type="text" name="username" id="name"
 			className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
-			placeholder={"userName"} value={answer} required=""
-			onChange={setAnswer}/>
+			placeholder={"userName"} value={inputValue} required=""
+			onChange={setInputValue}/>
 	</div>
 )
 
 TextInput.propTypes = {
-	question: PropTypes.string,
-	answer: PropTypes.any,
-	setAnswer: PropTypes.func,
+	labelText: PropTypes.string,
+	inputValue: PropTypes.any,
+	setInputValue: PropTypes.func,
 }
 
-const LongTextInput = ({question, answer, setAnswer}) => (
+const LongTextInput = ({labelText, inputValue, setInputValue}) => (
 	<div>
 		<label htmlFor="userName"
 			className="text-sm font-medium text-gray-900 block mb-2 dark:text-gray-300">
-			{question}
+			{labelText}
 		</label>
 		<textarea
 			className="form-control block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding
@@ -87,27 +87,27 @@ const LongTextInput = ({question, answer, setAnswer}) => (
 			id="exampleFormControlTextarea1"
 			rows="3"
 			placeholder="userName"
-			value={answer} required
-			onChange={setAnswer}
+			value={inputValue} required
+			onChange={setInputValue}
 		/>
 	</div>
 )
 
 LongTextInput.propTypes = {
-	question: PropTypes.string,
-	answer: PropTypes.any,
-	setAnswer: PropTypes.func,
+	labelText: PropTypes.string,
+	inputValue: PropTypes.any,
+	setInputValue: PropTypes.func,
 }
 
-const SelectInput = ({question, answer, setAnswer, options}) => (
+const SelectInput = ({labelText, inputValue, setInputValue, options}) => (
 	<div>
 		<label htmlFor="userName"
 			className="text-sm font-medium text-gray-900 block mb-2 dark:text-gray-300">
-			{question}
+			{labelText}
 		</label>
 		<select
 			className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
-			value={answer} onChange={setAnswer} id="formCompanies">
+			value={inputValue} onChange={setInputValue} id="formCompanies">
 			{options.map(option => (
 				<option key={option.id} value={option.id}>{option.attributes.name}</option>
 			))}
@@ -116,9 +116,9 @@ const SelectInput = ({question, answer, setAnswer, options}) => (
 )
 
 SelectInput.propTypes = {
-	question: PropTypes.string,
-	answer: PropTypes.any,
-	setAnswer: PropTypes.func,
+	labelText: PropTypes.string,
+	inputValue: PropTypes.any,
+	setInputValue: PropTypes.func,
 	options: PropTypes.array,
 }
 

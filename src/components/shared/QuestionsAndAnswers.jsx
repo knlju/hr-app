@@ -95,7 +95,7 @@ function QuestionsAndAnswers({profileId, companyId}) {
 						attributes: {
 							...newQuestion.attributes.answers.data[0].attributes,
 							file: e.target.files[0],
-							answer: URL.createObjectURL(e.target.files[0]),
+							inputValue: URL.createObjectURL(e.target.files[0]),
 						}
 					}
 				}
@@ -122,7 +122,7 @@ function QuestionsAndAnswers({profileId, companyId}) {
 						...newQuestion.attributes.answers.data[0],
 						attributes: {
 							...newQuestion.attributes.answers.data[0].attributes,
-							answer: e.target.value,
+							inputValue: e.target.value,
 						}
 					}
 				}
@@ -219,10 +219,10 @@ function QuestionsAndAnswers({profileId, companyId}) {
 						return (
 							<InputPair
 								key={pair.id}
-								question={pair.attributes.text}
-								answer={pair.attributes.answers?.data[0]?.attributes.answer}
+								labelText={pair.attributes.text}
+								inputValue={pair.attributes.answers?.data[0]?.attributes.answer}
 								type={pair.attributes?.type}
-								setAnswer={e => updatePair(e, pair)}
+								setInputValue={e => updatePair(e, pair)}
 							/>
 						)
 					})}

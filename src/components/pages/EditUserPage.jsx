@@ -156,9 +156,9 @@ function EditUserPage() {
                             Edit Team Member
 							</div>
 							<div className="flex justify-end align-top gap-2">
-								<InputPair type="select" answer={selectedStatus}
-									setAnswer={e => setSelectedStatus(e.target.value)}
-									question="Status" selectOptions={STATUS}/>
+								<InputPair type="select" inputValue={selectedStatus}
+									setInputValue={e => setSelectedStatus(e.target.value)}
+									labelText="Status" selectOptions={STATUS}/>
 							</div>
 						</>)
 				}

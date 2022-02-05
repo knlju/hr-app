@@ -67,10 +67,10 @@ const Sidebar = () => {
 
 	return (
 		<>
-			<div className="sidebar bg-green-200 dark:bg-gray-900">
+			<div className="sidebar bg-white dark:bg-gray-900">
 				<div className="sidebar__logo flex items-start justify-between h-20 mt-5">
 					<div>
-						<p className="text-xl font-medium text-white">.team <span className="p-1 rounded-md bg-orange-600">HUB</span> </p>
+						<p className="text-xl font-medium text-gray-900 dark:text-white">.team <span className="p-1 rounded-sm bg-orange-600 text-white dark:text-white">HUB</span> </p>
 					</div>
 					<div className="sidebar-close cursor-pointer" onClick={closeSidebar}>
 						<i className="fas fa-times text-orange-600 text-base"/>
@@ -91,8 +91,9 @@ const Sidebar = () => {
 							</Link>
 						))
 					}
-					<ToggleTheme/>
-					{/* <div className="sidebar__menu__item"> */}
+					<div className="sidebar__menu__item">
+						<ToggleTheme/>
+					</div>
 					{user.isLoggedIn ?
 						<div className="sidebar__menu__item">
 							{/* <div className="flex align-center justify-start text-sm">
@@ -105,7 +106,7 @@ const Sidebar = () => {
 										<p>{companyName}</p>
 									</div>
 								</div> */}
-							<div className="">
+							<div >
 								<Logout/>
 							</div>
 						</div> 

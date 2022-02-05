@@ -136,7 +136,7 @@ const DraggableList = props => {
 				/>
 			</ul>
 			<button type="submit"
-				className="w-1/5 text-white inline-block bg-gray-900 hover:bg-gray-700 mb-5 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+				className="w-1/5 bg-white hover:bg-gray-200 shadow-xl inline-block dark:bg-gray-900 dark:hover:bg-gray-800 dark:text-white mb-5 focus:ring-4 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
 				onClick={handleNewOrder}>Save new order
 			</button>
 		</>

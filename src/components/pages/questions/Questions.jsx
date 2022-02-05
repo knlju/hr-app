@@ -74,12 +74,12 @@ export const Questions = () => {
 		<>
 			{modalOpen && <QuestionModal setModalClose={() => {setModalOpen(false)}} modalId={modalId} />}
 			<div className="flex flex-col items-center full md:w-4/5 mx-auto">
-				<Link to={"/add-question"}><button className="bg-white hover:bg-gray-200 mb-5 rounded-lg shadow-lg text-gary-900 py-2 px-4">ADD QUESTION</button></Link>
+				<Link to={"/add-question"}><button className="bg-white hover:bg-gray-200 mb-5 rounded-lg shadow-lg text-gray-900 py-2 px-4 dark:bg-gray-900 dark:text-white dark:hover:bg-gray-800">ADD QUESTION</button></Link>
 			
 				{questions.length > 0 ? <DraggableList
 					data={questions}
 					renderItemContent={(item) => DraggableQuestion(item)}
-				/> : "There is no posted questions."}	
+				/> : <p className="text-gray-900 dark:text-white">There is no posted questions.</p>}	
 
 			</div>
 		</>

@@ -36,7 +36,7 @@ InputPair.propTypes = {
 const ImageQAInput = ({labelText, image, setImage}) => (
 	<div>
 		<label htmlFor="formFile"
-			className="form-label mb-0 text-sm font-medium text-gray-900 block dark:text-gray-300">
+			className="form-label text-sm font-medium text-gray-900 block dark:text-gray-300">
 			{labelText}
 		</label>
 		<input
@@ -59,7 +59,7 @@ ImageQAInput.propTypes = {
 const TextInput = ({labelText, inputValue, setInputValue}) => (
 	<div>
 		<label htmlFor="userName"
-			className="text-sm font-medium text-gray-900 block mb-2 dark:text-gray-300">
+			className="text-sm font-medium text-gray-900 block dark:text-gray-300">
 			{labelText}
 		</label>
 		<input type="text" name="username" id="name"
@@ -78,7 +78,7 @@ TextInput.propTypes = {
 const LongTextInput = ({labelText, inputValue, setInputValue}) => (
 	<div>
 		<label htmlFor="userName"
-			className="text-sm font-medium text-gray-900 block mb-2 dark:text-gray-300">
+			className="text-sm font-medium text-gray-900 block dark:text-gray-300">
 			{labelText}
 		</label>
 		<textarea
@@ -102,7 +102,7 @@ LongTextInput.propTypes = {
 const SelectInput = ({labelText, inputValue, setInputValue, options}) => (
 	<div>
 		<label htmlFor="userName"
-			className="text-sm font-medium text-gray-900 block mb-2 dark:text-gray-300">
+			className="text-sm font-medium text-gray-900 block dark:text-gray-300">
 			{labelText}
 		</label>
 		<select

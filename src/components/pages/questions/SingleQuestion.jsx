@@ -72,7 +72,7 @@ const SingleQuestion = (props) => {
 			{alert.show && <Alert type={alert.type} text={alert.text} />}
 			{questionDeleteModal &&<DeleteUserModal onCancel={() => setQuestionDeleteModal(false)} modeQuestion={true}onConfirm={()=>{handleDelete(id)}}
 			/>}
-			<div className="flex items-center justify-between w-full bg-white rounded-lg shadow-lg text-gray-900 px-4 py-4 dark:bg-black">
+			<div className="flex items-center justify-between w-full bg-white rounded-lg shadow-lg text-gray-900 px-4 py-4 dark:bg-gray-900 dark:text-white">
 				<div className="flex items-center gap-2 mr-1">
 					<button className="flex mr-2">
 						<i className="fas fa-bars cursor-pointer text-sm"></i>

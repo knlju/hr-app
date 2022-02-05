@@ -7,7 +7,7 @@ export const MainLayout = () => {
 		<div>
 			<Sidebar/>
 			<div className="main">
-				<div className="main__content">
+				<div className="main__content bg-gray-100 dark:bg-gray-700">
 					<TopNav />
 					<Outlet />
 				</div>

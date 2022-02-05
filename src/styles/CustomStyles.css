@@ -96,6 +96,7 @@ li {
   margin-bottom: 16px;
   padding-left: 20%;
   transition: color 0.3s ease-in-out;
+  color: rgb(234, 88, 12);
 }
 .sidebar__menu__item:hover {
   color: rgb(234, 88, 12);
@@ -134,14 +135,15 @@ li {
   cursor: pointer;
 }
 .sidebar__menu__item:last-child:hover {
-  color: white;
+  color: rgb(234, 88, 12);
 }
 .sidebar__menu__item__logout:hover {
-  color: white;
+  color: rgb(234, 88, 12);
 }
 .sidebar__menu__item-register:hover,
 .sidebar__menu__item-login:hover {
   color: rgb(234, 88, 12);
+  font-weight: 700;
   transition: all 0.3s ease-in;
 }
 @media screen and (max-width: 1366px) {

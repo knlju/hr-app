@@ -4,43 +4,8 @@ import Loader from "../shared/Loader"
 import UserCard from "../shared/UserCard"
 import UserModal from "../UserModal"
 import InputPair from "../shared/InputPair"
-import {INPUT_TYPES} from "../../constants"
-
-const SORT = [
-	{
-		id: "createdAt",
-		attributes: {
-			name: "Created at"
-		}
-	},
-	{
-		id: "updatedAt",
-		attributes: {
-			name: "Updated at"
-		}
-	},
-	{
-		id: "publishedAt",
-		attributes: {
-			name: "Published at"
-		}
-	},
-]
-
-const ORDER = [
-	{
-		id: "asc",
-		attributes: {
-			name: "asc"
-		}
-	},
-	{
-		id: "desc",
-		attributes: {
-			name: "desc"
-		}
-	},
-]
+import {INPUT_TYPES, ORDER, SORT} from "../../constants"
+import useDebounce from "../../hooks/useDebounce"
 
 function CompanyWall() {
 
@@ -48,15 +13,18 @@ function CompanyWall() {
 	const [page, setPage] = useState(1)
 	const [selectedCompany, setSelectedCompany] = useState(7)
 	const [order, setOrder] = useState("desc")
+	const [searchName, setSearchName] = useState("")
+	const searchNameDebounced = useDebounce(searchName, 500)
 	const [sort, setSort] = useState("createdAt")
 
 	const {
-		data: users, isLoading: usersLoading, isError: usersError, isPreviousData, isFetching, refetch
+		data: users, isLoading: usersLoading, isError: usersError, isPreviousData, isFetching
 	} = useGetAllFilteredProfilesQuery({
 		page: page,
 		company: selectedCompany,
 		sort,
-		order
+		order,
+		name: searchNameDebounced
 	},
 	{
 		keepPreviousData: true,
@@ -65,10 +33,6 @@ function CompanyWall() {
 	const {
 		data: companies
 	} = useGetAllCompanies()
-
-	useEffect(() => {
-		refetch()
-	}, [selectedCompany])
 
 	if (usersLoading) {
 		return <Loader/>
@@ -104,6 +68,13 @@ function CompanyWall() {
 						setAnswer={e => setOrder(e.target.value)}
 						selectOptions={ORDER}
 						type={INPUT_TYPES.select}/>
+				</div>
+				<div>
+					<InputPair
+						question="Search by name"
+						answer={searchName}
+						setAnswer={e => setSearchName(e.target.value)}
+						type={INPUT_TYPES.text}/>
 				</div>
 			</div>
 			{modalUser && <UserModal user={modalUser} closeModal={() => setModalUser(null)}/>}

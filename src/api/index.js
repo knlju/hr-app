@@ -400,10 +400,16 @@ const api = {
 	 * @param {Number} company
 	 * @param {String} sort
 	 * @param {String} order - asc or desc
+	 * @param {String} name - check if name string is contained in name attribute
 	 * @returns {Promise<AxiosResponse<any>>}
 	 */
-	getAllFilteredProfiles: ({page, company, sort, order}) => {
-		return axiosInstanceWithoutAuth.get(`/api/profiles?pagination[page]=${page}&filters[company][id][$eq]=${company}&sort=${sort}:${order}&populate=*`)
+	getAllFilteredProfiles: ({page, company, sort, order, name}) => {
+		return axiosInstanceWithoutAuth.get(`/api/profiles
+		?pagination[page]=${page}
+		${company ? `&filters[company][id][$eq]=${company}` : ""}
+		${name ? `&filters[name][$containsi]=${name}` : ""}
+		${sort ? `&sort=${sort}:${order}` : ""}
+		&populate=*`)
 	},
 }
 

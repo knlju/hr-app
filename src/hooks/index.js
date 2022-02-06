@@ -8,12 +8,13 @@ import api from "../api"
  * @param {Number} company - companyId
  * @param {String} sort
  * @param {String} order - either asc or desc
+ * @param {String} name - check if name is contained in names
  * @param {Object} options - useQuery options
  * @returns {UseQueryResult<AxiosResponse<*>, unknown>}
  */
-export const useGetAllFilteredProfilesQuery = ({page, company, sort, order}, options = {}) => {
-	return useQuery(["getAllProfiles", {page, company, sort, order}],
-		() => api.getAllFilteredProfiles({page, company, sort, order}),
+export const useGetAllFilteredProfilesQuery = ({page, company, sort, order, name}, options = {}) => {
+	return useQuery(["getAllProfiles", {page, company, sort, order, name}],
+		() => api.getAllFilteredProfiles({page, company, sort, order, name}),
 		options)
 }
 

@@ -9,6 +9,7 @@ import { MyProfile } from "../components/pages/MyProfile"
 import EditUserPage from "../components/pages/EditUserPage"
 import AddQuestion from "../components/pages/questions/AddQuestion"
 import JoinPage from "../components/pages/JoinPage"
+import CompanyWall from "../components/pages/CompanyWall"
 import {ROLES} from "../constants"
 import TeamPageRoleRoute from "./TeamPageRoleRoute"
 import QuestionsRoleRoute from "./QuestionsRoleRoute"
@@ -19,7 +20,7 @@ const createRoutes = () => (
 
 			{/* Public routes */}
 
-			<Route path="/" element={<>Company wall</>}/>
+			<Route path="/" element={<CompanyWall/>}/>
 
 			{/*Admin routes */}
 

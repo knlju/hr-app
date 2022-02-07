@@ -1,22 +1,23 @@
 import React from "react"
 import PropTypes from "prop-types"
+import {INPUT_TYPES} from "../../constants"
 
 // factory
 function InputPair({labelText, inputValue, setInputValue, type, selectOptions}) {
 
-	if (type === "text") {
+	if (type === INPUT_TYPES.text) {
 		return <TextInput labelText={labelText} inputValue={inputValue} setInputValue={setInputValue}/>
 	}
 
-	if (type === "longtext") {
+	if (type === INPUT_TYPES.longtext) {
 		return <LongTextInput labelText={labelText} inputValue={inputValue} setInputValue={setInputValue}/>
 	}
 
-	if (type === "image") {
+	if (type === INPUT_TYPES.image) {
 		return <ImageQAInput labelText={labelText} image={inputValue} setImage={setInputValue}/>
 	}
 
-	if (type === "select") {
+	if (type === INPUT_TYPES.select) {
 		return <SelectInput labelText={labelText} inputValue={inputValue} setInputValue={setInputValue} options={selectOptions}/>
 	}
 

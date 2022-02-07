@@ -5,6 +5,23 @@ import api from "../api"
 /**
  * useQuery hook for getting published team member profiles
  *
+ * @param {Number} page
+ * @param {Number} company - companyId
+ * @param {String} sort
+ * @param {String} order - either asc or desc
+ * @param {String} name - check if name is contained in names
+ * @param {Object} options - useQuery options
+ * @returns {UseQueryResult<AxiosResponse<*>, unknown>}
+ */
+export const useGetAllFilteredProfilesQuery = ({page, company, sort, order, name}, options = {}) => {
+	return useQuery(["getAllProfiles", {page, company, sort, order, name}],
+		() => api.getAllFilteredProfiles({page, company, sort, order, name}),
+		options)
+}
+
+/**
+ * useQuery hook for getting published team member profiles
+ *
  * @param {Number} company
  * @returns {UseQueryResult<AxiosResponse<*>, unknown>}
  */
@@ -73,15 +90,15 @@ export const useQuestionsQuery = (companyId = 7, options = {}) => {
 }
 
 /**
- * Returns useQuery hook for fetching answers by user ID
+ * Returns useQuery hook for fetching answers by profile ID
  *
- * @param {Number} userId
+ * @param {Number} profileId
  * @param {Object} options
  * @returns {UseQueryResult<AxiosResponse<*>, unknown>}
  */
-export const useAnswersQuery = (userId, options = {}) => {
-	return useQuery(["getAnswersQuery", userId],
-		() => api.getAnswersByProfileId(userId),
+export const useAnswersQuery = (profileId, options = {}) => {
+	return useQuery(["getAnswersQuery", profileId],
+		() => api.getAnswersByProfileId(profileId),
 		options)
 }
 
@@ -157,11 +174,17 @@ export const useInviteMutation = (options = {}) => {
 		options)
 }
 
+export const useGetAllCompanies = (options = {}) => {
+	return useQuery("getAllCompaniesQuery",
+		async () => await api.getAllCompanies(), options)
+}
+
 /**
  * * Returns useQuery hook for fetching user by Token
  *
  * @param {boolean} isLoggedIn
  * @returns
+ // TODO poobrisi falseove
  */
 export const useGetMyProfile = (isLoggedIn, options = {}) => {
 	return useQuery("getMyProfile", async ()=>{
@@ -180,8 +203,8 @@ export const useGetMyProfile = (isLoggedIn, options = {}) => {
 /**
  * * Returns useQuery hook for fetching questions by companyID
  *
- * @param {boolean} isLoggedIn
- * @returns
+ * @param companyID
+ * @param options
  */
 export const useGetCompanyQuestions = (companyID, options = {}) => {
 	return useQuery("getQuestions", async ()=>{

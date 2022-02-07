@@ -15,9 +15,6 @@ const Sidebar = () => {
 	const isLoggedIn = useSelector(state => state.user.isLoggedIn)
 	const user = useSelector(state => state.user)
 
-	const [userName, setUserName] = useState("")
-	const [companyName, setCompanyName] = useState("")
-	const [userProfilePhoto, setUserProfilePhoto] = useState(null)
 	const [activeIndex, setActiveIndex] = useState(0)
 	const location = useLocation()
 
@@ -34,19 +31,30 @@ const Sidebar = () => {
 		return false
 	})
 
+	// eslint-disable-next-line no-debugger
+	debugger
+
 	const nav = user?.profile?.attributes.userRole === ROLES.admin ? NAVIGATION.admin
 		: user.isLoggedIn ? NAVIGATION.user
 			: NAVIGATION.guest
 
-	useEffect(() => {
-		if (isLoggedIn) {
-			if (data && data.data && data.data.data[0] && data.data.data[0].id) {
-				setUserName(data.data.data[0].attributes.name)
-				setCompanyName(data.data.data[0].attributes?.company?.data?.attributes.name)
-				setUserProfilePhoto(data.data.data[0].attributes.profilePhoto.data?.attributes.formats?.thumbnail.url)
-			}
-		}
-	}, [data])
+	user?.profile?.attributes.userRole === ROLES.admin
+
+	NAVIGATION.admin
+
+	user.isLoggedIn ? NAVIGATION.user : NAVIGATION.guest
+
+	console.log({nav})
+
+	// useEffect(() => {
+	// 	if (isLoggedIn) {
+	// 		if (data && data.data && data.data.data[0] && data.data.data[0].id) {
+	// 			setUserName(data.data.data[0].attributes.name)
+	// 			setCompanyName(data.data.data[0].attributes?.company?.data?.attributes.name)
+	// 			setUserProfilePhoto(data.data.data[0].attributes.profilePhoto.data?.attributes.formats?.thumbnail.url)
+	// 		}
+	// 	}
+	// }, [data])
 
 
 	useEffect(() => {

@@ -23,14 +23,12 @@ export const MyProfile = () => {
 	const [oldPassword, setOldPassword] = useState("")
 	const [newPassword, setNewPassword] = useState("")
 
-	const {data, isLoading, isError, refetch} = useGetMyProfile(isLoggedIn, {
+	const {isLoading, isError, refetch} = useGetMyProfile(isLoggedIn, {
 		onSuccess: data => {
-			if(data && data.data && data.data.data[0] && data.data.data[0].id) {
-				setProfileId(data.data.data[0].id)
-				setImage(data.data.data[0].attributes.profilePhoto.data?.attributes.formats.thumbnail.url)
-				setUserEmail(data.data.data[0]?.attributes.user.data.attributes.email)
-				setUserName(data.data.data[0]?.attributes.name)
-			}
+			setProfileId(data?.data?.data?.[0].id)
+			setImage(data?.data?.data?.[0].attributes.profilePhoto.data?.attributes.formats.thumbnail.url)
+			setUserEmail(data?.data?.data?.[0]?.attributes.user.data.attributes.email)
+			setUserName(data?.data?.data?.[0]?.attributes.name)
 		}
 	})
 	const [alert, setAlert] = useState({ show: false })

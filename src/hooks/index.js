@@ -182,9 +182,8 @@ export const useGetAllCompanies = (options = {}) => {
 /**
  * * Returns useQuery hook for fetching user by Token
  *
- * @param {boolean} isLoggedIn
+ * @param options
  * @returns
- // TODO poobrisi falseove
  */
 export const useGetMyProfile = (isLoggedIn, options = {}) => {
 	return useQuery("getMyProfile", async ()=>{
@@ -207,11 +206,8 @@ export const useGetMyProfile = (isLoggedIn, options = {}) => {
  * @param options
  */
 export const useGetCompanyQuestions = (companyID, options = {}) => {
-	return useQuery("getQuestions", async ()=>{
-		const token = await localStorage.getItem("token")
-		if (token) {
-			return api.getQuestions(companyID)
-		}
+	return useQuery("getQuestions", async () => {
+		return await api.getQuestions(companyID)
 	}, options)
 }
 
@@ -226,6 +222,3 @@ export const useDeleteQuestionMutation = (options = {}) => {
 		return await api.deleteQuestion({id})
 	}, options)
 }
-
-
-

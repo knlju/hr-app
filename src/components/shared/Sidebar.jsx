@@ -31,31 +31,9 @@ const Sidebar = () => {
 		return false
 	})
 
-	// eslint-disable-next-line no-debugger
-	debugger
-
 	const nav = user?.profile?.attributes.userRole === ROLES.admin ? NAVIGATION.admin
 		: user.isLoggedIn ? NAVIGATION.user
 			: NAVIGATION.guest
-
-	user?.profile?.attributes.userRole === ROLES.admin
-
-	NAVIGATION.admin
-
-	user.isLoggedIn ? NAVIGATION.user : NAVIGATION.guest
-
-	console.log({nav})
-
-	// useEffect(() => {
-	// 	if (isLoggedIn) {
-	// 		if (data && data.data && data.data.data[0] && data.data.data[0].id) {
-	// 			setUserName(data.data.data[0].attributes.name)
-	// 			setCompanyName(data.data.data[0].attributes?.company?.data?.attributes.name)
-	// 			setUserProfilePhoto(data.data.data[0].attributes.profilePhoto.data?.attributes.formats?.thumbnail.url)
-	// 		}
-	// 	}
-	// }, [data])
-
 
 	useEffect(() => {
 		const curPath = window.location.pathname.split("/")[1]

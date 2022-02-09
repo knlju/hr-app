@@ -13,21 +13,19 @@ import Loader from "../../../../shared/Loader"
 import SpinnerLoader from "../../../../shared/SpinnerLoader"
 import Alert from "../../../../shared/Alert"
 
-const DraggableList = props => {
+const DraggableList = ({renderItemContent, questionList, setQuestionList}) => {
 
-	const [questionList, setQuestionList] = useState(props.data)
-
-	const [dragStartIndex, setDragStartIndex] = useState(null)
-	const [movedQuestions, setMovedQuestions] = useState()
+	const [alert, setAlert] = useState({show: false})
 
 	// get index of draged item
+	const [dragStartIndex, setDragStartIndex] = useState(null)
+
 	const onDragStart = (index) => setDragStartIndex(index)
 
 	// update list when item dropped
 	const onDrop = (dropIndex) => {
 		// get draged item
 		const dragItem = questionList[dragStartIndex]
-
 		// update order in the list
 		let list = [...questionList]
 		if (dragStartIndex > dropIndex) {
@@ -43,13 +41,6 @@ const DraggableList = props => {
 			}
 			list[dragStartIndex].attributes.order = tmp
 		}
-		//
-		// const dragRange = {
-		// 	from: Math.min(dragStartIndex, dropIndex),
-		// 	to: Math.max(dragStartIndex, dropIndex),
-		// }
-		// setMovedQuestions(list.filter((question, i) => i > dragRange.from))
-
 		// update list
 		list.splice(dragStartIndex, 1)
 		if (dragStartIndex < dropIndex) {
@@ -65,28 +56,25 @@ const DraggableList = props => {
 				...list.slice(dropIndex, list.length)
 			])
 		}
+
 	}
-
-	console.log("pitanja iz dragable liste", questionList)
-
 	const {
 		mutateAsync,
 		isLoading: isUpdatingQuestionOrder,
 	} = useMutation(async (payload) => {
 		return await api.putNewQuestionsOrder(payload)
 	})
-	const [alert, setAlert] = useState({ show: false })
-	const handleAlert = ({ type, text }) => {
-		setAlert({ show: true, type, text })
+	const handleAlert = ({type, text}) => {
+		setAlert({show: true, type, text})
 		setTimeout(() => {
-			setAlert({ show: false })
+			setAlert({show: false})
 		}, 3000)
 	}
 
 	const handleNewOrder = async (e) => {
 		e.preventDefault()
 
-		for (let i = 0; i <questionList.length; i++) {
+		for (let i = 0; i < questionList.length; i++) {
 			// delete old order
 			await mutateAsync({id: questionList[i].id, order: -(i + 40)})
 		}
@@ -96,15 +84,14 @@ const DraggableList = props => {
 			await mutateAsync({id: questionList[i].id, order: questionList[i].attributes.order})
 		}
 
-		// TODO prikazati notifikaciju umesto ovoga
-		handleAlert({ type: "success", text: "Order updated successfully!" })
+		handleAlert({type: "success", text: "Order updated successfully!"})
 	}
 
 	return (
 		<>
 			{isUpdatingQuestionOrder && <Loader/>}
 
-			{alert.show && <Alert type={alert.type} text={alert.text} />}
+			{alert.show && <Alert type={alert.type} text={alert.text}/>}
 			<ul className="draggable-list w-full">
 				{
 					questionList.map((item, index) => {
@@ -120,7 +107,7 @@ const DraggableList = props => {
 								onDrop={(index) => onDrop(index)}
 							>
 								{
-									props.renderItemContent(item)
+									renderItemContent(item)
 								}
 
 							</DraggableListItem>
@@ -144,8 +131,9 @@ const DraggableList = props => {
 }
 
 DraggableList.propTypes = {
-	data: PropTypes.array,
-	renderItemContent: PropTypes.func
+	renderItemContent: PropTypes.func,
+	questionList: PropTypes.any,
+	setQuestionList: PropTypes.any
 }
 
 export default DraggableList

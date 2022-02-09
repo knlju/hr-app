@@ -53,10 +53,7 @@ export default (state = initialState, { type, payload }) => {
 		}
 	case actions.LOGIN_WITH_TOKEN_ERROR:
 		return {
-			...state,
-			isLoggedIn: false,
-			user: null,
-			isLoading: false,
+			...initialState,
 			error: payload,
 		}
 	case actions.REGISTER_START:

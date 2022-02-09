@@ -83,18 +83,16 @@ const api = {
      * @returns {Promise<AxiosResponse<any>>}
      */
 	editOurCompany: async (payload) => {
-		console.log(payload)
 		const {
 			id,
 			name,
 			imageToSend,
 		} = payload
-		const res = await api.uploadImage(imageToSend)
-		console.log("response od uploadImage")
-		console.log(res)
 		const submitData = {
 			name,
-			logo: res.data[0].id
+		}
+		if (imageToSend) {
+			submitData.logo = imageToSend
 		}
 		return axiosInstanceWithAuth.put("/api/companies/" + id, {
 			data: {
@@ -371,8 +369,6 @@ const api = {
      * @returns {Promise<AxiosResponse<any>>}
      */
 	inviteTeamMember: ({email, companySlug}) => {
-		// eslint-disable-next-line no-debugger
-		debugger
 		return axiosInstanceWithAuth.post("/api/invite", {
 			email,
 			companySlug
@@ -492,8 +488,6 @@ const api = {
 	 * @returns {Promise<AxiosResponse<any>>}
 	 */
 	getAllFilteredProfiles: ({page, company, sort, order, name}) => {
-		// eslint-disable-next-line no-debugger
-		debugger
 		return axiosInstanceWithoutAuth.get(`/api/profiles
 		?pagination[page]=${page}
 		${company ? `&filters[company][id][$eq]=${company}` : ""}

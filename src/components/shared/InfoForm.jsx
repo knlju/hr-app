@@ -6,17 +6,17 @@ function InfoForm({name, setName, photo, newPhoto, setNewPhoto, disabled, action
 	return (
 		<form
 			onSubmit={action}
-			className="bg-white shadow-md border border-gray-200 rounded-lg mx-auto w-2/5 max-w-md p-4 sm:p-6 lg:p-8 dark:bg-gray-800 dark:border-gray-700">
+			className="bg-white shadow-md border border-gray-200 rounded-lg mx-auto w-full max-w-md p-4 sm:p-6 lg:p-8 dark:bg-gray-800 dark:border-gray-700">
 			<span className="text-lg font-medium text-gray-900 block mb-2 dark:text-gray-300">
 				{!isCompany ? "Basic" : "Company"} info
 			</span>
 			<div className="mb-5">
 				<InputPair type="text" inputValue={name}
-					setInputValue={e => setName(e.target.value)} labelText={!isCompany ? "User" : "Company" + "name"}></InputPair>
+					setInputValue={e => setName(e.target.value)} labelText={!isCompany ? "User" : "Company" + "name"}/>
 			</div>
 			<div className="mb-5">
 				<InputPair type="image" inputValue={name}
-					setInputValue={e => setNewPhoto(e.target.files[0])} labelText={isCompany ? "Logo" : "Profile photo"}></InputPair>
+					setInputValue={e => setNewPhoto(e.target.files[0])} labelText={isCompany ? "Logo" : "Profile photo"}/>
 			</div>
 			<button type="submit"
 				disabled={disabled}

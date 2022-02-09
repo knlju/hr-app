@@ -88,10 +88,11 @@ const api = {
 			name,
 			imageToSend,
 		} = payload
-		const res = await api.uploadImage(imageToSend)
 		const submitData = {
 			name,
-			logo: res.data[0].id
+		}
+		if (imageToSend) {
+			submitData.logo = imageToSend
 		}
 		return axiosInstanceWithAuth.put("/api/companies/" + id, {
 			data: {
@@ -256,12 +257,13 @@ const api = {
 
 	/**
      * Returns promise to GET answers by profile ID
+	 * populates and sorts by time answered
      *
      * @param {Number} userId
      * @returns {Promise<AxiosResponse<any>>}
      */
 	getAnswersByProfileId: (userId) => {
-		return axiosInstanceWithAuth.get(`/api/answers?filters[profile][id][$eq]=${userId}&populate=*`)
+		return axiosInstanceWithoutAuth.get(`/api/answers?filters[profile][id][$eq]=${userId}&populate=*&sort=createdAt`)
 	},
 
 	/**
@@ -367,8 +369,6 @@ const api = {
      * @returns {Promise<AxiosResponse<any>>}
      */
 	inviteTeamMember: ({email, companySlug}) => {
-		// eslint-disable-next-line no-debugger
-		debugger
 		return axiosInstanceWithAuth.post("/api/invite", {
 			email,
 			companySlug
@@ -475,7 +475,26 @@ const api = {
 			password,
 			passwordConfirmation
 		})
-	}
+	},
+
+	/**
+	 * GETs all profiles filtered by criteria
+	 *
+	 * @param {Number} page
+	 * @param {Number} company
+	 * @param {String} sort
+	 * @param {String} order - asc or desc
+	 * @param {String} name - check if name string is contained in name attribute
+	 * @returns {Promise<AxiosResponse<any>>}
+	 */
+	getAllFilteredProfiles: ({page, company, sort, order, name}) => {
+		return axiosInstanceWithoutAuth.get(`/api/profiles
+		?pagination[page]=${page}
+		${company ? `&filters[company][id][$eq]=${company}` : ""}
+		${name ? `&filters[name][$containsi]=${name}` : ""}
+		${sort ? `&sort=${sort}:${order}` : ""}
+		&populate=*`)
+	},
 }
 
 export default api

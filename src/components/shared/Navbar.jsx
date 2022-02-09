@@ -33,7 +33,7 @@ const Navbar = () => {
 							<button className="flex items-center focus:outline-none mr-3" onClick={handleUserOptions} >
 								<img className="w-8 h-8 rounded-full mr-4" src="http://i.pravatar.cc/300" alt="Avatar of User"/> <span className="hidden md:inline-block">Hi, User </span>
 							</button>
-							{userDrop && <div className="bg-white nunito rounded shadow-md mt-2 absolute top-7 right-0 min-w-full overflow-auto z-30">
+							{userDrop && <div className="bg-white nunito rounded shadow-md mt-2 absolute top-7 right-0 min-w-full overflow-auto z-5">
 								<ul className="list-reset">
 									<li><Link to="/profile" className="px-4 py-2 block text-gray-900 hover:bg-indigo-400 hover:text-white no-underline hover:no-underline">My account</Link></li>
 									<li>

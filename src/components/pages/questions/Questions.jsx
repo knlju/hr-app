@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react"
-import { useQuery } from "react-query"
+import {useQuery, useQueryClient} from "react-query"
 import api from "../../../api"
 import { useSelector } from "react-redux"
 import { Link } from "react-router-dom"
@@ -12,28 +12,22 @@ import { useGetCompanyQuestions } from "../../../hooks"
 export const Questions = () => {
 	const [modalOpen, setModalOpen] = useState(false)
 	const [modalId, setModalId] = useState(null)
+	const [questionList, setQuestionList] = useState([])
 
-	const routeFreshnes = useSelector(state=>state.user.routeFreshnes)
+	// const queryClient = useQueryClient()
 
-	// const isLoggedIn = useSelector(defaultState => defaultState.user.isLoggedIn)
+	// const routeFreshnes = useSelector(state=>state.user.routeFreshnes)
+
 	const companyID = useSelector(defaultState => defaultState.user.profile.attributes.company.data.id)
-	
-	const [questions, setQuestions] = useState([])
 
-	// const {data, refetch, isLoading} = useQuery("getQuestions", async ()=>{
-	// 	const token = await localStorage.getItem("token")
-	// 	if (token) {
-	// 		return api.getQuestions(companyID)
-	// 	}
-	// })
-
-	const {data: company_questions, refetch, isLoading} = useGetCompanyQuestions(companyID, {
-		onSuccess: company_questions => {
-			const sortedQuestions = company_questions.data.data.sort(compare)
-			setQuestions(sortedQuestions)
-		}
+	const {refetch, isLoading, isFetching} = useGetCompanyQuestions(companyID, {
+		onSuccess: companyQuestions => {
+			const sortedQuestions = companyQuestions.data.data.sort(compare)
+			setQuestionList(sortedQuestions)
+		},
+		refetchOnMount: true,
+		refetchOnWindowFocus: false,
 	})
-
 
 	function compare(a, b) {
 		if (a.attributes.order < b.attributes.order) {
@@ -44,11 +38,6 @@ export const Questions = () => {
 		}
 		return 0
 	}
-	
-	// useEffect(() => {
-	// 	refetch()
-	// }, [questions])
-	
 
 	const cbRefresh = ()=> (
 		refetch()
@@ -69,15 +58,20 @@ export const Questions = () => {
 		return <SpinnerLoader/>
 	}
 
+	if (questionList.length === 0 && isFetching) {
+		return <SpinnerLoader />
+	}
+
 
 	return (
 		<>
 			{modalOpen && <QuestionModal setModalClose={() => {setModalOpen(false)}} modalId={modalId} />}
 			<div className="flex flex-col items-center full md:w-4/5 mx-auto">
-				<Link to={"/add-question"}><button className="bg-white hover:bg-gray-200 mb-5 rounded-lg shadow-lg text-gray-900 py-2 px-4 dark:bg-gray-900 dark:text-white dark:hover:bg-gray-800">ADD QUESTION</button></Link>
+				<Link to={"/add-question"}><button className="bg-orange-600 hover:bg-orange-500 mb-5 rounded-lg shadow-lg text-gray-100 py-2 px-4 tracking-wide">ADD QUESTION</button></Link>
 			
-				{questions.length > 0 ? <DraggableList
-					data={questions}
+				{questionList.length > 0 ? <DraggableList
+					questionList={questionList}
+					setQuestionList={setQuestionList}
 					renderItemContent={(item) => DraggableQuestion(item)}
 				/> : <p className="text-gray-900 dark:text-white">There is no posted questions.</p>}	
 

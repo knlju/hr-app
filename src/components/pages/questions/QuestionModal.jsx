@@ -149,7 +149,7 @@ function QuestionModal({ setModalClose, modalId }) {
 		
 		<Modal closeModal={()=>{}}>
 			
-			<div className="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all p-6 flex-col sm:my-8 sm:align-middle sm:max-w-lg sm:w-full text-gray-900 dark:text-white dark:bg-gray-900 dark:text-white">
+			<div className="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all p-6 flex-col sm:my-8 sm:align-middle sm:max-w-lg sm:w-full text-gray-900 dark:text-white dark:bg-gray-900 ">
 				<div className="flex justify-between items-center mb-3">
 					<h1 className="text-lg text-gray-900 dark:text-white">Answer The Question</h1>
 					<button className=""
@@ -157,10 +157,10 @@ function QuestionModal({ setModalClose, modalId }) {
 							setModalClose()
 						}}
 					>
-						<i className="fas fa-times text-gray-900 text-white"></i>
+						<i className="fas fa-times text-gray-900 dark:text-gray-100"></i>
 					</button>
 				</div>
-				<p className="text-base lg:text-lg text-gray-900 dark:text-white mb-5">{question}</p>
+				<p className="text-base lg:text-lg text-gray-900 dark:text-gray-100 mb-5">{question}</p>
 
 				{jsxAnswerInput}
 				{alert.show && <Alert type={alert.type} text={alert.text} />}
@@ -173,7 +173,7 @@ function QuestionModal({ setModalClose, modalId }) {
 					>
             Cancel
 					</button>
-					<button className="text-white bg-gray-900 hover:bg-gray-600 rounded-lg px-4 py-2 dark:bg-gray-600 dark:hover:bg-gray-500 " type="button" onClick={handleAnswer}>SUBMIT</button>
+					<button className="text-white bg-orange-600 hover:bg-orange-500 rounded-lg px-4 py-2 " type="button" onClick={handleAnswer}>SUBMIT</button>
 				</div>
 			</div>
 			

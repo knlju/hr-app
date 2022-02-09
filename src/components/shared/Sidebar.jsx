@@ -55,7 +55,7 @@ const Sidebar = () => {
 		<>
 			<div className="sidebar bg-white dark:bg-gray-900">
 				<div className="sidebar__logo flex items-start justify-between h-20 mt-5">
-					<div>
+					<div className="xl:pl-20">
 						<p className="text-xl font-medium text-gray-900 dark:text-white">.team <span className="p-1 rounded-sm bg-orange-600 text-white dark:text-white">HUB</span> </p>
 					</div>
 					<div className="sidebar-close cursor-pointer" onClick={closeSidebar}>
@@ -82,16 +82,6 @@ const Sidebar = () => {
 					</div>
 					{user.isLoggedIn ?
 						<div className="sidebar__menu__item">
-							{/* <div className="flex align-center justify-start text-sm">
-									<div className="flex items-center focus:outline-none">
-										<img className="w-10 h-10 rounded-full mr-4" src={userProfilePhoto}
-											alt={userName}/>
-									</div>
-									<div className="flex-col text-gray-900 dark:text-white gap-1">
-										<p>{userName}</p>
-										<p>{companyName}</p>
-									</div>
-								</div> */}
 							<div >
 								<Logout/>
 							</div>
@@ -109,7 +99,6 @@ const Sidebar = () => {
 								</div></Link>
 						</div>
 					}
-					{/* </div> */}
 				</div>
 			</div>
 		</>

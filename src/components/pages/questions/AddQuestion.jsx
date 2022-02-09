@@ -27,9 +27,9 @@ const AddQuestion = (props) => {
 	const companyID = useSelector(defaultState => defaultState.user.profile.attributes.company.data.id)
 
 	const TYPE = [
-		{id: "text", attributes: {name: "text"}},
-		{id: "long_text", attributes: {name: "long_text"}},
-		{id: "image", attributes: {name: "image"}}
+		{id: "text", attributes: {name: "Text"}},
+		{id: "long_text", attributes: {name: "Long text"}},
+		{id: "image", attributes: {name: "Image"}}
 	]
 
 	const {refetch} = useQuery("getAllQuestions", async () => {
@@ -165,11 +165,11 @@ const AddQuestion = (props) => {
 							</div>
 
 							<button type="submit"
-								className="w-full text-white inline-block bg-gray-900 hover:bg-gray-900 mb-5 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+								className="w-full text-white inline-block bg-orange-600 hover:bg-orange-500 mb-5 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
 								onClick={handleQuestion}>{modeEdit ? "Save" : "Add"}
 							</button>
 							<div>
-								<Link to="/questions" className="text-sm hover:underline dark:text-blue-500">back</Link>
+								<Link to="/questions" className="text-sm hover:underline text-gray-900 hover:text-orange-600 dark:text-gray-100">back</Link>
 							</div>
 						</form>
 					</div>

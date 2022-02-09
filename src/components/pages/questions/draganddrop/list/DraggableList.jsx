@@ -123,7 +123,7 @@ const DraggableList = ({renderItemContent, questionList, setQuestionList}) => {
 				/>
 			</ul>
 			<button type="submit"
-				className="w-1/5 bg-white hover:bg-gray-200 shadow-xl inline-block dark:bg-gray-900 dark:hover:bg-gray-800 dark:text-white mb-5 focus:ring-4 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
+				className="w-3/5 lg:w-2/5 bg-orange-600 hover:bg-orange-500 text-white shadow-xl inline-block mb-5 focus:ring-4 font-medium rounded-lg text-sm px-3 py-2.5 text-center tracking-wide"
 				onClick={handleNewOrder}>Save new order
 			</button>
 		</>

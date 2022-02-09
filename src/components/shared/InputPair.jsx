@@ -3,14 +3,14 @@ import PropTypes from "prop-types"
 import {INPUT_TYPES} from "../../constants"
 
 // factory
-function InputPair({labelText, inputValue, setInputValue, type, selectOptions}) {
+function InputPair({labelText, inputValue, setInputValue, type, selectOptions, placeholder}) {
 
 	if (type === INPUT_TYPES.text) {
-		return <TextInput labelText={labelText} inputValue={inputValue} setInputValue={setInputValue}/>
+		return <TextInput labelText={labelText} placeholder={placeholder} inputValue={inputValue} setInputValue={setInputValue}/>
 	}
 
 	if (type === INPUT_TYPES.longtext) {
-		return <LongTextInput labelText={labelText} inputValue={inputValue} setInputValue={setInputValue}/>
+		return <LongTextInput labelText={labelText} placeholder={placeholder} inputValue={inputValue} setInputValue={setInputValue}/>
 	}
 
 	if (type === INPUT_TYPES.image) {
@@ -19,6 +19,14 @@ function InputPair({labelText, inputValue, setInputValue, type, selectOptions}) 
 
 	if (type === INPUT_TYPES.select) {
 		return <SelectInput labelText={labelText} inputValue={inputValue} setInputValue={setInputValue} options={selectOptions}/>
+	}
+
+	if (type === INPUT_TYPES.email) {
+		return <EmailInput labelText={labelText} inputValue={inputValue} setInputValue={setInputValue}/>
+	}
+
+	if (type === INPUT_TYPES.password) {
+		return <PasswordInput labelText={labelText} inputValue={inputValue} setInputValue={setInputValue}/>
 	}
 
 	return null
@@ -32,16 +40,17 @@ InputPair.propTypes = {
 	setInputValue: PropTypes.func,
 	type: PropTypes.any,
 	selectOptions: PropTypes.array,
+	placeholder: PropTypes.string
 }
 
 const ImageQAInput = ({labelText, image, setImage}) => (
 	<div>
 		<label htmlFor="formFile"
-			className="form-label text-sm font-medium text-gray-900 block dark:text-gray-300">
+			className="form-label text-sm font-medium text-gray-900 block dark:text-gray-100">
 			{labelText}
 		</label>
 		<input
-			className="relative bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white file:bg-gray-900 file:text-white file:border-0 file:rounded-md file:px-2 file:py-1 file:absolute file:top-1.5 file:right-1"
+			className="relative bg-gray-100 border border-gray-100 text-gray-900 text-sm lg:text-base rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white file:bg-gray-900 file:text-white file:border-0 file:rounded-md file:px-2 file:py-1 file:absolute file:top-1.5 file:right-1"
 			type="file" id="formFile" accept="image/*"
 			onChange={setImage}
 		/>
@@ -57,45 +66,46 @@ ImageQAInput.propTypes = {
 	setImage: PropTypes.func,
 }
 
-const TextInput = ({labelText, inputValue, setInputValue}) => (
+const TextInput = ({labelText, inputValue, setInputValue, placeholder}) => (
 	<div>
 		<label htmlFor="userName"
-			className="text-sm font-medium text-gray-900 block dark:text-gray-300">
+			className="text-sm font-medium text-gray-900 block dark:text-gray-100">
 			{labelText}
 		</label>
-		<input type="text" name="username" id="name"
-			className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
-			placeholder={"userName"} value={inputValue} required=""
-			onChange={setInputValue}/>
+		<input type="text" name="username"
+			className="bg-gray-100 border border-gray-100 text-gray-900 text-sm lg:text-base rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" value={inputValue} required=""
+			onChange={setInputValue} placeholder={placeholder}/>
 	</div>
 )
 
 TextInput.propTypes = {
 	labelText: PropTypes.string,
+	placeholder: PropTypes.string,
 	inputValue: PropTypes.any,
 	setInputValue: PropTypes.func,
 }
 
-const LongTextInput = ({labelText, inputValue, setInputValue}) => (
+const LongTextInput = ({labelText, inputValue, setInputValue, placeholder}) => (
 	<div>
 		<label htmlFor="userName"
-			className="text-sm font-medium text-gray-900 block dark:text-gray-300">
+			className="text-sm font-medium text-gray-900 block dark:text-gray-100">
 			{labelText}
 		</label>
 		<textarea
-			className="form-control block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding
-                border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
+			className="form-control text-sm lg:text-base block w-full px-3 py-1.5 font-normal text-gray-700 bg-white bg-clip-padding
+                border border-solid border-gray-100 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
 			id="exampleFormControlTextarea1"
 			rows="3"
-			placeholder="userName"
 			value={inputValue} required
 			onChange={setInputValue}
+			placeholder={placeholder}
 		/>
 	</div>
 )
 
 LongTextInput.propTypes = {
 	labelText: PropTypes.string,
+	placeholder: PropTypes.string,
 	inputValue: PropTypes.any,
 	setInputValue: PropTypes.func,
 }
@@ -103,11 +113,11 @@ LongTextInput.propTypes = {
 const SelectInput = ({labelText, inputValue, setInputValue, options}) => (
 	<div>
 		<label htmlFor="userName"
-			className="text-sm font-medium text-gray-900 block dark:text-gray-300">
+			className="text-sm lg:text-base font-medium text-gray-900 block dark:text-gray-100">
 			{labelText}
 		</label>
 		<select
-			className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
+			className="bg-gray-100 border border-gray-100 text-gray-900 text-sm lg:text-base rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
 			value={inputValue} onChange={setInputValue} id="formCompanies">
 			{options.map(option => (
 				<option key={option.id} value={option.id}>{option.attributes.name}</option>
@@ -121,6 +131,44 @@ SelectInput.propTypes = {
 	inputValue: PropTypes.any,
 	setInputValue: PropTypes.func,
 	options: PropTypes.array,
+}
+
+const EmailInput = ({labelText, inputValue, setInputValue}) => (
+	<div>
+		<label htmlFor="email"
+			className="text-sm lg:text-base font-medium text-gray-900 block dark:text-gray-100">
+			{labelText}
+		</label>
+		<input type="email" name="email" id="email"
+			className="bg-gray-100 border border-gray-100 text-gray-900 text-sm lg:text-base rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white placeholder:text-sm"
+			placeholder="Email..." value={inputValue} required=""
+			onChange={setInputValue}/>
+	</div>
+)
+
+EmailInput.propTypes = {
+	labelText: PropTypes.string,
+	inputValue: PropTypes.any,
+	setInputValue: PropTypes.func,
+}
+
+const PasswordInput = ({labelText, inputValue, setInputValue}) => (
+	<div>
+		<label htmlFor="password"
+			className="text-sm lg:text-base font-medium text-gray-900 block dark:text-gray-100">
+			{labelText}
+		</label>
+		<input type="password" name="password"
+			className="bg-gray-100 border border-gray-100 text-gray-900 text-sm lg:text-base rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
+			placeholder="*******" value={inputValue} required=""
+			onChange={setInputValue}/>
+	</div>
+)
+
+PasswordInput.propTypes = {
+	labelText: PropTypes.string,
+	inputValue: PropTypes.any,
+	setInputValue: PropTypes.func,
 }
 
 export default InputPair

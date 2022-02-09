@@ -10,7 +10,7 @@ import InputPair from "../../shared/InputPair"
 import Alert from "../../shared/Alert"
 
 export const AnswerQuestionsPage = () => {
-	const companyID = useSelector(defaultState => defaultState.user?.profile?.attributes.company.data.id)
+	const companyID = useSelector(defaultState => defaultState.user?.profile?.attributes?.company?.data?.id)
 	const userProfile = useSelector(defaultState => defaultState.user?.profile?.id)
 	const [index,setIndex] = useState(0)
 	const [questions, setQuestions] = useState([index])
@@ -21,7 +21,7 @@ export const AnswerQuestionsPage = () => {
 
 	const {data: company_questions, isLoading} = useGetCompanyQuestions(companyID, {
 		onSuccess: company_questions => {
-			const sortedQuestions = company_questions.data.data.sort(compare)
+			const sortedQuestions = company_questions?.data?.data.sort(compare)
 			setQuestions(sortedQuestions)
 		}
 	})
@@ -153,17 +153,17 @@ export const AnswerQuestionsPage = () => {
 		<>
 			{alert.show && <Alert type={alert.type} text={alert.text} />}
 			<div className="flex justify-between align-top mx-auto max-w-screen-lg py-10">
-				<div className="relative overflow-hidden rounded-lg shadow-lg w-64 md:w-2/3 m-auto bg-white p-5">
-					<div className="flex items-center justify-between mb-8 text-gray-900 dark:bg-gray-900 dark:text-white">
+				<div className="relative overflow-hidden rounded-lg shadow-lg w-64 md:w-2/3 m-auto bg-white dark:bg-gray-900 p-5">
+					<div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between mb-8 text-gray-900 dark:text-white">
 						<p>Please answer these questions?</p>
 						<span >
-							<span>Question {index + 1}</span>/{questions.length}
+							<span className="text-sm lg:txt-base">Question {index + 1}/{questions.length}</span>
 						</span>
 					</div>
-					<div className="">
-						<p className="text-base lg:text-lg text-gray-900 mb-5 capitalize">{text}</p>
+					<div className="mb-5">
+						<p className="text-base lg:text-lg text-gray-900 dark:text-gray-100 mb-5 capitalize">{text}</p>
 						{jsxAnswerInput}
-						<button className="text-gray-900 bg-white hover:bg-gray-200 dark:bg-gray-900 dark:hover:bg-gray-800 dark:text-white rounded-lg px-5 py-2 mt-4 text-sm shadow-xl" type="button" onClick={handleAnswer}>Submit</button>
+						<button className="text-white bg-orange-600 w-full md:w-2/5 hover:bg-orange-500  rounded-lg px-5 py-2 mt-4 text-sm shadow-md" type="button" onClick={handleAnswer}>Submit</button>
 					</div>
 					<div className="flex items-center justify-center gap-5">
 						<button className="cursor-pointer tooltip" onClick={prevPerson}>

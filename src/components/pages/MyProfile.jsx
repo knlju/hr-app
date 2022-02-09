@@ -7,6 +7,8 @@ import { useAlert, useGetMyProfile, usePostImageMutation, useUserProfileQuery } 
 import Alert from "../shared/Alert"
 import InfoForm from "../shared/InfoForm"
 import Loader from "../shared/Loader"
+import InputPair from "../shared/InputPair"
+import { INPUT_TYPES } from "../../constants"
 
 //TODO: dodati InfoForm i ovde
 //TODO: ipak je reset password umesto new password ili tako nesto...
@@ -105,7 +107,7 @@ export const MyProfile = () => {
 			{alert.show && <Alert type={alert.type} text={alert.text} />}
 			{editLoading && <Loader />}
 			{editError && <p>Update error... Try again</p>}
-			<div className="flex justify-between items-start mx-auto max-w-screen-lg py-10">
+			<div className="flex flex-col lg:flex-row lg:justify-between lg:items-start mx-auto max-w-screen-lg py-10 gap-4">
 				<InfoForm
 					name={userName}
 					setName={setUserName}
@@ -115,31 +117,21 @@ export const MyProfile = () => {
 					setNewPhoto={setUserProfilePhoto}
 					disabled={editLoading}
 				/>
-				<div className="bg-white shadow-md border border-gray-200 rounded-lg mx-auto w-2/5 max-w-md p-4 sm:p-6 lg:p-8 dark:bg-gray-800 dark:border-gray-700">
-					<span className="text-lg font-medium text-gray-900 block mb-2 dark:text-gray-300">Security</span>
+				<div className="bg-white shadow-md border border-gray-200 rounded-lg mx-auto w-full max-w-md p-4 sm:p-6 lg:p-8 dark:bg-gray-800 dark:border-gray-700">
+					<span className="text-lg font-medium text-gray-900 block mb-2 dark:text-gray-100">Security</span>
 					<div>
-						<span className="text-sm font-medium text-gray-900 block mb-2 dark:text-gray-300">Your email: {userEmail}</span>
+						<span className="text-sm font-medium text-gray-900 block mb-2 dark:text-gray-100">Your email: {userEmail}</span>
 					</div>
 					<div className="mb-5">
-						<label htmlFor="password"
-							className="text-sm font-medium text-gray-900 block mb-0 dark:text-gray-300">Current
-                                password</label>
-						<input type="password" name="password" id="password" placeholder="••••••••"
-							className="bg-gray-50 border border-gray-300 text-gray-900 text-sm lg:text-base rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
-							required="" value={oldPassword}
-							onChange={(e) => setOldPassword(e.target.value)}/>
+						<InputPair type={INPUT_TYPES.password} inputValue={oldPassword}
+							setInputValue={e => setOldPassword(e.target.value)} labelText="Current password"/>
 					</div>
 					<div className="mb-5">
-						<label htmlFor="confirmPassword"
-							className="text-sm font-medium text-gray-900 block mb-0 dark:text-gray-300">New
-                                password</label>
-						<input type="password" name="confirmPassword" id="confirmPassword" placeholder="••••••••"
-							className="bg-gray-50 border border-gray-300 text-gray-900 text-sm lg:text-base rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
-							required="" value={newPassword}
-							onChange={(e) => setNewPassword(e.target.value)}/>
+						<InputPair type={INPUT_TYPES.password} inputValue={newPassword}
+							setInputValue={e => setNewPassword(e.target.value)} labelText="New password"/>
 					</div>
 					<button type="submit"
-						className=" text-white bg-gray-900 hover:bg-gray-700 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-700 dark:hover:bg-blue-700 dark:focus:ring-blue-900" onClick={handlePassword}>Save
+						className=" text-white w-full bg-orange-600 hover:bg-orange-500 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center tracking-wide" onClick={handlePassword}>Save
 					</button>
 				</div>
 			</div>

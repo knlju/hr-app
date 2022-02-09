@@ -7,7 +7,9 @@ export const INPUT_TYPES = {
 	text: "text",
 	longtext: "longtext",
 	image: "image",
-	select: "select"
+	select: "select",
+	email: "email",
+	password: "password"
 }
 
 export const SORT = [

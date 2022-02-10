@@ -51,10 +51,11 @@ const LoginPage = () => {
 		if (!email || email === "") {
 			setErrorEmail("Email cant be empty!")
 			return false
-		} else if (emailRegEx){
-			setErrorEmail("Not valid email!")
-			return false
 		} 
+		// else if (emailRegEx){
+		// 	setErrorEmail("Not valid email!")
+		// 	return false
+		// } 
 		else {
 			setErrorEmail(false)
 			return true

@@ -5,37 +5,37 @@ import PropTypes from "prop-types"
 function UserCard({user, openDeleteModal, mainAction, actionName, noActions = false}) {
 	return (
 		<div key={user.id}
-			className="rounded-lg overflow-hidden shadow text-violet-800 bg-white">
-			<div className="pb-3">
+			className="p-4 rounded-md shadow-md bg-white dark:bg-gray-900 overflow-hidden text-gray-900 dark:text-white">
+			<div className="">
 				{
 					user?.attributes?.profilePhoto?.data?.attributes?.url ?
-						<img className="w-full h-48 object-cover shadow"
+						<img className="w-full h-48 object-cover rounded-md shadow-md"
 							src={user?.attributes?.profilePhoto?.data?.attributes?.url}
 							alt="Sunset in the mountains"/>
 						:
-						<div className="w-full h-48 flex justify-center items-center shadow">No Profile
+						<div className="w-full h-48 flex justify-center items-center rounded-md shadow-md">No Profile
                             Picture</div>
 				}
-				<div className="pt-2 px-4 pb-1">
-					<div className="font-bold text-xl mb-2 mt-4">{user.attributes.name}</div>
-					<p className="text-gray-500 font-semibold text-sm">
+				<div className="">
+					<div className="text-base md:text-lg font-bold mb-2 mt-4">{user.attributes.name}</div>
+					<p className="text-xs md:text-sm text-gray-300 font-semibold">
                         Joined {formatDate(user.attributes.createdAt)}
 					</p>
 				</div>
 			</div>
 			{
 				!noActions && (
-					<div className="flex justify-between p-3 border">
+					<div className="flex justify-between mt-4 items-center">
 						<div>
 							<button
-								className="bg-transparent hover:bg-violet-500 text-violet-800 font-semibold hover:text-white py-2 px-4 border border-violet-500 hover:border-transparent rounded"
+								className="text-base bg-orange-600 hover:bg-orange-500 text-gray-100 py-2 px-4 disabled:opacity-50 rounded tracking-wide w-20"
 								onClick={e => mainAction(e, user.id)}>
 								{actionName}
 							</button>
 						</div>
 						<div>
 							<button
-								className="bg-transparent hover:bg-red-500 text-red-600 font-semibold hover:text-white py-2 px-4 border border-red-500 hover:border-transparent rounded"
+								className="text-base bg-red-600 hover:bg-red-500 text-gray-100 py-2 px-4 rounded tracking-wide w-20"
 								onClick={e => openDeleteModal(e, user)}>
                                 Delete
 							</button>

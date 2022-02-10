@@ -6,7 +6,7 @@ function InfoForm({name, setName, photo, newPhoto, setNewPhoto, disabled, action
 	return (
 		<form
 			onSubmit={action}
-			className="bg-white shadow-md border border-gray-200 rounded-lg mx-auto w-full max-w-md p-4 sm:p-6 lg:p-8 dark:bg-gray-800 dark:border-gray-700">
+			className="bg-white shadow-md border border-gray-200 rounded-lg mx-auto w-full max-w-md p-4 sm:p-6 lg:p-8 dark:bg-gray-900 dark:border-gray-700">
 			<span className="text-lg font-medium text-gray-900 block mb-2 dark:text-gray-100">
 				{!isCompany ? "Basic" : "Company"} info
 			</span>

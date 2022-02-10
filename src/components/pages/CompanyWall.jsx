@@ -44,8 +44,8 @@ function CompanyWall() {
 
 	return (
 		<>
-			<div>
-				<div>
+			<div className="flex flex-col gap-4 md:flex-row md:justify-between md:flex-wrap items-center w-full mx-auto p-6 bg-white rounded-lg shadow-lg text-gray-900 dark:bg-gray-900 dark:text-gray-100 mb-6">
+				<div className="w-full md:w-44">
 					<InputPair
 						labelText="Select a company"
 						inputValue={selectedCompany}
@@ -53,7 +53,14 @@ function CompanyWall() {
 						selectOptions={companies?.data?.data}
 						type={INPUT_TYPES.select}/>
 				</div>
-				<div>
+				<div className="w-full md:flex-1 md:max-w-sm">
+					<InputPair
+						labelText="Search by name"
+						inputValue={searchName}
+						setInputValue={e => setSearchName(e.target.value)}
+						type={INPUT_TYPES.text}/>
+				</div>
+				<div className="w-full md:w-32">
 					<InputPair
 						labelText="Sort by"
 						inputValue={sort}
@@ -61,7 +68,7 @@ function CompanyWall() {
 						selectOptions={SORT}
 						type={INPUT_TYPES.select}/>
 				</div>
-				<div>
+				<div className="w-full md:w-20">
 					<InputPair
 						labelText="Order"
 						inputValue={order}
@@ -69,16 +76,10 @@ function CompanyWall() {
 						selectOptions={ORDER}
 						type={INPUT_TYPES.select}/>
 				</div>
-				<div>
-					<InputPair
-						labelText="Search by name"
-						inputValue={searchName}
-						setInputValue={e => setSearchName(e.target.value)}
-						type={INPUT_TYPES.text}/>
-				</div>
+				
 			</div>
 			{modalUser && <UserModal user={modalUser} closeModal={() => setModalUser(null)}/>}
-			<div className="grid gap-5 lg:grid-cols-3 md:grid-cols-2 xs:grid-cols-1">
+			<div className="grid gap-5 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
 				{
 					users?.data?.data?.map(user => (
 						<div key={user.id} className="cursor-pointer" onClick={() => setModalUser(user)}>
@@ -87,29 +88,31 @@ function CompanyWall() {
 					))
 				}
 			</div>
-			<div>
-				<span>Current Page: {page}</span>
-				<button
-					className="bg-transparent hover:bg-violet-500 text-violet-800 font-semibold hover:text-white py-2 px-4 border border-violet-500 disabled:opacity-50 hover:border-transparent rounded"
-					onClick={() => setPage(old => Math.max(old - 1, 0))}
-					disabled={page === 1}
-				>
-                    Previous Page
-				</button>
-				<button
-					className="bg-transparent hover:bg-violet-500 text-violet-800 font-semibold hover:text-white py-2 px-4 border border-violet-500 hover:border-transparent disabled:opacity-50 rounded"
-					onClick={() => {
-						if (!isPreviousData && (users?.data?.meta?.pagination?.pageCount > page)) {
-							setPage(old => old + 1)
-						}
-					}}
-					// Disable the Next Page button until we know a next page is available
-					disabled={isPreviousData || (users?.data?.meta?.pagination?.pageCount <= page)}
-				>
+			<div className="flex justify-between items-center mt-5">
+				<span className="text-sm text-gray-900 dark:text-gray-100">Page: {page}</span>
+				<div className="flex gap-2">
+					<button
+						className="text-sm bg-orange-600 hover:bg-orange-500 text-gray-100 font-semibold py-1 px-2 disabled:opacity-50 rounded"
+						onClick={() => setPage(old => Math.max(old - 1, 0))}
+						disabled={page === 1}
+					>
+                    Prev Page
+					</button>
+					<button
+						className="text-sm bg-orange-600 font-semibold text-gray-100 py-1 px-2 disabled:opacity-50 rounded"
+						onClick={() => {
+							if (!isPreviousData && (users?.data?.meta?.pagination?.pageCount > page)) {
+								setPage(old => old + 1)
+							}
+						}}
+						// Disable the Next Page button until we know a next page is available
+						disabled={isPreviousData || (users?.data?.meta?.pagination?.pageCount <= page)}
+					>
                     Next Page
-				</button>
-				{isFetching ? <span> Loading...</span> : null}
+					</button>
+				</div>
 			</div>
+			{isFetching ? <span className="block text-base font-semibold text-center text-orange-600"> Loading...</span> : null}
 		</>
 	)
 }

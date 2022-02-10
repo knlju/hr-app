@@ -145,7 +145,7 @@ const AddQuestion = (props) => {
 	return (
 		<>
 			{alert.show && <Alert type={alert.type} text={alert.text}/>}
-			<div className="ui main text-center">
+			<div className="text-center">
 				<h2 className="inline-block bg-white mb-3 rounded-lg shadow-lg text-gray-900 py-2 px-4">{modeEdit ? "Edit question" : "Add question"}</h2>
 
 				<div className="flex justify-between items-center mx-auto max-w-screen-lg py-10">

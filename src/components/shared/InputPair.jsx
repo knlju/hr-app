@@ -3,14 +3,14 @@ import PropTypes from "prop-types"
 import {INPUT_TYPES} from "../../constants"
 
 // factory
-function InputPair({labelText, inputValue, setInputValue, type, selectOptions, placeholder}) {
+function InputPair({labelText, inputValue, setInputValue, type, selectOptions, placeholder, onFocus, onBlur, error}) {
 
 	if (type === INPUT_TYPES.text) {
-		return <TextInput labelText={labelText} placeholder={placeholder} inputValue={inputValue} setInputValue={setInputValue}/>
+		return <TextInput labelText={labelText} placeholder={placeholder} inputValue={inputValue} setInputValue={setInputValue} onFocus={onFocus} onBlur={onBlur} error={error}/>
 	}
 
 	if (type === INPUT_TYPES.longtext) {
-		return <LongTextInput labelText={labelText} placeholder={placeholder} inputValue={inputValue} setInputValue={setInputValue}/>
+		return <LongTextInput labelText={labelText} placeholder={placeholder} inputValue={inputValue} setInputValue={setInputValue} onFocus={onFocus} onBlur={onBlur} error={error}/>
 	}
 
 	if (type === INPUT_TYPES.image) {
@@ -18,15 +18,15 @@ function InputPair({labelText, inputValue, setInputValue, type, selectOptions, p
 	}
 
 	if (type === INPUT_TYPES.select) {
-		return <SelectInput labelText={labelText} inputValue={inputValue} setInputValue={setInputValue} options={selectOptions}/>
+		return <SelectInput labelText={labelText} inputValue={inputValue} setInputValue={setInputValue} options={selectOptions} onFocus={onFocus} onBlur={onBlur} error={error}/>
 	}
 
 	if (type === INPUT_TYPES.email) {
-		return <EmailInput labelText={labelText} inputValue={inputValue} setInputValue={setInputValue}/>
+		return <EmailInput labelText={labelText} inputValue={inputValue} setInputValue={setInputValue} onFocus={onFocus} onBlur={onBlur} error={error}/>
 	}
 
 	if (type === INPUT_TYPES.password) {
-		return <PasswordInput labelText={labelText} inputValue={inputValue} setInputValue={setInputValue}/>
+		return <PasswordInput labelText={labelText} inputValue={inputValue} setInputValue={setInputValue} onFocus={onFocus} onBlur={onBlur} error={error}/>
 	}
 
 	return null
@@ -40,7 +40,10 @@ InputPair.propTypes = {
 	setInputValue: PropTypes.func,
 	type: PropTypes.any,
 	selectOptions: PropTypes.array,
-	placeholder: PropTypes.string
+	placeholder: PropTypes.string,
+	onFocus: PropTypes.func,
+	onBlur: PropTypes.func,
+	error: PropTypes.any
 }
 
 const ImageQAInput = ({labelText, image, setImage}) => (
@@ -66,7 +69,7 @@ ImageQAInput.propTypes = {
 	setImage: PropTypes.func,
 }
 
-const TextInput = ({labelText, inputValue, setInputValue, placeholder}) => (
+const TextInput = ({labelText, inputValue, setInputValue, placeholder, onFocus, onBlur, error}) => (
 	<div>
 		<label htmlFor="userName"
 			className="text-sm font-medium text-gray-900 block dark:text-gray-100">
@@ -74,7 +77,9 @@ const TextInput = ({labelText, inputValue, setInputValue, placeholder}) => (
 		</label>
 		<input type="text" name="username"
 			className="bg-gray-100 border border-gray-100 text-gray-900 text-sm lg:text-base rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" value={inputValue} required=""
-			onChange={setInputValue} placeholder={placeholder}/>
+			onChange={setInputValue} placeholder={placeholder} onFocus={onFocus} onBlur={onBlur}/>
+		{error && <span className="text-xs text-red-700">{error}</span>}
+
 	</div>
 )
 
@@ -83,9 +88,12 @@ TextInput.propTypes = {
 	placeholder: PropTypes.string,
 	inputValue: PropTypes.any,
 	setInputValue: PropTypes.func,
+	onFocus: PropTypes.func,
+	onBlur: PropTypes.func,
+	error: PropTypes.any
 }
 
-const LongTextInput = ({labelText, inputValue, setInputValue, placeholder}) => (
+const LongTextInput = ({labelText, inputValue, setInputValue, placeholder,onFocus, onBlur,error}) => (
 	<div>
 		<label htmlFor="userName"
 			className="text-sm font-medium text-gray-900 block dark:text-gray-100">
@@ -99,7 +107,9 @@ const LongTextInput = ({labelText, inputValue, setInputValue, placeholder}) => (
 			value={inputValue} required
 			onChange={setInputValue}
 			placeholder={placeholder}
+			onFocus={onFocus} onBlur={onBlur}
 		/>
+		{error && <span className="text-xs text-red-700">{error}</span>}
 	</div>
 )
 
@@ -108,9 +118,12 @@ LongTextInput.propTypes = {
 	placeholder: PropTypes.string,
 	inputValue: PropTypes.any,
 	setInputValue: PropTypes.func,
+	onFocus: PropTypes.func,
+	onBlur: PropTypes.func,
+	error: PropTypes.any
 }
 
-const SelectInput = ({labelText, inputValue, setInputValue, options}) => (
+const SelectInput = ({labelText, inputValue, setInputValue, options,onFocus, onBlur,error}) => (
 	<div>
 		<label htmlFor="userName"
 			className="text-sm lg:text-base font-medium text-gray-900 block dark:text-gray-100">
@@ -118,11 +131,12 @@ const SelectInput = ({labelText, inputValue, setInputValue, options}) => (
 		</label>
 		<select
 			className="bg-gray-100 border border-gray-100 text-gray-900 text-sm lg:text-base rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
-			value={inputValue} onChange={setInputValue} id="formCompanies">
+			value={inputValue} onChange={setInputValue} id="formCompanies" onFocus={onFocus} onBlur={onBlur}>
 			{options.map(option => (
 				<option key={option.id} value={option.id}>{option.attributes.name}</option>
 			))}
 		</select>
+		{error && <span className="text-xs text-red-700">{error}</span>}
 	</div>
 )
 
@@ -131,9 +145,12 @@ SelectInput.propTypes = {
 	inputValue: PropTypes.any,
 	setInputValue: PropTypes.func,
 	options: PropTypes.array,
+	onFocus: PropTypes.func,
+	onBlur: PropTypes.func,
+	error: PropTypes.any
 }
 
-const EmailInput = ({labelText, inputValue, setInputValue}) => (
+const EmailInput = ({labelText, inputValue, setInputValue,onFocus, onBlur, error}) => (
 	<div>
 		<label htmlFor="email"
 			className="text-sm lg:text-base font-medium text-gray-900 block dark:text-gray-100">
@@ -142,7 +159,8 @@ const EmailInput = ({labelText, inputValue, setInputValue}) => (
 		<input type="email" name="email" id="email"
 			className="bg-gray-100 border border-gray-100 text-gray-900 text-sm lg:text-base rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white placeholder:text-sm"
 			placeholder="Email..." value={inputValue} required=""
-			onChange={setInputValue}/>
+			onChange={setInputValue} onFocus={onFocus} onBlur={onBlur}/>
+		{error && <span className="text-xs text-red-700">{error}</span>}
 	</div>
 )
 
@@ -150,9 +168,12 @@ EmailInput.propTypes = {
 	labelText: PropTypes.string,
 	inputValue: PropTypes.any,
 	setInputValue: PropTypes.func,
+	onFocus: PropTypes.func,
+	onBlur: PropTypes.func,
+	error: PropTypes.any
 }
 
-const PasswordInput = ({labelText, inputValue, setInputValue}) => (
+const PasswordInput = ({labelText, inputValue, setInputValue, onFocus, onBlur, error}) => (
 	<div>
 		<label htmlFor="password"
 			className="text-sm lg:text-base font-medium text-gray-900 block dark:text-gray-100">
@@ -161,7 +182,8 @@ const PasswordInput = ({labelText, inputValue, setInputValue}) => (
 		<input type="password" name="password"
 			className="bg-gray-100 border border-gray-100 text-gray-900 text-sm lg:text-base rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
 			placeholder="*******" value={inputValue} required=""
-			onChange={setInputValue}/>
+			onChange={setInputValue} onFocus={onFocus} onBlur={onBlur}/>
+		{error && <span className="text-xs text-red-700">{error}</span>}
 	</div>
 )
 
@@ -169,6 +191,9 @@ PasswordInput.propTypes = {
 	labelText: PropTypes.string,
 	inputValue: PropTypes.any,
 	setInputValue: PropTypes.func,
+	onFocus: PropTypes.func,
+	onBlur: PropTypes.func,
+	error: PropTypes.any
 }
 
 export default InputPair

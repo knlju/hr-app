@@ -15,6 +15,7 @@ import Loader from "../shared/Loader"
 import DeleteUserModal from "../shared/DeleteUserModal"
 import InputPair from "../shared/InputPair"
 import { Link } from "react-router-dom"
+import { INPUT_TYPES } from "../../constants"
 
 const STATUS = [
 	{id: "pending", attributes: {name: "pending"}},
@@ -146,7 +147,7 @@ function EditUserPage() {
 				<button onClick={navigateAfterAction} className="text-sm hover:underline text-orange-500 hover:text-orange-400 flex items-center gap-2 mb-4"><i className="fas fa-caret-square-left"></i>Go back</button>
 			</div>
 			<div
-				className="flex justify-between items-center mx-auto max-w-screen-lg p-6
+				className="flex justify-between items-center mx-auto max-w-screen-lg px-6 py-3
 				bg-white text-gray-900 shadow-md rounded-lg
 				dark:bg-gray-900  dark:text-gray-100"
 			>
@@ -172,10 +173,9 @@ function EditUserPage() {
 							<div className="text-base">
                             Edit Team Member
 							</div>
-							<div className="flex justify-end align-top gap-2">
-								<InputPair type="select" inputValue={selectedStatus}
-									setInputValue={e => setSelectedStatus(e.target.value)}
-									labelText="Status" selectOptions={STATUS}/>
+							<div className="flex justify-end align-top">
+								<InputPair type={INPUT_TYPES.userStatus} inputValue={selectedStatus}
+									setInputValue={e => setSelectedStatus(e.target.value)} selectOptions={STATUS}/>
 							</div>
 						</>)
 				}

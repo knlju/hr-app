@@ -101,39 +101,37 @@ function QuestionModal({setModalClose, modalId, addToast}) {
 	}
 
 	return (
-		<>
-			<Modal closeModal={() => setModalClose(true)}>
-				<div
-					className="inline-block bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all p-6 flex-col align-middle text-gray-900 dark:text-white dark:bg-gray-900 w-[300px] md:w-[500px]">
-					<div className="flex justify-between items-center mb-3">
-						<h1 className="text-lg text-gray-900 dark:text-white">Answer The Question</h1>
-						<button
-							onClick={() => {
-								setModalClose()
-							}}
-						>
-							<i className="fas fa-times text-gray-900 dark:text-gray-100"/>
-						</button>
-					</div>
-					<p className="text-base lg:text-lg text-gray-900 dark:text-gray-100 mb-5">{question}</p>
-
-					{jsxAnswerInput}
-
-					<div className="mt-5 flex justify-center items-center gap-6">
-						<button className="text-white bg-red-700 hover:bg-red-500 rounded px-4 py-2"
-							onClick={() => {
-								setModalClose()
-							}}
-						>
-                        Cancel
-						</button>
-						<button className="text-white bg-orange-600 hover:bg-orange-500 rounded px-4 py-2" type="button"
-							onClick={handleAnswer}>SUBMIT
-						</button>
-					</div>
+		<Modal closeModal={() => setModalClose(true)}>
+			<div
+				className="inline-block bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all p-6 flex-col align-middle text-gray-900 dark:text-white dark:bg-gray-900 w-[300px] md:w-[500px]">
+				<div className="flex justify-between items-center mb-3">
+					<h1 className="text-lg text-gray-900 dark:text-white">Answer The Question</h1>
+					<button
+						onClick={() => {
+							setModalClose()
+						}}
+					>
+						<i className="fas fa-times text-gray-900 dark:text-gray-100"/>
+					</button>
 				</div>
-			</Modal>
-		</>
+				<p className="text-base lg:text-lg text-gray-900 dark:text-gray-100 mb-5">{question}</p>
+
+				{jsxAnswerInput}
+
+				<div className="mt-5 flex justify-center items-center gap-6">
+					<button className="text-white bg-red-700 hover:bg-red-500 rounded px-4 py-2"
+						onClick={() => {
+							setModalClose()
+						}}
+					>
+                        Cancel
+					</button>
+					<button className="text-white bg-orange-600 hover:bg-orange-500 rounded px-4 py-2" type="button"
+						onClick={handleAnswer}>SUBMIT
+					</button>
+				</div>
+			</div>
+		</Modal>
 	)
 }
 

@@ -67,7 +67,7 @@ const DraggableList = ({renderItemContent, questionList, setQuestionList}) => {
 		try {
 			for (let i = 0; i < questionList.length; i++) {
 				// delete old order
-				await mutateAsync({id: questionList[i].id, order: -questionList[i].attributes.order})
+				await mutateAsync({id: questionList[i].id, order: -(questionList[i].attributes.order + 11000)})
 			}
 
 			for (let i = 0; i < questionList.length; i++) {

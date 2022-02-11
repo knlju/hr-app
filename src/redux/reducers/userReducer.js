@@ -7,16 +7,10 @@ const initialState = {
 	error: null,
 	profile: null,
 	image: null,
-	routeFreshnes: 0
 }
 
 export default (state = initialState, { type, payload }) => {
 	switch (type) {
-	case "REFRESH":
-		return {
-			...state,
-			routeFreshnes: state.routeFreshnes + 1,
-		}
 	case actions.LOGIN_START:
 		return {
 			...state,

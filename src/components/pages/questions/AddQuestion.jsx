@@ -8,6 +8,8 @@ import {Link} from "react-router-dom"
 import Alert from "../../shared/Alert"
 import InputPair from "../../shared/InputPair"
 import {INPUT_TYPES} from "../../../constants"
+import {useToast} from "../../../contexts/ToastProvider"
+import {_makeUniqueOrder} from "../../../utils"
 
 const AddQuestion = (props) => {
 	const dispatch = useDispatch()
@@ -74,29 +76,29 @@ const AddQuestion = (props) => {
 		} else {
 			api.addQuestions(payload)
 		}
-	})
-
-	const _makeUniqueOrder = () => {
-		let ord = 0
-		let exit = false
-		while (exit === false) {
-			if (parseInt(ord) in uniqueOrders) {
-				ord++
+	},{
+		onSuccess: () => {
+			if (modeEdit === true) {
+				addToast({type: "success", text: "Question edited successfully!"})
 			} else {
-				exit = true
+				addToast({type: "success", text: "Question added successfully!"})
+			}
+			
+			setTimeout(() => {
+				navigate("/questions")
+			}, 1000)
+		},
+		onError: () => {
+			if (modeEdit === true) {
+				addToast({type: "danger", text: "Question edit failed!"})
+			} else {
+				addToast({type: "danger", text: "Adding question failed!"})
 			}
 		}
-		return ord
-	}
+	})
 
 	const [error, setError] = useState(false)
-	const [alert, setAlert] = useState({show: false})
-	const handleAlert = ({type, text}) => {
-		setAlert({show: true, type, text})
-		setTimeout(() => {
-			setAlert({show: false})
-		}, 3000)
-	}
+	const addToast= useToast()
 
 
 	const handleQuestion = (e) => {
@@ -110,13 +112,6 @@ const AddQuestion = (props) => {
 				order: questionOrder
 			}
 			mutate(payload)
-			setTimeout(() => {
-				handleAlert({type: "success", text: "Question edited successfully!"})
-			}, 1000)
-			setTimeout(() => {
-				navigate("/questions")
-			}, 2000)
-			dispatch({type: "REFRESH"})
 		} else {
 			// ADD
 			if (!questionName || questionName === "") {
@@ -126,27 +121,18 @@ const AddQuestion = (props) => {
 					companyID,
 					text: questionName,
 					type: questionType,
-					order: _makeUniqueOrder()
+					order: _makeUniqueOrder(uniqueOrders)
 				}
 				mutate(payload)
-				setTimeout(() => {
-					handleAlert({type: "success", text: "Question added successfully!"})
-				}, 1000)
-				setTimeout(() => {
-					navigate("/questions")
-				}, 2000)
-				dispatch({type: "REFRESH"})
 			}
-
 		}
 	}
 
 
 	return (
 		<>
-			{alert.show && <Alert type={alert.type} text={alert.text}/>}
 			<div className="text-center">
-				<h2 className="inline-block bg-white mb-3 rounded-lg shadow-lg text-gray-900 py-2 px-4">{modeEdit ? "Edit question" : "Add question"}</h2>
+				<h2 className="inline-block bg-white mb-3 rounded shadow-lg text-gray-900 py-2 px-4">{modeEdit ? "Edit question" : "Add question"}</h2>
 
 				<div className="flex justify-between items-center mx-auto max-w-screen-lg py-10">
 					<div
@@ -165,7 +151,7 @@ const AddQuestion = (props) => {
 							</div>
 
 							<button type="submit"
-								className="w-full text-white inline-block bg-orange-600 hover:bg-orange-500 mb-5 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
+								className="w-full text-white inline-block bg-orange-600 hover:bg-orange-500 mb-5 focus:ring-4 focus:ring-blue-300 font-medium rounded text-sm px-5 py-2.5 text-center"
 								onClick={handleQuestion}>{modeEdit ? "Save" : "Add"}
 							</button>
 							<div>

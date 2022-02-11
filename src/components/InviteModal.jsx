@@ -3,54 +3,84 @@ import Modal from "./shared/Modal"
 import InputPair from "./shared/InputPair"
 import PropTypes from "prop-types"
 import {useInviteMutation} from "../hooks"
+import {useToast} from "../contexts/ToastProvider"
 
 function InviteModal({closeModal, companySlug}) {
 
 	const [email, setEmail] = useState("")
+	const [errorEmail, setErrorEmail] = useState("")
+	const addToast = useToast()
 
-	const {mutate, isLoading, isError} = useInviteMutation()
+	const {mutate} = useInviteMutation({
+		onError: () => {
+			addToast({type: "danger", text: "Invitation failed!"})
+		},
+		onSuccess: () => {
+			addToast({type: "success", text: "Invitation successful!"})
+		}
+	})
 
-	function handleSubmit (e) {
+	const validateEmail = () => {
+		if (!email || email === "") {
+			setErrorEmail("Email cant be empty!")
+			return false
+		}
+		// else if (emailRegEx.test(email)) {
+		// 	setErrorEmail("Not a valid email!")
+		// 	return false
+		// }
+		else {
+			setErrorEmail(false)
+			return true
+		}
+	}
+
+	function handleSubmit(e) {
 		e.preventDefault()
+		if (!validateEmail()) return
 		mutate({email, companySlug})
 		closeModal()
 	}
 
 	return (
 		<Modal closeModal={closeModal}>
-			<div>
-				{isLoading && <p>Loading</p>}
-				{isError && <p>Error</p>}
-				<form onSubmit={handleSubmit}>
-					<div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
-						<div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
-							<h3 className="text-lg leading-6 font-medium text-gray-900" id="modal-title">
-                                    Invite
-							</h3>
-							<div className="mt-2">
-								<InputPair labelText="email" inputValue={email} setInputValue={e => setEmail(e.target.value)} type="text" />
-							</div>
-						</div>
-					</div>
-					<div className="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
-						<button type="submit"
-							className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm">
-                            Invite
-						</button>
-						<button type="button"
-							className="mt-3 disabled:opacity-50 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm"
-							onClick={closeModal}>
-                            Cancel
-						</button>
-					</div>
-				</form>
+			<div
+				className="inline-block bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all p-6 flex-col align-middle text-gray-900 dark:text-white dark:bg-gray-900 w-[300px] md:w-[500px]">
+				<div className="flex justify-between items-center mb-3">
+					<h1 className="text-lg text-gray-900 dark:text-white">Invite a member</h1>
+					<button
+						onClick={closeModal}
+					>
+						<i className="fas fa-times text-gray-900 dark:text-gray-100"/>
+					</button>
+				</div>
+
+				<div>
+					<InputPair type="email"
+						inputValue={email}
+						onBlur={validateEmail}
+						onFocus={() => setErrorEmail("")}
+						error={errorEmail}
+						setInputValue={e => setEmail(e.target.value)} labelText="Email"/>
+				</div>
+
+				<div className="mt-5 flex justify-center items-center gap-6">
+					<button className="text-white bg-red-700 hover:bg-red-500 rounded px-4 py-2"
+						onClick={closeModal}
+					>
+                        Cancel
+					</button>
+					<button className="text-white bg-orange-600 hover:bg-orange-500 rounded px-4 py-2" type="button"
+						onClick={handleSubmit}>SUBMIT
+					</button>
+				</div>
 			</div>
 		</Modal>
 	)
 }
 
 InviteModal.propTypes = {
-	closeModal:PropTypes.func,
+	closeModal: PropTypes.func,
 	companySlug: PropTypes.string
 }
 

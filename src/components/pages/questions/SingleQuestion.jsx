@@ -8,14 +8,31 @@ import "../../../styles/CustomStyles.css"
 import {useDeleteQuestionMutation, useDeleteUserAnswerMutation} from "../../../hooks"
 import {useQueryClient} from "react-query"
 import Alert from "../../shared/Alert"
+import {useToast} from "../../../contexts/ToastProvider"
 
-const SingleQuestion = (props) => {
+const SingleQuestion = ({question, setModalOpen}) => {
 
 	const queryClient = useQueryClient()
 
 	const navigate = useNavigate()
 	const isAdmin = useSelector(defaultState => defaultState.user.profile.attributes.userRole)
 	const [admin, setAdmin] = useState("")
+	const addToast = useToast()
+	const [questionDeleteModal, setQuestionDeleteModal] = useState(false)
+
+	const {mutateAsync: deleteAnswerAsync} = useDeleteUserAnswerMutation()
+	const {mutateAsync: deleteQuestionAsync} = useDeleteQuestionMutation({
+		onSuccess: async deletedQuestion => {
+			await deletedQuestion?.data?.data.attributes?.answers?.data?.forEach(async answer => {
+				return await deleteAnswerAsync(answer.id)
+			})
+			addToast({type: "success", text: "Question deleted successfully!"})
+			queryClient.invalidateQueries("getQuestions")
+		},
+		onError: () => {
+			addToast({type: "danger", text: "Question deletetion failed!"})
+		}
+	})
 
 	useEffect(() => {
 		if (isAdmin === "company_admin") {
@@ -23,43 +40,19 @@ const SingleQuestion = (props) => {
 		}
 	}, [])
 
-	const [questionDeleteModal, setQuestionDeleteModal] = useState(false)
-
-	const {mutateAsync: deleteAnswerAsync} = useDeleteUserAnswerMutation()
-	const {mutateAsync: deleteQuestionAsync} = useDeleteQuestionMutation({
-		onSuccess: deletedQuestion => {
-			deletedQuestion?.data?.data.attributes?.answers?.data?.forEach(async answer => {
-				return await deleteAnswerAsync(answer.id)
-			})
-			queryClient.invalidateQueries("getQuestions")
-		}
-	})
-
-	const question = props.question
-	const id = question.id
-	const text = question.attributes.text
+	const {id, attributes: {text}} = question
 
 	const handleEdit = (id) => {
 		navigate(`/edit-question/${id}`)
 	}
 
-	const [alert, setAlert] = useState({show: false})
-	const handleAlert = ({type, text}) => {
-		setAlert({show: true, type, text})
-		setTimeout(() => {
-			setAlert({show: false})
-		}, 3000)
-	}
-
 	const handleDelete = async (id) => {
 		await deleteQuestionAsync(id)
-		handleAlert({type: "danger", text: "Question deleted successfully!"})
 		setQuestionDeleteModal(false)
 	}
 
 	return (
 		<>
-			{alert.show && <Alert type={alert.type} text={alert.text}/>}
 			{questionDeleteModal &&
                 <DeleteUserModal onCancel={() => setQuestionDeleteModal(false)} modeQuestion={true} onConfirm={() => {handleDelete(id)}}
                 />}
@@ -93,7 +86,7 @@ const SingleQuestion = (props) => {
 
 						<div className="flex items-center">
 							<button className="tooltip" onClick={() => {
-								props.setModalOpen(id)
+								setModalOpen(id)
 							}}>
 								<i className="far fa-eye hover:text-cyan-800 cursor-pointer"/>
 								<span className="tooltiptext">answer</span>

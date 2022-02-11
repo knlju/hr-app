@@ -79,12 +79,12 @@ export const TeamPage = () => {
 				<DeleteUserModal disabled={isDeleteUserLoading || isDeleteAnswerLoading} onCancel={() => setUserToDelete(false)} onConfirm={deleteUser} user={userToDelete}/>}
 			{(isDeleteUserLoading || isDeleteAnswerLoading) && <Loader/>}
 			{inviteModalOpen && <InviteModal companySlug={companySlug} closeModal={() => setInviteModalOpen(false)} />}
-			<div className="flex flex-col md:flex-row md:justify-between md:items-center text-gray-900 dark:text-gray-100 mb-5">
-				<div className="flex items-center gap-4">
-					<img className="w-16 h-16 rounded-md mr-4" src={companyLogo} alt={companyName} />
-					<h1 className="text-lg">{companyName}</h1>
+			<div className="flex flex-col md:flex-row md:justify-between md:items-center text-gray-900 dark:text-gray-100 mb-8">
+				<div className="flex flex-col items-center md:flex-row md:items-center gap-6">
+					<img className="w-36 h-36 md:w-24 md:h-24 rounded-md" src={companyLogo} alt={companyName} />
+					<h1 className="text-xl md:text-2xl tracking-wide">{companyName}</h1>
 				</div>
-				<div className="text-center mt-5">
+				<div className="text-center mt-5 md:mt-0">
 					<button className="text-sm md:text-base bg-orange-600 tracking-wide text-gray-100 py-2 px-2 rounded" onClick={addNewTeamMember}>+ Add New Team Member</button>
 				</div>
 			</div>

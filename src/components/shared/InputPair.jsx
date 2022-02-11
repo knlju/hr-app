@@ -21,6 +21,10 @@ function InputPair({labelText, inputValue, setInputValue, type, selectOptions, p
 		return <SelectInput labelText={labelText} inputValue={inputValue} setInputValue={setInputValue} options={selectOptions} onFocus={onFocus} onBlur={onBlur} error={error}/>
 	}
 
+	if (type === INPUT_TYPES.userStatus) {
+		return <UserStatusInput labelText={labelText} inputValue={inputValue} setInputValue={setInputValue} options={selectOptions} onFocus={onFocus} onBlur={onBlur} error={error}/>
+	}
+
 	if (type === INPUT_TYPES.email) {
 		return <EmailInput labelText={labelText} inputValue={inputValue} setInputValue={setInputValue} onFocus={onFocus} onBlur={onBlur} error={error}/>
 	}
@@ -47,13 +51,13 @@ InputPair.propTypes = {
 }
 
 const ImageQAInput = ({labelText, image, setImage}) => (
-	<div>
+	<div className="mb-5">
 		<label htmlFor="formFile"
-			className="form-label text-sm font-medium text-gray-900 block dark:text-gray-100">
+			className="text-sm lg:text-base form-label font-medium text-gray-900 block dark:text-gray-100">
 			{labelText}
 		</label>
 		<input
-			className="relative bg-gray-100 border border-gray-100 text-gray-900 text-sm lg:text-base rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white file:bg-gray-900 file:text-white file:border-0 file:rounded-md file:px-2 file:py-1 file:absolute file:top-1.5 file:right-1"
+			className="relative bg-gray-100 border border-gray-100 text-gray-900 text-sm lg:text-base rounded focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white file:bg-gray-900 file:text-white file:border-0 file:rounded-md file:px-2 file:py-1 file:absolute file:top-1.5 file:right-1"
 			type="file" id="formFile" accept="image/*"
 			onChange={setImage}
 		/>
@@ -70,13 +74,13 @@ ImageQAInput.propTypes = {
 }
 
 const TextInput = ({labelText, inputValue, setInputValue, placeholder, onFocus, onBlur, error}) => (
-	<div>
+	<div className="mb-5">
 		<label htmlFor="userName"
-			className="text-sm font-medium text-gray-900 block dark:text-gray-100">
+			className="text-sm lg:text-base font-medium text-gray-900 block dark:text-gray-100">
 			{labelText}
 		</label>
 		<input type="text" name="username"
-			className="bg-gray-100 border border-gray-100 text-gray-900 text-sm lg:text-base rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" value={inputValue} required=""
+			className="bg-gray-100 border border-gray-100 text-gray-900 text-sm lg:text-base rounded focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" value={inputValue} required=""
 			onChange={setInputValue} placeholder={placeholder} onFocus={onFocus} onBlur={onBlur}/>
 		{error && <span className="text-xs text-red-700">{error}</span>}
 
@@ -94,9 +98,9 @@ TextInput.propTypes = {
 }
 
 const LongTextInput = ({labelText, inputValue, setInputValue, placeholder,onFocus, onBlur,error}) => (
-	<div>
+	<div className="mb-5">
 		<label htmlFor="userName"
-			className="text-sm font-medium text-gray-900 block dark:text-gray-100">
+			className="text-sm lg:text-base font-medium text-gray-900 block dark:text-gray-100">
 			{labelText}
 		</label>
 		<textarea
@@ -124,13 +128,13 @@ LongTextInput.propTypes = {
 }
 
 const SelectInput = ({labelText, inputValue, setInputValue, options,onFocus, onBlur,error}) => (
-	<div>
+	<div className="mb-5">
 		<label htmlFor="userName"
 			className="text-sm lg:text-base font-medium text-gray-900 block dark:text-gray-100">
 			{labelText}
 		</label>
 		<select
-			className="bg-gray-100 border border-gray-100 text-gray-900 text-sm lg:text-base rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
+			className="bg-gray-100 border border-gray-100 text-gray-900 text-sm lg:text-base rounded focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
 			value={inputValue} onChange={setInputValue} id="formCompanies" onFocus={onFocus} onBlur={onBlur}>
 			{options.map(option => (
 				<option key={option.id} value={option.id}>{option.attributes.name}</option>
@@ -150,14 +154,41 @@ SelectInput.propTypes = {
 	error: PropTypes.any
 }
 
-const EmailInput = ({labelText, inputValue, setInputValue,onFocus, onBlur, error}) => (
+const UserStatusInput = ({labelText, inputValue, setInputValue, options,onFocus, onBlur,error}) => (
 	<div>
+		<label htmlFor="userName"
+			className="text-sm lg:text-base font-medium text-gray-900 block dark:text-gray-100">
+			{labelText}
+		</label>
+		<select
+			className="bg-gray-100 border border-gray-100 text-gray-900 text-sm lg:text-base rounded focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
+			value={inputValue} onChange={setInputValue} onFocus={onFocus} onBlur={onBlur}>
+			{options.map(option => (
+				<option key={option.id} value={option.id}>{option.attributes.name}</option>
+			))}
+		</select>
+		{error && <span className="text-xs text-red-700">{error}</span>}
+	</div>
+)
+
+UserStatusInput.propTypes = {
+	labelText: PropTypes.string,
+	inputValue: PropTypes.any,
+	setInputValue: PropTypes.func,
+	options: PropTypes.array,
+	onFocus: PropTypes.func,
+	onBlur: PropTypes.func,
+	error: PropTypes.any
+}
+
+const EmailInput = ({labelText, inputValue, setInputValue,onFocus, onBlur, error}) => (
+	<div className="mb-5">
 		<label htmlFor="email"
 			className="text-sm lg:text-base font-medium text-gray-900 block dark:text-gray-100">
 			{labelText}
 		</label>
 		<input type="email" name="email" id="email"
-			className="bg-gray-100 border border-gray-100 text-gray-900 text-sm lg:text-base rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white placeholder:text-sm"
+			className="bg-gray-100 border border-gray-100 text-gray-900 text-sm lg:text-base rounded focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white placeholder:text-sm"
 			placeholder="Email..." value={inputValue} required=""
 			onChange={setInputValue} onFocus={onFocus} onBlur={onBlur}/>
 		{error && <span className="text-xs text-red-700">{error}</span>}
@@ -174,13 +205,13 @@ EmailInput.propTypes = {
 }
 
 const PasswordInput = ({labelText, inputValue, setInputValue, onFocus, onBlur, error}) => (
-	<div>
+	<div className="mb-5">
 		<label htmlFor="password"
 			className="text-sm lg:text-base font-medium text-gray-900 block dark:text-gray-100">
 			{labelText}
 		</label>
 		<input type="password" name="password"
-			className="bg-gray-100 border border-gray-100 text-gray-900 text-sm lg:text-base rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
+			className="bg-gray-100 border border-gray-100 text-gray-900 text-sm lg:text-base rounded focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
 			placeholder="*******" value={inputValue} required=""
 			onChange={setInputValue} onFocus={onFocus} onBlur={onBlur}/>
 		{error && <span className="text-xs text-red-700">{error}</span>}

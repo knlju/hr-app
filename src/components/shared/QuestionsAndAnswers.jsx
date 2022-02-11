@@ -200,6 +200,18 @@ function QuestionsAndAnswers({profileId, companyId}) {
 		setMappedQuestionsAndAnswers(newQuestions)
 	}
 
+	// const [errorQuestion, setErrorQuestion] = useState(false)
+	// const validateQuestion = () => {
+	// 	if (!userName || userName === "") {
+	// 		setErrorQuestion("Question Name can't be empty!")
+	// 		return false
+	// 	} 
+	// 	else {
+	// 		setErrorQuestion(false)
+	// 		return true
+	// 	}
+	// }
+
 	if (questionsLoading || answersLoading || uploadImageLoading) {
 		return <SpinnerLoader/>
 	}
@@ -213,7 +225,7 @@ function QuestionsAndAnswers({profileId, companyId}) {
 			{updateAnswerLoading || postAnswerLoading && <Loader/>}
 			{updateAnswerError || postAnswerError && <p>Update error... :(</p>}
 			<div
-				className="bg-white shadow-md border border-gray-200 rounded-lg mx-auto w-2/5 max-w-md p-4 sm:p-6 lg:p-8 dark:bg-gray-800 dark:border-gray-700">
+				className="bg-white shadow-md rounded-lg w-full max-w-md p-4 sm:p-6 lg:p-8 dark:bg-gray-900">
 				<form onSubmit={saveAnswers}>
 					{mappedQuestionsAndAnswers.map(pair => {
 						return (
@@ -223,12 +235,15 @@ function QuestionsAndAnswers({profileId, companyId}) {
 								inputValue={pair.attributes.answers?.data[0]?.attributes.answer}
 								type={pair.attributes?.type}
 								setInputValue={e => updatePair(e, pair)}
+								// onFocus={()=>setErrorQuestion(false)} 
+								// onBlur={validateQuestion} 
+								// error={errorQuestion}
 							/>
 						)
 					})}
 					<button type="submit"
 						// disabled={disabled}
-						className="disabled:opacity-70 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+						className="disabled:opacity-70 text-white w-full bg-orange-600 hover:bg-orange-500 focus:ring-4 focus:ring-blue-300 font-medium rounded text-sm px-5 py-2.5 text-center"
 					>
                         Save
 					</button>

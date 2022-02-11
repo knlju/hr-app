@@ -3,7 +3,7 @@ const adminNav = [
 		link: "/",
 		section: "company wall",
 		icon: <i className='fas fa-home fa-fw mr-3'/>,
-		text: "company wall"
+		text: "Company wall"
 	},
 	{
 		link: "/pending",
@@ -39,6 +39,12 @@ const adminNav = [
 
 const userNav = [
 	{
+		link: "/",
+		section: "company wall",
+		icon: <i className='fas fa-home fa-fw mr-3'/>,
+		text: "Company wall"
+	},
+	{
 		link: "/team",
 		section: "team",
 		icon: <i className='fas fa-users fa-fw mr-3'/>,
@@ -63,7 +69,7 @@ const guestNav = [
 		link: "/",
 		section: "company wall",
 		icon: <i className='fas fa-home fa-fw mr-3'/>,
-		text: "company wall"
+		text: "Company wall"
 	}
 ]
 

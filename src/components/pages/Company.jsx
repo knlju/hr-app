@@ -65,15 +65,28 @@ export const Company = () => {
 	})
 	const handleSubmit = async (e) => {
 		e.preventDefault()
-		const payload = {
-			id: companyID,
-			name: companyName,
+		if(validateCompanyName()) {
+			const payload = {
+				id: companyID,
+				name: companyName,
+			}
+			if (companyLogo) {
+				await uploadImageAsyncMutation(companyLogo)
+				payload.imageToSend = companyLogo
+			} else {
+				mutate(payload)
+			}
 		}
-		if (companyLogo) {
-			await uploadImageAsyncMutation(companyLogo)
-			payload.imageToSend = companyLogo
-		} else {
-			mutate(payload)
+	}
+	const [errorCompanyName, setErrorCompanyName] = useState(false)
+	const validateCompanyName = () => {
+		if (!companyName || companyName === "") {
+			setErrorCompanyName("Company Name can't be empty!")
+			return false
+		} 
+		else {
+			setErrorCompanyName(false)
+			return true
 		}
 	}
 
@@ -100,6 +113,9 @@ export const Company = () => {
 					newPhoto={companyLogo}
 					setNewPhoto={setCompanyLogo}
 					disabled={editLoading}
+					onFocus={()=>setErrorCompanyName(false)} 
+					onBlur={validateCompanyName} 
+					error={errorCompanyName}
 				/>
 			</div>
 		</>

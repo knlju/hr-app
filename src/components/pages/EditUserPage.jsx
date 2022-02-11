@@ -14,6 +14,7 @@ import InfoForm from "../shared/InfoForm"
 import Loader from "../shared/Loader"
 import DeleteUserModal from "../shared/DeleteUserModal"
 import InputPair from "../shared/InputPair"
+import { Link } from "react-router-dom"
 
 const STATUS = [
 	{id: "pending", attributes: {name: "pending"}},
@@ -65,24 +66,26 @@ function EditUserPage() {
 
 	async function onSave(e) {
 		e.preventDefault()
-		const profileUpdateOptions = {
-			name: username
+		if(validateProfileName()) {
+			const profileUpdateOptions = {
+				name: username
+			}
+			if (userProfilePhoto) {
+				const uploadedImageResponse = await uploadImageAsyncMutation(userProfilePhoto)
+				profileUpdateOptions.profilePhoto = uploadedImageResponse?.data[0].id
+			}
+			if (selectedStatus) {
+				profileUpdateOptions.status = selectedStatus
+			}
+			await updateProfileAsyncMutation({profileId: parseInt(profileId), putOptions: profileUpdateOptions})
+			setUserProfilePhoto(false)
+			refetch()
 		}
-		if (userProfilePhoto) {
-			const uploadedImageResponse = await uploadImageAsyncMutation(userProfilePhoto)
-			profileUpdateOptions.profilePhoto = uploadedImageResponse?.data[0].id
-		}
-		if (selectedStatus) {
-			profileUpdateOptions.status = selectedStatus
-		}
-		await updateProfileAsyncMutation({profileId: parseInt(profileId), putOptions: profileUpdateOptions})
-		setUserProfilePhoto(false)
-		refetch()
 	}
 
 	function navigateAfterAction() {
 		if (user.data.data.attributes.status === "pending") {
-			navigate("/team/pending")
+			navigate("/pending")
 		} else {
 			navigate("/team")
 		}
@@ -108,6 +111,17 @@ function EditUserPage() {
 	}
 
 	useEffect(() => console.log({selectedStatus}), [selectedStatus])
+	const [errorProfileName, setErrorProfileName] = useState(false)
+	const validateProfileName = () => {
+		if (!username || username === "") {
+			setErrorProfileName("Profile Name can't be empty!")
+			return false
+		} 
+		else {
+			setErrorProfileName(false)
+			return true
+		}
+	}
 
 	if (isLoading) {
 		return <SpinnerLoader/>
@@ -128,6 +142,9 @@ function EditUserPage() {
 				user={user.data.data}
 				disabled={isDeleteUserLoading || isDeleteAnswerLoading}
 				onConfirm={deleteUser}/>}
+			<div>
+				<button onClick={navigateAfterAction} className="text-sm hover:underline text-orange-500 hover:text-orange-400 flex items-center gap-2 mb-4"><i className="fas fa-caret-square-left"></i>Go back</button>
+			</div>
 			<div
 				className="flex justify-between items-center mx-auto max-w-screen-lg p-6
 				bg-white text-gray-900 shadow-md rounded-lg
@@ -173,7 +190,10 @@ function EditUserPage() {
 					newPhoto={userProfilePhoto}
 					disabled={isError || isLoading}
 					photo={user?.data?.data?.attributes?.profilePhoto?.data?.attributes.url}
-					action={onSave}/>
+					action={onSave}
+					onFocus={()=>setErrorProfileName(false)} 
+					onBlur={validateProfileName} 
+					error={errorProfileName}/>
 				<QuestionsAndAnswers companyId={user?.company?.id} profileId={parseInt(profileId)}/>
 			</div>
 		</div>

@@ -200,6 +200,18 @@ function QuestionsAndAnswers({profileId, companyId}) {
 		setMappedQuestionsAndAnswers(newQuestions)
 	}
 
+	// const [errorQuestion, setErrorQuestion] = useState(false)
+	// const validateQuestion = () => {
+	// 	if (!userName || userName === "") {
+	// 		setErrorQuestion("Question Name can't be empty!")
+	// 		return false
+	// 	} 
+	// 	else {
+	// 		setErrorQuestion(false)
+	// 		return true
+	// 	}
+	// }
+
 	if (questionsLoading || answersLoading || uploadImageLoading) {
 		return <SpinnerLoader/>
 	}
@@ -223,6 +235,9 @@ function QuestionsAndAnswers({profileId, companyId}) {
 								inputValue={pair.attributes.answers?.data[0]?.attributes.answer}
 								type={pair.attributes?.type}
 								setInputValue={e => updatePair(e, pair)}
+								// onFocus={()=>setErrorQuestion(false)} 
+								// onBlur={validateQuestion} 
+								// error={errorQuestion}
 							/>
 						)
 					})}

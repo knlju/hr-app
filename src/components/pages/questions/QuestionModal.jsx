@@ -104,8 +104,7 @@ function QuestionModal({setModalClose, modalId, addToast}) {
 		<>
 			<Modal closeModal={() => setModalClose(true)}>
 				<div
-					className="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all p-6 flex-col sm:align-middle sm:max-w-lg
-				sm:w-full text-gray-900 dark:text-white dark:bg-gray-900 ">
+					className="inline-block bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all p-6 flex-col align-middle text-gray-900 dark:text-white dark:bg-gray-900 w-[300px] md:w-[500px]">
 					<div className="flex justify-between items-center mb-3">
 						<h1 className="text-lg text-gray-900 dark:text-white">Answer The Question</h1>
 						<button
@@ -121,14 +120,14 @@ function QuestionModal({setModalClose, modalId, addToast}) {
 					{jsxAnswerInput}
 
 					<div className="mt-5 flex justify-center items-center gap-6">
-						<button className="text-white bg-red-700 hover:bg-red-500 rounded-lg px-4 py-2"
+						<button className="text-white bg-red-700 hover:bg-red-500 rounded px-4 py-2"
 							onClick={() => {
 								setModalClose()
 							}}
 						>
                         Cancel
 						</button>
-						<button className="text-white bg-orange-600 hover:bg-orange-500 rounded-lg px-4 py-2" type="button"
+						<button className="text-white bg-orange-600 hover:bg-orange-500 rounded px-4 py-2" type="button"
 							onClick={handleAnswer}>SUBMIT
 						</button>
 					</div>

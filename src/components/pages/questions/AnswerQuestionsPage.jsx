@@ -62,14 +62,12 @@ export const AnswerQuestionsPage = () => {
 		})
 	}
    
-
 	const nextPerson = ()=>{
 		setIndex((index)=>{
 			let newIndex = index + 1
 			return checkNumber(newIndex)
 		})
 	}
-
 
 	const {
 		mutate

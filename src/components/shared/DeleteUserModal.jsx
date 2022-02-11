@@ -6,7 +6,7 @@ function DeleteUserModal({onConfirm, onCancel, user, modeQuestion, disabled}) {
 	return(
 		<Modal closeModal={onCancel}>
 			<div
-				className="inline-block align-bottom bg-white dark:bg-gray-900 rounded-lg text-left overflow-hidden  transform transition-all sm:align-middle sm:max-w-lg sm:w-full p-6">
+				className="inline-block align-bottom bg-white dark:bg-gray-900 rounded-lg text-left overflow-hidden  transform transition-all w-[300px] md:w-fit sm:align-middle sm:max-w-lg sm:w-full p-6">
 				<div className="">
 					<div className="sm:flex sm:items-start">
 						<div

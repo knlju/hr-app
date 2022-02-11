@@ -5,7 +5,7 @@ import PropTypes from "prop-types"
 function UserCard({user, openDeleteModal, mainAction, actionName, noActions = false}) {
 	return (
 		<div key={user.id}
-			className="p-4 rounded-md shadow-md bg-white dark:bg-gray-900 overflow-hidden text-gray-900 dark:text-white">
+			className="p-4 h-[350px] sm:h-fit 2xl:h-[400px] 2xl:max-w-[380px] rounded-md shadow-md bg-white dark:bg-gray-900 overflow-hidden text-gray-900 dark:text-white">
 			<div className="">
 				{
 					user?.attributes?.profilePhoto?.data?.attributes?.url ?

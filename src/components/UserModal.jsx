@@ -11,7 +11,7 @@ function UserModal({user, closeModal}) {
 	return (
 		<Modal closeModal={closeModal}>
 			<div className="absolute cursor-pointer top-3 right-5" onClick={closeModal}>
-				<i className="fas fa-times text-base"/>
+				<i className="fas text-gray-900 dark:text-gray-100 fa-times text-base"/>
 			</div>
 			<div className="flex flex-col md:flex-row w-[300px] max-h-5/6 md:w-[700px] md:max-h-[500px] bg-white dark:bg-gray-800 dark:text-white">
 				<div className="flex-1">

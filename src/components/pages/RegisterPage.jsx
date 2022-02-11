@@ -196,12 +196,11 @@ const RegisterPage = () => {
 		
 		return emailValid && passwordValid && usernameValid && companyValid
 	}
-	// TODO: Add file preview
+	// TODO: Add file preview , error sa beka u toast
 	return (
 		<>
 			{user.isLoading && <Loader/>}
 			{user.error && <h1 className="text-6xl">{JSON.stringify(user.error)}</h1>}
-			{alert.show && <Alert type={alert.type} text={alert.text}/>}
 			<div className="flex justify-between items-center mx-auto max-w-screen-lg py-10">
 				<div
 					className="bg-white shadow-md border border-gray-200 rounded-lg mx-auto w-full lg:w-2/5 max-w-md p-4 sm:p-6 lg:p-8 dark:bg-gray-800 dark:border-gray-700">

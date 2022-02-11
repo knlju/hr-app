@@ -45,7 +45,7 @@ function CompanyWall() {
 	return (
 		<>
 			<div
-				className="flex flex-col gap-4 md:flex-row md:justify-between md:flex-wrap items-center w-full mx-auto p-6 bg-white rounded-lg shadow-lg text-gray-900 dark:bg-gray-900 dark:text-gray-100 mb-6">
+				className="flex flex-col md:gap-4 md:flex-row md:justify-between md:flex-wrap items-center w-full mx-auto p-6 bg-white rounded-lg shadow-lg text-gray-900 dark:bg-gray-900 dark:text-gray-100 mb-6">
 				<div className="w-full md:w-44">
 					<InputPair
 						labelText="Select a company"
@@ -80,7 +80,7 @@ function CompanyWall() {
 
 			</div>
 			{modalUser && <UserModal user={modalUser} closeModal={() => setModalUser(null)}/>}
-			<div className="grid gap-5 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+			<div className="grid gap-5 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
 				{
 					users?.data?.data?.map(user => (
 						<div key={user.id} className="cursor-pointer" onClick={() => setModalUser(user)}>

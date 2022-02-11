@@ -2,7 +2,7 @@ import React from "react"
 import PropTypes from "prop-types"
 import InputPair from "./InputPair"
 
-function InfoForm({name, setName, photo, newPhoto, setNewPhoto, disabled, action, isCompany = false}) {
+function InfoForm({name, setName, photo, newPhoto, setNewPhoto, disabled, action, isCompany = false, onFocus, onBlur, error}) {
 	return (
 		<form
 			onSubmit={action}
@@ -12,7 +12,7 @@ function InfoForm({name, setName, photo, newPhoto, setNewPhoto, disabled, action
 			</span>
 			<div>
 				<InputPair type="text" inputValue={name}
-					setInputValue={e => setName(e.target.value)} labelText={!isCompany ? "User" : "Company" + " name"}/>
+					setInputValue={e => setName(e.target.value)} labelText={!isCompany ? "User" : "Company" + " name"} onFocus={onFocus} error={error} onBlur={onBlur}/>
 			</div>
 			<div>
 				<InputPair type="image" inputValue={name}
@@ -48,6 +48,9 @@ InfoForm.propTypes = {
 	disabled: PropTypes.bool,
 	action: PropTypes.func,
 	isCompany: PropTypes.bool,
+	error: PropTypes.any,
+	onFocus: PropTypes.func,
+	onBlur: PropTypes.func,
 }
 
 export default InfoForm

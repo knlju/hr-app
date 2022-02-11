@@ -37,8 +37,8 @@ export const MyProfile = () => {
 		mutate,
 		isLoading: editLoading,
 		isError: editError
-	} = useMutation((payload) => {
-		api.editMyProfile(payload)
+	} = useMutation(async (payload) => {
+		await api.editMyProfile(payload)
 	}, {
 		onSuccess: () => addToast({type: "success", text: "Profile successfully changed!"}),
 		onError: () => addToast({type: "danger", text: "Failed to update profile!"})
@@ -46,8 +46,8 @@ export const MyProfile = () => {
 
 	const {
 		mutate: password,
-	} = useMutation((payload) => {
-		api.editPassword(payload)
+	} = useMutation(async (payload) => {
+		await api.editPassword(payload)
 	}, {
 		onSuccess: () => addToast({type: "success", text: "Password successfully changed!"}),
 		onError: () => addToast({type: "danger", text: "Failed to change password!"})
@@ -59,13 +59,15 @@ export const MyProfile = () => {
 
 	const handleSubmit = (e) => {
 		e.preventDefault()
-		if (profileId) {
-			const payload = {
-				id: profileId,
-				username: userName,
-				imageToSend: userProfilePhoto
+		if(validateProfileName()) {
+			if (profileId) {
+				const payload = {
+					id: profileId,
+					username: userName,
+					imageToSend: userProfilePhoto
+				}
+				mutate(payload)
 			}
-			mutate(payload)
 		}
 	}
 
@@ -82,6 +84,18 @@ export const MyProfile = () => {
 		}
 	}
 
+	const [errorProfileName, setErrorProfileName] = useState(false)
+	const validateProfileName = () => {
+		if (!userName || userName === "") {
+			setErrorProfileName("Profile Name can't be empty!")
+			return false
+		} 
+		else {
+			setErrorProfileName(false)
+			return true
+		}
+	}
+
 	if (isLoading) {
 		return <SpinnerLoader/>
 	}
@@ -95,7 +109,7 @@ export const MyProfile = () => {
 			{editLoading && <Loader/>}
 			{editError && <p>Update error... Try again</p>}
 			<div
-				className="flex flex-col lg:flex-row lg:justify-between lg:items-start mx-auto max-w-screen-lg py-10 gap-4">
+				className="flex flex-col lg:flex-row lg:justify-between lg:items-start mx-auto max-w-screen-lg gap-4">
 				<InfoForm
 					name={userName}
 					setName={setUserName}
@@ -104,6 +118,9 @@ export const MyProfile = () => {
 					newPhoto={userProfilePhoto}
 					setNewPhoto={setUserProfilePhoto}
 					disabled={editLoading}
+					onFocus={()=>setErrorProfileName(false)} 
+					onBlur={validateProfileName} 
+					error={errorProfileName}
 				/>
 				<div
 					className="bg-white shadow-md border border-gray-200 rounded-lg w-full max-w-md p-4 sm:p-6 lg:p-8 dark:bg-gray-900 dark:border-gray-700">

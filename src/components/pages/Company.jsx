@@ -98,7 +98,6 @@ export const Company = () => {
 		return <p>Loading error...</p>
 	}
 
-	// TODO sredi company
 	return (
 		<>
 			<div className="flex justify-center items-top mx-auto max-w-screen-lg py-10">

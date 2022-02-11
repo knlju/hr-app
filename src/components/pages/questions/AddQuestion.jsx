@@ -58,7 +58,6 @@ const AddQuestion = (props) => {
 					setQuestionsLength(arr.length)
 				})
 			}
-			//TODO: ni ovde ne radi
 			queryClient.invalidateQueries("getQuestions")
 		},
 		enabled: false

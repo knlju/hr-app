@@ -27,7 +27,6 @@ function* login({email, password}) {
 			yield put(loginSuccess(data.user))
 			yield call(fetchPopulatedUser, data.user.id)
 		} else {
-			// TODO: da li ovo treba da se proverava? :)
 			yield put(loginError("Login epic Fail"))
 		}
 	} catch (error) {
@@ -72,7 +71,6 @@ function* register(payload) {
 			yield put(registerSuccess(data.user))
 			yield call(registerOrchestrator, payload)
 		} else {
-			// TODO: da li ovo treba da se proverava? :)
 			yield put(registerError("Register Failed"))
 		}
 	} catch (error) {
@@ -113,7 +111,6 @@ function* uploadImageWatcher() {
 	}
 }
 
-// TODO: add response checking (error, data, etc.)
 function* createNewProfile({name, company, user, userRole, profilePhoto = undefined}) {
 	try {
 		const requestConfig = {name, company, user, userRole}

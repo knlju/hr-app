@@ -4,8 +4,6 @@ import PropTypes from "prop-types"
 const ThemeContext = createContext()
 export const useTheme = () => useContext(ThemeContext)
 
-// TODO: dodati reducer, ili je to previse za ovako mali use case
-
 const ThemeProvider = ({children}) => {
 
 	const [theme, setTheme] = useState(localStorage.getItem("theme") || "dark")

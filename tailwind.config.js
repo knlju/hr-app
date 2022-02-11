@@ -8,4 +8,3 @@ module.exports = {
 	plugins: [],
 	darkMode: "class"
 }
-// TODO: dodati light it dark temu ovde

@@ -14,6 +14,7 @@ import SpinnerLoader from "../shared/SpinnerLoader"
 import DeleteUserModal from "../shared/DeleteUserModal"
 import UserCard from "../shared/UserCard"
 import InviteModal from "../InviteModal"
+import {useToast} from "../../contexts/ToastProvider"
 
 export const TeamPage = () => {
 	const companyId = useSelector(state => state.companies.userCompany.data.id)
@@ -24,6 +25,7 @@ export const TeamPage = () => {
 	const [userToDelete, setUserToDelete] = useState(false)
 	const [inviteModalOpen, setInviteModalOpen] = useState(false)
 	const navigate = useNavigate()
+	const addToast = useToast()
 
 	const {data: company} = useQuery(["getOurCompany", companyId],
 		() => api.getOurCompany(companyId), {
@@ -56,6 +58,7 @@ export const TeamPage = () => {
 			return await mutateDeleteAnswerAsync(answer.id)
 		})
 		setUserToDelete(false)
+		addToast({type: "success", text: "Deletion successful!"})
 		refetch()
 	}
 

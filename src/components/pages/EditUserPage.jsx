@@ -14,8 +14,8 @@ import InfoForm from "../shared/InfoForm"
 import Loader from "../shared/Loader"
 import DeleteUserModal from "../shared/DeleteUserModal"
 import InputPair from "../shared/InputPair"
-import { Link } from "react-router-dom"
 import { INPUT_TYPES } from "../../constants"
+import {useToast} from "../../contexts/ToastProvider"
 
 const STATUS = [
 	{id: "pending", attributes: {name: "pending"}},
@@ -26,6 +26,7 @@ function EditUserPage() {
 
 	const {id: profileId} = useParams()
 	const navigate = useNavigate()
+	const addToast = useToast()
 
 	const {data: user, isLoading, isError, refetch} = useUserProfileQuery(parseInt(profileId), {
 		onSuccess: user => {
@@ -45,7 +46,14 @@ function EditUserPage() {
 		mutateAsync: updateProfileAsyncMutation,
 		isLoading: isProfileUpdateLoading,
 		isError: isProfileUpdateError
-	} = useEditProfileMutation()
+	} = useEditProfileMutation({
+		onError: () => {
+			addToast({type: "danger", text: "Update failed!"})
+		},
+		onSuccess: () => {
+			addToast({type: "success", text: "Update successful!"})
+		}
+	})
 
 	const {
 		mutateAsync: publishProfileAsyncMutation,
@@ -94,6 +102,7 @@ function EditUserPage() {
 
 	async function approveTeamMember() {
 		await publishProfileAsyncMutation(parseInt(profileId))
+		addToast({type: "success", text: "Update successful!"})
 		navigateAfterAction()
 	}
 
@@ -103,15 +112,19 @@ function EditUserPage() {
 	}
 
 	async function deleteUser() {
-		await mutateDeleteUserAsync(userToDelete.data.data.id)
-		await userToDelete.attributes?.answers?.data.forEach(async answer => {
-			await mutateDeleteAnswerAsync(answer.id)
-		})
-		setUserToDelete(false)
-		navigateAfterAction()
+		try {
+			await mutateDeleteUserAsync(userToDelete.data.data.id)
+			await userToDelete.attributes?.answers?.data.forEach(async answer => {
+				await mutateDeleteAnswerAsync(answer.id)
+			})
+			setUserToDelete(false)
+			addToast({type: "success", text: "Deleted successfully!"})
+			navigateAfterAction()
+		} catch (err) {
+			addToast({type: "danger", text: "Deletion unsuccessful!"})
+		}
 	}
 
-	useEffect(() => console.log({selectedStatus}), [selectedStatus])
 	const [errorProfileName, setErrorProfileName] = useState(false)
 	const validateProfileName = () => {
 		if (!username || username === "") {
@@ -131,8 +144,6 @@ function EditUserPage() {
 	if (isError) {
 		return <p>Loading error...</p>
 	}
-
-	console.log({user})
 
 	return (
 		<div>

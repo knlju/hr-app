@@ -3,7 +3,7 @@ import {useMutation} from "react-query"
 import api from "../../api"
 import {useSelector} from "react-redux"
 import SpinnerLoader from "../shared/SpinnerLoader"
-import {useGetMyProfile} from "../../hooks"
+import {useGetMyProfile, usePostImageMutation} from "../../hooks"
 import InfoForm from "../shared/InfoForm"
 import Loader from "../shared/Loader"
 import InputPair from "../shared/InputPair"
@@ -33,12 +33,17 @@ export const MyProfile = () => {
 			setUserName(data?.data?.data?.[0]?.attributes.name)
 		}
 	})
+
 	const {
-		mutate,
+		mutateAsync: uploadImageAsyncMutation
+	} = usePostImageMutation()
+
+	const {
+		mutateAsync,
 		isLoading: editLoading,
 		isError: editError
 	} = useMutation(async (payload) => {
-		await api.editMyProfile(payload)
+		await api.editProfile(payload.id, payload)
 	}, {
 		onSuccess: () => addToast({type: "success", text: "Profile successfully changed!"}),
 		onError: () => addToast({type: "danger", text: "Failed to update profile!"})
@@ -57,17 +62,20 @@ export const MyProfile = () => {
 		refetch()
 	}, [])
 
-	const handleSubmit = (e) => {
+	const handleSubmit = async (e) => {
 		e.preventDefault()
 		if(validateProfileName()) {
-			if (profileId) {
-				const payload = {
-					id: profileId,
-					username: userName,
-					imageToSend: userProfilePhoto
-				}
-				mutate(payload)
+			const updateOptions = {
+				id: profileId,
+				username: userName,
 			}
+			if (userProfilePhoto) {
+				const uploadedImageResponse = await uploadImageAsyncMutation(userProfilePhoto)
+				updateOptions.profilePhoto = uploadedImageResponse?.data[0].id
+			}
+			await mutateAsync(updateOptions)
+			setUserProfilePhoto(false)
+			refetch()
 		}
 	}
 
@@ -76,7 +84,6 @@ export const MyProfile = () => {
 		if (profileId) {
 			const payload = {
 				id: profileId,
-				// code: "privateCode",
 				password: newPassword,
 				passwordConfirmation: newPassword
 			}

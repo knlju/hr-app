@@ -7,6 +7,7 @@ import Loader from "../shared/Loader"
 import InputPair from "../shared/InputPair"
 import { INPUT_TYPES } from "../../constants"
 import Alert from "../shared/Alert"
+import {emailRegEx} from "../../utils"
 
 const CreateNewCompany = ({companyName, setCompanyName, companySlug, setCompanySlug, setErrorCompanyName, setErrorCompanySlug, validateCompanyName, validateCompanySlug, errorCompanyName, errorCompanySlug}) => {
 
@@ -47,7 +48,7 @@ const RegisterPage = () => {
 	const [password, setPassword] = useState("")
 	const [companyId, setCompanyId] = useState("-1")
 	const [userRole, setUserRole] = useState("company_user")
-	const [image, setImage] = useState("cicada")
+	const [image, setImage] = useState(null)
 	const [companyName, setCompanyName] = useState("")
 	const [companySlug, setCompanySlug] = useState("")
 
@@ -62,7 +63,6 @@ const RegisterPage = () => {
 	const submitRegistration = (e) => {
 		e.preventDefault()
 		if(validate()) {
-		// TODO: odradi validaciju za kompaniju
 			let company = companyId
 			const payload = {username, email, password, company, userRole}
 			if (parseInt(companyId) < 1) {
@@ -78,24 +78,9 @@ const RegisterPage = () => {
 
 	function handleCompanyChange(e) {
 		setCompanyId(e.target.value)
-		console.log("companies.companies.find:", companies.companies.find(company => company.id === parseInt(e.target.value)))
 		dispatch(createCompanySuccess({data: companies.companies.find(company => company.id === parseInt(e.target.value))}))
 	}
 
-
-	// function handleUserRoleChange(e) {
-	// 	setUserRole(e.target.value)
-	// }
-
-	// function handleImageChange(e) {
-	// 	console.log(e)
-	// 	setImage(e.target.files[0])
-	// }
-
-
-	// if (isLoggedIn) {
-	// 	return <Navigate to="/"/>
-	// }
 	const ROLE = [
 		{id: "company_user", attributes: {name: "User"}},
 		{id: "company_admin", attributes: {name: "Admin"}},
@@ -112,20 +97,16 @@ const RegisterPage = () => {
 	const [errorCompany, setErrorCompany] = useState(false)
 	const [errorCompanyName, setErrorCompanyName] = useState(false)
 	const [errorCompanySlug, setErrorCompanySlug] = useState(false)
-	const emailRegEx =
-        /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
 
-
-
-		
 	const validateEmail = () => {
 		if (!email || email === "") {
 			setErrorEmail("Email can't be empty!")
 			return false
-		} else if (emailRegEx){
-			setErrorEmail("Not valid email!")
-			return false
-		} 
+		}
+		// else if (emailRegEx.test(email)){
+		// 	setErrorEmail("Not valid email!")
+		// 	return false
+		// }
 		else {
 			setErrorEmail(false)
 			return true
@@ -196,7 +177,7 @@ const RegisterPage = () => {
 		
 		return emailValid && passwordValid && usernameValid && companyValid
 	}
-	// TODO: Add file preview , error sa beka u toast
+	// TODO: error sa beka u toast
 	return (
 		<>
 			{user.isLoading && <Loader/>}
@@ -223,6 +204,12 @@ const RegisterPage = () => {
 						<div>
 							<InputPair type={INPUT_TYPES.image}
 								setInputValue={e => setImage(e.target.files[0])} labelText="Profile photo"/>
+							{image && (
+								<div className="mt-5">
+									<p className="mb-3 text-sm text-gray-900 dark:text-gray-100">Photo preview:</p>
+									<img className="rounded-md w-40 h-40 object-cover" src={URL.createObjectURL(image)} alt="new photo"/>
+								</div>
+							)}
 						</div>
 						<div>
 							<InputPair type={INPUT_TYPES.select} inputValue={userRole}

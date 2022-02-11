@@ -23,7 +23,7 @@ const api = {
      *    Calls endpoing for creation of a new profile
      *    for the user after registration
      *
-     * @param {String} name - TODO: is name username?
+     * @param {String} name - username
      * @param {Number} company - ID of the company
      * @param {Number} user - ID of the user
      * @param {String} userRole - either 'comapny_user' or 'company_admin'
@@ -189,40 +189,27 @@ const api = {
 			})
 	},
 
-	// TODO: dodati paginaciju
 	/**
-     * Gets all pending populated profiles
-     *
-     * @returns {Promise<AxiosResponse<any>>}
-     */
-	getPublishedTeamMemberProfiles: (companyId = 7) => {
-		console.log({companyId})
-		return axiosInstanceWithAuth.get(`/api/profiles?filters[status][$eq]=published&filters[company][id][$eq]=${companyId}&sort=createdAt&populate=*`)
+	 * Gets all pending populated profiles
+	 *
+	 * @param companyId
+	 * @param page
+	 * @returns {Promise<AxiosResponse<any>>}
+	 */
+	getPublishedTeamMemberProfiles: (companyId = 7, page = 1) => {
+		return axiosInstanceWithAuth.get(`/api/profiles?filters[status][$eq]=published&filters[company][id][$eq]=${companyId}&sort=createdAt&pagination[page]=${page}&populate=*`)
 	},
 
-	// TODO: i ovde dodati paginaciju
 	/**
-     * Gets all published populated profiles by company ID
-     * default company ID is the ID of our company 7
-     *
-     * @param {Number} companyId - Company ID, default 7
-     * @returns {Promise<AxiosResponse<any>>}
-     */
-	getPendingTeamMemberProfiles: (companyId = 7) => {
-		console.log({companyId})
-		return axiosInstanceWithAuth.get(`/api/profiles?filters[status][$eq]=pending&filters[company][id][$eq]=${companyId}&sort=createdAt&populate=*`)
-	},
-
-	// TODO: i ovde dodati paginaciju
-	/**
-     * Gets all published populated profiles by company ID
-     * default company ID is the ID of our company 7
-     *
-     * @param {Number} companyId - Company ID, default 7
-     * @returns {Promise<AxiosResponse<any>>}
-     */
-	getAllPendingProfiles: () => {
-		return axiosInstanceWithAuth.get(`/api/profiles?filters[status][$eq]=pending&sort=createdAt&populate=*&pagination[pageSize]=1000`)
+	 * Gets all published populated profiles by company ID
+	 * default company ID is the ID of our company 7
+	 *
+	 * @param {Number} companyId - Company ID, default 7
+	 * @param page
+	 * @returns {Promise<AxiosResponse<any>>}
+	 */
+	getPendingTeamMemberProfiles: (companyId = 7, page = 1) => {
+		return axiosInstanceWithAuth.get(`/api/profiles?filters[status][$eq]=pending&filters[company][id][$eq]=${companyId}&pagination[page]=${page}&sort=createdAt&populate=*`)
 	},
 
 	/**
@@ -270,12 +257,11 @@ const api = {
      * Updates profile
      *
      * @param {Number} profileId
-     * @param {Object} options - Update parameters
+     * @param {Object} putOptions - Update parameters
      * @returns {Promise<AxiosResponse<any>>}
      */
 	editProfile: (profileId, putOptions) => {
-		//todo da li da populate i da hvatam sliku ovde ili ne hmm
-		return axiosInstanceWithAuth.put(`/api/profiles/${profileId}?populate=*`, {
+		return axiosInstanceWithAuth.put(`/api/profiles/${profileId}`, {
 			data: {
 				...putOptions
 			}

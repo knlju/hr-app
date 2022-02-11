@@ -36,8 +36,6 @@ function InputPair({labelText, inputValue, setInputValue, type, selectOptions, p
 	return null
 }
 
-//TODO: dodati validaciju
-
 InputPair.propTypes = {
 	labelText: PropTypes.string,
 	inputValue: PropTypes.any,

@@ -1,100 +1,62 @@
-import React, { useEffect } from "react"
+import React from "react"
 import PropTypes from "prop-types"
-import { useState } from "react"
-import { useSelector } from "react-redux"
-import { useMutation, useQuery } from "react-query"
+import {useState} from "react"
+import {useSelector} from "react-redux"
+import {useMutation} from "react-query"
 import api from "../../../api"
 import Modal from "../../shared/Modal"
 import ReactDOM from "react-dom"
 import Alert from "../../shared/Alert"
 import InputPair from "../../shared/InputPair"
-import { useGetCompanyQuestions } from "../../../hooks"
+import {useGetCompanyQuestions} from "../../../hooks"
+import {INPUT_TYPES} from "../../../constants"
+import {_extractQuestionById, _extractQuestionType} from "../../../utils"
 
-const _extractQuestionById = (id, arr) => {
-	let selected = null
-	arr.forEach(question=>{
-		if(question.id === id) {
-			selected = question.attributes.text
-		}
-	})
-	return selected
-}
-const _extractQuestionType = (id, arr) => {
-	let type = null
-	arr.forEach(question=>{
-		if(question.id === id) {
-			type = question.attributes.type
-		}
-	})
-	return type
-}
-
-function QuestionModal({ setModalClose, modalId }) {
+function QuestionModal({setModalClose, modalId, addToast}) {
 	const [question, setQuestion] = useState("")
 	const [answer, setAnswer] = useState("")
 	const [answerImage, setAnswerImage] = useState(null)
 	const [questionType, setQuestionType] = useState("")
-	// const isLoggedIn = useSelector(defaultState => defaultState.user.isLoggedIn)
 	const companyID = useSelector(defaultState => defaultState.user.profile.attributes.company.data.id)
 	const userProfile = useSelector(defaultState => defaultState.user.profile.id)
 
 	const [error, setError] = useState(false)
 
-	// const {data, refetch} = useQuery("getQuestions", async ()=>{
-	// 		const token = await localStorage.getItem("token")
-	// 		if (token) {
-	// 			return api.getQuestions(companyID)
-	// 		}
-	// })
-	const {data: company_questions} = useGetCompanyQuestions(companyID, {
-		onSuccess: company_questions => {
-			setQuestion(_extractQuestionById(modalId, company_questions.data.data))
-			setQuestionType(_extractQuestionType(modalId, company_questions.data.data))
+	useGetCompanyQuestions(companyID, {
+		onSuccess: data => {
+			setQuestion(_extractQuestionById(modalId, data.data.data))
+			setQuestionType(_extractQuestionType(modalId, data.data.data))
 		}
 	})
-
-	// useEffect(() => {
-	// 	if (data && data.data && data.data.data) {
-	// 		setQuestion(_extractQuestionById(modalId, data.data.data))
-	// 		setQuestionType(_extractQuestionType(modalId, data.data.data))
-	// 	}
-	// }, [data])
-
 
 	const {
 		mutate
-	} = useMutation((payload)=>{ 
-		if(questionType === "text" || questionType === "long_text") {
-			
-			api.addAnswer(payload)
-				.then((response)=>{
-					setTimeout(() => {
-						setModalClose()
-					}, 1000)
+	} = useMutation(async (payload) => {
+		if (questionType === "text" || questionType === "long_text") {
+			await api.addAnswer(payload)
+				.then(() => {
+					setModalClose()
 				})
-			
-		} else if(questionType === "image") {
-			api.addImageAnswer(payload)
-				.then((response)=>{
-					setTimeout(() => {
-						setModalClose()
-					}, 1000)
-					
+
+		} else if (questionType === "image") {
+			await api.addImageAnswer(payload)
+				.then(() => {
+					setModalClose()
 				})
 		}
+	}, {
+		onError: () => {
+			addToast({type: "danger", text: "Error while posting answer!"})
+		},
+		onSuccess: () => {
+			addToast({type: "success", text: "Answer added successfully!"})
+		}
 	})
-	const [alert, setAlert] = useState({ show: false })
-	const handleAlert = ({ type, text }) => {
-		setAlert({ show: true, type, text })
-		setTimeout(() => {
-			setAlert({ show: false })
-		}, 3000)
-	}
 
-	const handleAnswer = (e)=> {
+	const handleAnswer = async (e) => {
 		e.preventDefault()
-		if(questionType === "text" || questionType === "long_text") {
-			if(!answer && answer === "") {
+		if (questionType === "text" || questionType === "long_text") {
+			if (!answer && answer === "") {
 				setError(true)
 			} else {
 				const payload = {
@@ -102,14 +64,10 @@ function QuestionModal({ setModalClose, modalId }) {
 					answer: answer,
 					userProfile: userProfile
 				}
-				mutate(payload)
-				
-				setTimeout(() => {
-					handleAlert({ type: "success", text: "Answer added successfully!" })
-				}, 1000)
+				await mutate(payload)
 			}
-		} else if(questionType === "image") {
-			if(!answerImage && answerImage === null) {
+		} else if (questionType === "image") {
+			if (!answerImage && answerImage === null) {
 				setError(true)
 			} else {
 				const payload = {
@@ -117,13 +75,10 @@ function QuestionModal({ setModalClose, modalId }) {
 					imageToSend: answerImage,
 					userProfile: userProfile
 				}
-				mutate(payload)
-				setTimeout(() => {
-					handleAlert({ type: "success", text: "Image added successfully!" })
-				}, 1000)
+				await mutate(payload)
 			}
 		}
-		
+
 	}
 
 	let jsxAnswerInput = null
@@ -131,54 +86,55 @@ function QuestionModal({ setModalClose, modalId }) {
 		jsxAnswerInput = (
 			<div>
 				<InputPair type="text" inputValue={answer}
-					setInputValue={e => setAnswer(e.target.value)} labelText="Your answer"></InputPair>
-				{error && <span className="text-xs text-red-700">Please, enter your answer.</span> }
+					setInputValue={e => setAnswer(e.target.value)} labelText="Your answer"/>
+				{error && <span className="text-xs text-red-700">Please, enter your answer.</span>}
 			</div>
 		)
 	} else if (questionType === "image") {
 		jsxAnswerInput = (
 			<div>
-				<InputPair type="image" inputValue={answerImage}
-					setInputValue={e => setAnswerImage(e.target.files[0])} labelText="Place for your picture"></InputPair>
-				{error && <span className="text-xs text-red-700">Please, upload your picture.</span> }
+				<InputPair type={INPUT_TYPES.image} inputValue={answerImage}
+					setInputValue={e => setAnswerImage(e.target.files[0])} labelText="Place for your picture"/>
+				{error && <span className="text-xs text-red-700">Please, upload your picture.</span>}
 			</div>
 		)
 	}
 
-	return ReactDOM.createPortal(
-		
-		<Modal closeModal={()=>{}}>
-			
-			<div className="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all p-6 flex-col sm:my-8 sm:align-middle sm:max-w-lg sm:w-full text-gray-900 dark:text-white dark:bg-gray-900 ">
-				<div className="flex justify-between items-center mb-3">
-					<h1 className="text-lg text-gray-900 dark:text-white">Answer The Question</h1>
-					<button className=""
-						onClick={() => {
-							setModalClose()
-						}}
-					>
-						<i className="fas fa-times text-gray-900 dark:text-gray-100"></i>
-					</button>
-				</div>
-				<p className="text-base lg:text-lg text-gray-900 dark:text-gray-100 mb-5">{question}</p>
+	return (
+		<>
+			<Modal closeModal={() => setModalClose(true)}>
+				<div
+					className="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all p-6 flex-col sm:align-middle sm:max-w-lg
+				sm:w-full text-gray-900 dark:text-white dark:bg-gray-900 ">
+					<div className="flex justify-between items-center mb-3">
+						<h1 className="text-lg text-gray-900 dark:text-white">Answer The Question</h1>
+						<button
+							onClick={() => {
+								setModalClose()
+							}}
+						>
+							<i className="fas fa-times text-gray-900 dark:text-gray-100"/>
+						</button>
+					</div>
+					<p className="text-base lg:text-lg text-gray-900 dark:text-gray-100 mb-5">{question}</p>
 
-				{jsxAnswerInput}
-				{alert.show && <Alert type={alert.type} text={alert.text} />}
+					{jsxAnswerInput}
 
-				<div className="mt-5 flex justify-center items-center gap-6">
-					<button className="text-white bg-red-700 hover:bg-red-500 rounded-lg px-4 py-2"
-						onClick={() => {
-							setModalClose()
-						}}
-					>
-            Cancel
-					</button>
-					<button className="text-white bg-orange-600 hover:bg-orange-500 rounded-lg px-4 py-2 " type="button" onClick={handleAnswer}>SUBMIT</button>
+					<div className="mt-5 flex justify-center items-center gap-6">
+						<button className="text-white bg-red-700 hover:bg-red-500 rounded-lg px-4 py-2"
+							onClick={() => {
+								setModalClose()
+							}}
+						>
+                        Cancel
+						</button>
+						<button className="text-white bg-orange-600 hover:bg-orange-500 rounded-lg px-4 py-2" type="button"
+							onClick={handleAnswer}>SUBMIT
+						</button>
+					</div>
 				</div>
-			</div>
-			
-		</Modal>,
-		document.getElementById("portal")
+			</Modal>
+		</>
 	)
 }
 
@@ -186,5 +142,6 @@ export default QuestionModal
 
 QuestionModal.propTypes = {
 	modalId: PropTypes.number,
-	setModalClose: PropTypes.func
+	setModalClose: PropTypes.func,
+	addToast: PropTypes.func
 }

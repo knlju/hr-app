@@ -8,6 +8,7 @@ import { useGetCompanyQuestions } from "../../../hooks"
 import "../../../styles/CustomStyles.css"
 import InputPair from "../../shared/InputPair"
 import Alert from "../../shared/Alert"
+import {useToast} from "../../../contexts/ToastProvider"
 
 export const AnswerQuestionsPage = () => {
 	const companyID = useSelector(defaultState => defaultState.user?.profile?.attributes?.company?.data?.id)
@@ -18,8 +19,9 @@ export const AnswerQuestionsPage = () => {
 	const [answerImage, setAnswerImage] = useState(null)
 	const [error, setError] = useState(false)
 
+	const addToast = useToast()
 
-	const {data: company_questions, isLoading} = useGetCompanyQuestions(companyID, {
+	const {isLoading} = useGetCompanyQuestions(companyID, {
 		onSuccess: company_questions => {
 			const sortedQuestions = company_questions?.data?.data.sort(compare)
 			setQuestions(sortedQuestions)
@@ -36,8 +38,6 @@ export const AnswerQuestionsPage = () => {
 		}
 		return 0
 	}
-
-	
 
 	const {id, attributes} = questions[index]
 	const text = attributes?.text
@@ -80,14 +80,19 @@ export const AnswerQuestionsPage = () => {
 		} else if(questionType === "image") {
 			api.addImageAnswer(payload)
 		}
+	},{
+		onSuccess: () => {
+			if (questionType === "text" || questionType === "long_text") {
+				addToast({ type: "success", text: "Answer added successfully!" })
+			} else if (questionType === "image"){
+				addToast({ type: "success", text: "Image added successfully!" })
+			}
+		},
+		onError: () => {
+			addToast({ type: "danger", text: "Answering failed!" })
+		}
 	})
-	const [alert, setAlert] = useState({ show: false })
-	const handleAlert = ({ type, text }) => {
-		setAlert({ show: true, type, text })
-		setTimeout(() => {
-			setAlert({ show: false })
-		}, 3000)
-	}
+
 	const handleAnswer = (e)=> {
 		e.preventDefault()
 		if(questionType === "text" || questionType === "long_text") {
@@ -100,10 +105,6 @@ export const AnswerQuestionsPage = () => {
 					userProfile: userProfile
 				}
 				mutate(payload)
-				
-				setTimeout(() => {
-					handleAlert({ type: "success", text: "Answer added successfully!" })
-				}, 1000)
 				setAnswer("")
 			}
 		} else if(questionType === "image") {
@@ -116,9 +117,6 @@ export const AnswerQuestionsPage = () => {
 					userProfile: userProfile
 				}
 				mutate(payload)
-				setTimeout(() => {
-					handleAlert({ type: "success", text: "Image added successfully!" })
-				}, 1000)
 				setAnswerImage(null)
 			}
 		}
@@ -131,7 +129,7 @@ export const AnswerQuestionsPage = () => {
 		jsxAnswerInput = (
 			<div>
 				<InputPair type="text" inputValue={answer}
-					setInputValue={e => setAnswer(e.target.value)} labelText="Your answer"></InputPair>
+					setInputValue={e => setAnswer(e.target.value)} labelText="Your answer"/>
 				{error && <span className="text-xs text-red-700">Please, enter your answer.</span> }
 			</div>
 		)
@@ -139,7 +137,7 @@ export const AnswerQuestionsPage = () => {
 		jsxAnswerInput = (
 			<div>
 				<InputPair type="image" inputValue={answerImage}
-					setInputValue={e => setAnswerImage(e.target.files[0])} labelText="Place for your picture"></InputPair>
+					setInputValue={e => setAnswerImage(e.target.files[0])} labelText="Place for your picture"/>
 				{error && <span className="text-xs text-red-700">Please, upload your picture.</span> }
 			</div>
 		)
@@ -151,7 +149,6 @@ export const AnswerQuestionsPage = () => {
 
 	return (
 		<>
-			{alert.show && <Alert type={alert.type} text={alert.text} />}
 			<div className="flex justify-between align-top mx-auto max-w-screen-lg py-10">
 				<div className="relative overflow-hidden rounded-lg shadow-lg w-64 md:w-2/3 m-auto bg-white dark:bg-gray-900 p-5">
 					<div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between mb-8 text-gray-900 dark:text-white">
@@ -167,11 +164,11 @@ export const AnswerQuestionsPage = () => {
 					</div>
 					<div className="flex items-center justify-center gap-5">
 						<button className="cursor-pointer tooltip" onClick={prevPerson}>
-							<i className="fas fa-caret-square-left text-gray-900 hover:text-gray-600 text-3xl"></i>
+							<i className="fas fa-caret-square-left text-gray-900 hover:text-gray-600 text-3xl dark:text-white"/>
 							<span className="tooltiptext">prev question</span>
 						</button>
 						<button className="cursor-pointer tooltip" onClick={nextPerson}>
-							<i className="fas fa-caret-square-right text-gray-900 hover:text-gray-600 text-3xl"></i>
+							<i className="fas fa-caret-square-right text-gray-900 hover:text-gray-600 text-3xl dark:text-white"/>
 							<span className="tooltiptext">next question</span>
 						</button>
 					</div>

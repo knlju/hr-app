@@ -1,18 +1,18 @@
-import jwtDecode from "jwt-decode"
 import React, {useState, useEffect} from "react"
 import {useMutation, useQuery} from "react-query"
-import {useSelector} from "react-redux"
 import api from "../../api"
 import InfoForm from "../shared/InfoForm"
 import Loader from "../shared/Loader"
 import {useGetMyProfile, usePostImageMutation} from "../../hooks"
 import SpinnerLoader from "../shared/SpinnerLoader"
 import Alert from "../shared/Alert"
+import {useToast} from "../../contexts/ToastProvider"
 
 export const Company = () => {
 	// const isLoggedIn = useSelector(defaultState => defaultState.user.isLoggedIn)
 	const [companyName, setCompanyName] = useState("")
 	const [companyLogo, setCompanyLogo] = useState(null)
+	const addToast = useToast()
 
 	const [image, setImage] = useState(null)
 
@@ -57,16 +57,12 @@ export const Company = () => {
 		mutate,
 		isLoading: editLoading,
 		isError: editError
-	} = useMutation((payload) => {
-		api.editOurCompany(payload)
+	} = useMutation(async (payload) => {
+		await api.editOurCompany(payload)
+	},{
+		onSuccess: () => addToast({type: "success", text: "Company info successfully changed!"}),
+		onError: () => addToast({type: "danger", text: "Error while changing company info!"})
 	})
-	const [alert, setAlert] = useState({show: false})
-	const handleAlert = ({type, text}) => {
-		setAlert({show: true, type, text})
-		setTimeout(() => {
-			setAlert({show: false})
-		}, 4000)
-	}
 	const handleSubmit = async (e) => {
 		e.preventDefault()
 		const payload = {
@@ -79,9 +75,6 @@ export const Company = () => {
 		} else {
 			mutate(payload)
 		}
-		setTimeout(() => {
-			handleAlert({type: "success", text: "Company info successfully changed!"})
-		}, 1000)
 	}
 
 	if (isLoading) {
@@ -95,7 +88,6 @@ export const Company = () => {
 	// TODO sredi company
 	return (
 		<>
-			{alert.show && <Alert type={alert.type} text={alert.text}/>}
 			<div className="flex justify-center items-top mx-auto max-w-screen-lg py-10">
 				{editLoading && <Loader/>}
 				{editError && <p>Update error... Try again</p>}

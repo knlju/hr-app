@@ -1,11 +1,11 @@
-import React, {useEffect, useState} from "react"
+import React, {useState} from "react"
 import {useGetAllCompanies, useGetAllFilteredProfilesQuery} from "../../hooks"
-import Loader from "../shared/Loader"
 import UserCard from "../shared/UserCard"
 import UserModal from "../UserModal"
 import InputPair from "../shared/InputPair"
 import {INPUT_TYPES, ORDER, SORT} from "../../constants"
 import useDebounce from "../../hooks/useDebounce"
+import SpinnerLoader from "../shared/SpinnerLoader"
 
 function CompanyWall() {
 
@@ -35,7 +35,7 @@ function CompanyWall() {
 	} = useGetAllCompanies()
 
 	if (usersLoading) {
-		return <Loader/>
+		return <SpinnerLoader/>
 	}
 
 	if (usersError) {
@@ -44,7 +44,8 @@ function CompanyWall() {
 
 	return (
 		<>
-			<div className="flex flex-col gap-4 md:flex-row md:justify-between md:flex-wrap items-center w-full mx-auto p-6 bg-white rounded-lg shadow-lg text-gray-900 dark:bg-gray-900 dark:text-gray-100 mb-6">
+			<div
+				className="flex flex-col gap-4 md:flex-row md:justify-between md:flex-wrap items-center w-full mx-auto p-6 bg-white rounded-lg shadow-lg text-gray-900 dark:bg-gray-900 dark:text-gray-100 mb-6">
 				<div className="w-full md:w-44">
 					<InputPair
 						labelText="Select a company"
@@ -76,7 +77,7 @@ function CompanyWall() {
 						selectOptions={ORDER}
 						type={INPUT_TYPES.select}/>
 				</div>
-				
+
 			</div>
 			{modalUser && <UserModal user={modalUser} closeModal={() => setModalUser(null)}/>}
 			<div className="grid gap-5 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
@@ -96,7 +97,7 @@ function CompanyWall() {
 						onClick={() => setPage(old => Math.max(old - 1, 0))}
 						disabled={page === 1}
 					>
-                    Prev Page
+                        Prev Page
 					</button>
 					<button
 						className="text-sm bg-orange-600 font-semibold text-gray-100 py-1 px-2 disabled:opacity-50 rounded"
@@ -108,11 +109,12 @@ function CompanyWall() {
 						// Disable the Next Page button until we know a next page is available
 						disabled={isPreviousData || (users?.data?.meta?.pagination?.pageCount <= page)}
 					>
-                    Next Page
+                        Next Page
 					</button>
 				</div>
 			</div>
-			{isFetching ? <span className="block text-base font-semibold text-center text-orange-600"> Loading...</span> : null}
+			{isFetching ?
+				<span className="block text-base font-semibold text-center text-orange-600"> Loading...</span> : null}
 		</>
 	)
 }

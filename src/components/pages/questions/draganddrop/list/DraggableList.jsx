@@ -4,21 +4,17 @@ import PropTypes from "prop-types"
 import "./draggable-list.css"
 
 import DraggableListItem from "./DraggableListItem"
-import {useEffect} from "react"
 import {useMutation} from "react-query"
 import api from "../../../../../api"
-import {useSelector} from "react-redux"
-import {useParams} from "react-router"
 import Loader from "../../../../shared/Loader"
-import SpinnerLoader from "../../../../shared/SpinnerLoader"
-import Alert from "../../../../shared/Alert"
+import {useToast} from "../../../../../contexts/ToastProvider"
 
 const DraggableList = ({renderItemContent, questionList, setQuestionList}) => {
 
-	const [alert, setAlert] = useState({show: false})
-
 	// get index of draged item
 	const [dragStartIndex, setDragStartIndex] = useState(null)
+
+	const addToast = useToast()
 
 	const onDragStart = (index) => setDragStartIndex(index)
 
@@ -64,34 +60,31 @@ const DraggableList = ({renderItemContent, questionList, setQuestionList}) => {
 	} = useMutation(async (payload) => {
 		return await api.putNewQuestionsOrder(payload)
 	})
-	const handleAlert = ({type, text}) => {
-		setAlert({show: true, type, text})
-		setTimeout(() => {
-			setAlert({show: false})
-		}, 3000)
-	}
 
 	const handleNewOrder = async (e) => {
 		e.preventDefault()
 
-		for (let i = 0; i < questionList.length; i++) {
-			// delete old order
-			await mutateAsync({id: questionList[i].id, order: -(i + 40)})
-		}
+		try {
+			for (let i = 0; i < questionList.length; i++) {
+				// delete old order
+				await mutateAsync({id: questionList[i].id, order: -questionList[i].attributes.order})
+			}
 
-		for (let i = 0; i < questionList.length; i++) {
-			// put new order
-			await mutateAsync({id: questionList[i].id, order: questionList[i].attributes.order})
-		}
+			for (let i = 0; i < questionList.length; i++) {
+				// put new order
+				await mutateAsync({id: questionList[i].id, order: questionList[i].attributes.order})
+			}
 
-		handleAlert({type: "success", text: "Order updated successfully!"})
+			addToast({type: "success", text: "Order updated successfully!"})
+		} catch (err) {
+			addToast({type: "danger", text: err.message})
+		}
 	}
 
 	return (
 		<>
 			{isUpdatingQuestionOrder && <Loader/>}
 
-			{alert.show && <Alert type={alert.type} text={alert.text}/>}
 			<ul className="draggable-list w-full">
 				{
 					questionList.map((item, index) => {

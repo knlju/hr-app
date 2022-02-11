@@ -21,6 +21,10 @@ function InputPair({labelText, inputValue, setInputValue, type, selectOptions, p
 		return <SelectInput labelText={labelText} inputValue={inputValue} setInputValue={setInputValue} options={selectOptions} onFocus={onFocus} onBlur={onBlur} error={error}/>
 	}
 
+	if (type === INPUT_TYPES.userStatus) {
+		return <UserStatusInput labelText={labelText} inputValue={inputValue} setInputValue={setInputValue} options={selectOptions} onFocus={onFocus} onBlur={onBlur} error={error}/>
+	}
+
 	if (type === INPUT_TYPES.email) {
 		return <EmailInput labelText={labelText} inputValue={inputValue} setInputValue={setInputValue} onFocus={onFocus} onBlur={onBlur} error={error}/>
 	}
@@ -141,6 +145,33 @@ const SelectInput = ({labelText, inputValue, setInputValue, options,onFocus, onB
 )
 
 SelectInput.propTypes = {
+	labelText: PropTypes.string,
+	inputValue: PropTypes.any,
+	setInputValue: PropTypes.func,
+	options: PropTypes.array,
+	onFocus: PropTypes.func,
+	onBlur: PropTypes.func,
+	error: PropTypes.any
+}
+
+const UserStatusInput = ({labelText, inputValue, setInputValue, options,onFocus, onBlur,error}) => (
+	<div>
+		<label htmlFor="userName"
+			className="text-sm lg:text-base font-medium text-gray-900 block dark:text-gray-100">
+			{labelText}
+		</label>
+		<select
+			className="bg-gray-100 border border-gray-100 text-gray-900 text-sm lg:text-base rounded focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
+			value={inputValue} onChange={setInputValue} onFocus={onFocus} onBlur={onBlur}>
+			{options.map(option => (
+				<option key={option.id} value={option.id}>{option.attributes.name}</option>
+			))}
+		</select>
+		{error && <span className="text-xs text-red-700">{error}</span>}
+	</div>
+)
+
+UserStatusInput.propTypes = {
 	labelText: PropTypes.string,
 	inputValue: PropTypes.any,
 	setInputValue: PropTypes.func,

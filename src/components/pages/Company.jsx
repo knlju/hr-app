@@ -96,7 +96,7 @@ export const Company = () => {
 	return (
 		<>
 			{alert.show && <Alert type={alert.type} text={alert.text}/>}
-			<div className="flex justify-between align-top mx-auto max-w-screen-lg py-10">
+			<div className="flex justify-center items-top mx-auto max-w-screen-lg py-10">
 				{editLoading && <Loader/>}
 				{editError && <p>Update error... Try again</p>}
 				<InfoForm

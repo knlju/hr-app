@@ -25,7 +25,7 @@ const TopNav = () => {
 		<div className='flex items-center justify-between mb-11'>
 			<div className="flex items-center justify-start text-sm">
 				<div className="flex items-center focus:outline-none">
-					<img className="w-10 h-10 rounded-full mr-4" src={isLoggedIn ? image : "https://cdn.cloudflare.steamstatic.com/steamcommunity/public/images/avatars/56/566629c9c0cc8b7a1b1e945a268266dc594ec6f5_full.jpg"} alt={userName}/>
+					<img className="w-12 h-12 rounded-full mr-4" src={isLoggedIn ? image : "https://cdn.cloudflare.steamstatic.com/steamcommunity/public/images/avatars/56/566629c9c0cc8b7a1b1e945a268266dc594ec6f5_full.jpg"} alt={userName}/>
 				</div>
 				<div className="flex">
 					

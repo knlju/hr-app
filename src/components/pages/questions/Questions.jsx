@@ -67,7 +67,7 @@ export const Questions = () => {
 		<>
 			{modalOpen && <QuestionModal setModalClose={() => {setModalOpen(false)}} modalId={modalId} />}
 			<div className="flex flex-col items-center full md:w-4/5 mx-auto">
-				<Link to={"/add-question"}><button className="bg-orange-600 hover:bg-orange-500 mb-5 rounded-lg shadow-lg text-gray-100 py-2 px-4 tracking-wide">ADD QUESTION</button></Link>
+				<Link to={"/add-question"}><button className="bg-orange-600 hover:bg-orange-500 mb-5 rounded shadow-lg text-gray-100 py-2 px-4 tracking-wide">ADD QUESTION</button></Link>
 			
 				{questionList.length > 0 ? <DraggableList
 					questionList={questionList}

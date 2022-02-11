@@ -163,7 +163,7 @@ export const AnswerQuestionsPage = () => {
 					<div className="mb-5">
 						<p className="text-base lg:text-lg text-gray-900 dark:text-gray-100 mb-5 capitalize">{text}</p>
 						{jsxAnswerInput}
-						<button className="text-white bg-orange-600 w-full md:w-2/5 hover:bg-orange-500  rounded-lg px-5 py-2 mt-4 text-sm shadow-md" type="button" onClick={handleAnswer}>Submit</button>
+						<button className="text-white bg-orange-600 w-full md:w-2/5 hover:bg-orange-500 rounded px-5 py-2 mt-4 text-sm shadow-md" type="button" onClick={handleAnswer}>Submit</button>
 					</div>
 					<div className="flex items-center justify-center gap-5">
 						<button className="cursor-pointer tooltip" onClick={prevPerson}>

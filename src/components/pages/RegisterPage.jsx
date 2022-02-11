@@ -255,7 +255,7 @@ const RegisterPage = () => {
                                     have an account?</Link>
 							</div>
 							<button type="submit"
-								className=" text-white bg-orange-600 hover:bg-orange-500 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center shadow-md tracking-wide">Register
+								className=" text-white bg-orange-600 hover:bg-orange-500 focus:ring-4 focus:ring-blue-300 font-medium rounded text-sm px-5 py-2.5 text-center shadow-md tracking-wide">Register
 							</button>
 						</div>
 					</form>

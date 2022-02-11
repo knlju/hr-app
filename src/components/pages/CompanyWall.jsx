@@ -53,7 +53,7 @@ function CompanyWall() {
 						selectOptions={companies?.data?.data}
 						type={INPUT_TYPES.select}/>
 				</div>
-				<div className="w-full md:flex-1 md:max-w-sm">
+				<div className="w-full md:flex-1 md:max-w-2xl">
 					<InputPair
 						labelText="Search by name"
 						inputValue={searchName}

@@ -1,5 +1,4 @@
 import axios from "axios"
-import jwtDecode from "jwt-decode"
 
 export const axiosInstanceWithAuth = axios.create({
 	baseURL: process.env.REACT_APP_SERVER_ADDRESS,

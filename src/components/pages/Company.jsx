@@ -5,16 +5,12 @@ import InfoForm from "../shared/InfoForm"
 import Loader from "../shared/Loader"
 import {useGetMyProfile, usePostImageMutation} from "../../hooks"
 import SpinnerLoader from "../shared/SpinnerLoader"
-import Alert from "../shared/Alert"
 import {useToast} from "../../contexts/ToastProvider"
 
 export const Company = () => {
-	// const isLoggedIn = useSelector(defaultState => defaultState.user.isLoggedIn)
 	const [companyName, setCompanyName] = useState("")
 	const [companyLogo, setCompanyLogo] = useState(null)
 	const addToast = useToast()
-
-	const [image, setImage] = useState(null)
 
 	const [companyID, setCompanyID] = useState(null)
 
@@ -30,18 +26,11 @@ export const Company = () => {
 			enabled: !!companyID,
 			onSuccess: company => {
 				setCompanyName(company.data.data.attributes.name)
-				try {
-					setImage(company.data.data.attributes.logo.data.attributes.url)
-				} catch (error) {
-					console.log(error)
-				}
 			}
 		})
 
 	const {
 		mutateAsync: uploadImageAsyncMutation,
-		isLoading: uploadImageLoading,
-		isError: uploadImageError
 	} = usePostImageMutation({
 		onSuccess: data => {
 			const payload = {
@@ -72,7 +61,6 @@ export const Company = () => {
 			}
 			if (companyLogo) {
 				await uploadImageAsyncMutation(companyLogo)
-				payload.imageToSend = companyLogo
 			} else {
 				mutate(payload)
 			}

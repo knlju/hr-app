@@ -17,7 +17,6 @@ export default (state = initialState, { type, payload }) => {
 			isLoading: true,
 		}
 	case actions.LOGIN_SUCCESS:
-		console.log(actions.LOGIN_SUCCESS)
 		return {
 			...state,
 			isLoading: false,
@@ -25,7 +24,6 @@ export default (state = initialState, { type, payload }) => {
 			user: payload,
 		}
 	case actions.LOGIN_ERROR:
-		console.log(actions.LOGIN_ERROR)
 		return {
 			...state,
 			isLoggedIn: false,
@@ -63,7 +61,6 @@ export default (state = initialState, { type, payload }) => {
 			user: payload,
 		}
 	case actions.REGISTER_ERROR:
-		console.log(payload)
 		return {
 			...initialState,
 			error: payload,

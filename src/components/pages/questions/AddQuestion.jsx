@@ -165,8 +165,8 @@ const AddQuestion = (props) => {
 
 }
 
-export default AddQuestion
-
 AddQuestion.propTypes = {
 	modeEdit: PropTypes.bool,
 }
+
+export default AddQuestion

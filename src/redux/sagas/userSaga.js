@@ -58,7 +58,6 @@ function* fetchPopulatedUser(id) {
 		yield put(fetchImageSuccess(data.data[0].attributes?.profilePhoto.data))
 	} catch (e) {
 		// Rollback
-		console.log({e})
 	}
 }
 
@@ -190,7 +189,7 @@ function* registerOrchestrator(payload) {
 			})
 
 			if (companyCreationError) {
-				// TODO: rollback
+				// Rollback
 				return
 			}
 
@@ -207,7 +206,7 @@ function* registerOrchestrator(payload) {
 			})
 
 			if (uploadImageError) {
-				// TODO: rollback
+				// Rollback
 				return
 			}
 
@@ -229,7 +228,7 @@ function* registerOrchestrator(payload) {
 		})
 
 		if (profileCreationError) {
-			// TODO: rollback
+			// Rollback
 			return
 		}
 	} catch (error) {

@@ -99,11 +99,11 @@ const SingleQuestion = ({question, setModalOpen}) => {
 	)
 }
 
-export default SingleQuestion
-
 SingleQuestion.propTypes = {
 	question: PropTypes.object,
 	cbRefresh: PropTypes.func,
 	setModalOpen: PropTypes.func,
 	setQuestionDeleteModal: PropTypes.func,
 }
+
+export default SingleQuestion

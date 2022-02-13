@@ -15,7 +15,6 @@ export default (state = initialState, {type, payload}) => {
 			isLoading: true
 		}
 	case actions.FETCH_COMPANIES_SUCCESS:
-		console.log(actions.FETCH_COMPANIES_SUCCESS)
 		return {
 			...state,
 			companies: payload.data,
@@ -34,7 +33,6 @@ export default (state = initialState, {type, payload}) => {
 			isLoading: true
 		}
 	case actions.CREATE_COMPANY_SUCCESS:
-		console.log(actions.CREATE_COMPANY_SUCCESS)
 		return {
 			...state,
 			userCompany: payload.data,

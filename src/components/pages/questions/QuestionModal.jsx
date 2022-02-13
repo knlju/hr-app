@@ -135,10 +135,10 @@ function QuestionModal({setModalClose, modalId, addToast}) {
 	)
 }
 
-export default QuestionModal
-
 QuestionModal.propTypes = {
 	modalId: PropTypes.number,
 	setModalClose: PropTypes.func,
 	addToast: PropTypes.func
 }
+
+export default QuestionModal

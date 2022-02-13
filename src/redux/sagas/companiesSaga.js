@@ -10,7 +10,6 @@ function* fetchCompanies() {
 	try {
 		const {data} = yield call(api.getAllCompanies)
 		if (data) {
-			console.log("data:", data)
 			yield put(fetchCompaniesSuccess(data))
 		}
 	} catch (error) {
@@ -29,7 +28,6 @@ function* createNewCompany({name, slug}) {
 	try {
 		const {data} = yield call(api.createCompany, {name, slug})
 		if (data) {
-			console.log("data:", data)
 			yield put(createCompanySuccess(data))
 		}
 	} catch (error) {

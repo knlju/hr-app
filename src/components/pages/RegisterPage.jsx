@@ -217,7 +217,7 @@ const RegisterPage = () => {
 						<div>
 							<InputPair type={INPUT_TYPES.select} inputValue={companyId}
 								setInputValue={handleCompanyChange}
-								labelText="Company" selectOptions={COMPANIES.concat(companies?.companies)}onFocus={()=>setErrorCompany(false)} onBlur={validateCompany} error={errorCompany}/>
+								labelText="Company" selectOptions={COMPANIES.concat(companies?.companies)} onFocus={()=>setErrorCompany(false)} onBlur={validateCompany} error={errorCompany}/>
 						</div>
 						{(companyId === "0") && (
 							<CreateNewCompany

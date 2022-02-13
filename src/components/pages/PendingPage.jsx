@@ -1,7 +1,7 @@
 import React, {useState} from "react"
 import {useNavigate} from "react-router"
 import DeleteUserModal from "../shared/DeleteUserModal"
-import {useDeleteUserAnswerMutation, useDeleteUserProfileMutation, usePendingTeamMemberProfiles} from "../../hooks"
+import {useDeleteUserAnswerMutation, useDeleteUserProfileMutation, usePendingTeamMemberProfiles} from "../../hooks/react-query-hooks"
 import UserCard from "../shared/UserCard"
 import SpinnerLoader from "../shared/SpinnerLoader"
 import {useSelector} from "react-redux"
@@ -29,7 +29,7 @@ export const PendingPage = () => {
 
 	async function deleteUser() {
 		await mutateDeleteUserAsync(userToDelete.id)
-		await userToDelete.attributes?.answers?.data.forEach(async answer => {
+		userToDelete.attributes?.answers?.data.forEach(async answer => {
 			return await mutateDeleteAnswerAsync(answer.id)
 		})
 		setUserToDelete(false)

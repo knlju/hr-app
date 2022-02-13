@@ -6,9 +6,9 @@ import {useMutation} from "react-query"
 import api from "../../../api"
 import Modal from "../../shared/Modal"
 import InputPair from "../../shared/InputPair"
-import {useGetCompanyQuestions} from "../../../hooks"
+import {useGetCompanyQuestions} from "../../../hooks/react-query-hooks"
 import {INPUT_TYPES} from "../../../constants"
-import {_extractQuestionById, _extractQuestionType} from "../../../utils"
+import {extractQuestionById, extractQuestionType} from "../../../utils"
 
 function QuestionModal({setModalClose, modalId, addToast}) {
 	const [question, setQuestion] = useState("")
@@ -22,8 +22,8 @@ function QuestionModal({setModalClose, modalId, addToast}) {
 
 	useGetCompanyQuestions(companyID, {
 		onSuccess: data => {
-			setQuestion(_extractQuestionById(modalId, data.data.data))
-			setQuestionType(_extractQuestionType(modalId, data.data.data))
+			setQuestion(extractQuestionById(modalId, data.data.data))
+			setQuestionType(extractQuestionType(modalId, data.data.data))
 		}
 	})
 

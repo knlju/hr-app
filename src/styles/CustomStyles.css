@@ -1,4 +1,4 @@
-/* OVO DA SE PREBACI U TAILWIND */
+/* todo OVO DA SE PREBACI U TAILWIND */
 @import url("https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap");
 
 * {
@@ -181,7 +181,6 @@ li {
 .sidebar-toggle {
   width: 40px;
   height: 40px;
-  display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;

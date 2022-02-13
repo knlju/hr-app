@@ -3,7 +3,7 @@ import {useMutation} from "react-query"
 import api from "../../api"
 import {useSelector} from "react-redux"
 import SpinnerLoader from "../shared/SpinnerLoader"
-import {useGetMyProfile, usePostImageMutation} from "../../hooks"
+import {useGetMyProfile, usePostImageMutation} from "../../hooks/react-query-hooks"
 import InfoForm from "../shared/InfoForm"
 import Loader from "../shared/Loader"
 import InputPair from "../shared/InputPair"
@@ -31,7 +31,8 @@ export const MyProfile = () => {
 			setImage(data?.data?.data?.[0].attributes.profilePhoto.data?.attributes.formats.thumbnail.url)
 			setUserEmail(data?.data?.data?.[0]?.attributes.user.data.attributes.email)
 			setUserName(data?.data?.data?.[0]?.attributes.name)
-		}
+		},
+		refetchOnWindowFocus: false
 	})
 
 	const {

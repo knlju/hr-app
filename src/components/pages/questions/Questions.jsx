@@ -5,7 +5,7 @@ import SingleQuestion from "./SingleQuestion"
 import QuestionModal from "./QuestionModal"
 import DraggableList from "./draganddrop/list/DraggableList"
 import SpinnerLoader from "../../shared/SpinnerLoader"
-import {useGetCompanyQuestions} from "../../../hooks"
+import {useGetCompanyQuestions} from "../../../hooks/react-query-hooks"
 import {useToast} from "../../../contexts/ToastProvider"
 
 export const Questions = () => {

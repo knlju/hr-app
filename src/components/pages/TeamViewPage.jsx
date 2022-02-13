@@ -1,6 +1,6 @@
 import React from "react"
 import {useSelector} from "react-redux"
-import {usePublishedTeamMemberProfiles} from "../../hooks"
+import {usePublishedTeamMemberProfiles} from "../../hooks/react-query-hooks"
 import SpinnerLoader from "../shared/SpinnerLoader"
 import UserCard from "../shared/UserCard"
 

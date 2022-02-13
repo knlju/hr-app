@@ -119,27 +119,6 @@ const api = {
 	},
 
 	/**
-     * Edit myProfile
-     *
-     * @returns {Promise<AxiosResponse<any>>}
-     */
-	editMyProfile: async (payload) => {
-		const {
-			id,
-			username,
-			imageToSend
-		} = payload
-		const res = await api.uploadImage(imageToSend)
-		const profilePhoto =  res.data[0].id
-		return await axiosInstanceWithAuth.put("/api/profiles/" + id, {
-			data: {
-				name: username,
-				profilePhoto
-			},
-		})
-	},
-
-	/**
      * Calls endpoint for logging in user
      *
      * @param {String} email

@@ -5,7 +5,7 @@ import {
 	usePostImageMutation,
 	useQuestionsQuery,
 	useUpdateAnswerMutation
-} from "../../hooks"
+} from "../../hooks/react-query-hooks"
 import SpinnerLoader from "./SpinnerLoader"
 import PropTypes from "prop-types"
 import InputPair from "./InputPair"

@@ -1,5 +1,5 @@
 import React, {useState} from "react"
-import {useGetAllCompanies, useGetAllFilteredProfilesQuery} from "../../hooks"
+import {useGetAllCompanies, useGetAllFilteredProfilesQuery} from "../../hooks/react-query-hooks"
 import UserCard from "../shared/UserCard"
 import UserModal from "../UserModal"
 import InputPair from "../shared/InputPair"

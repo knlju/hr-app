@@ -1,6 +1,6 @@
 import React, { useState } from "react"
 import { useSelector } from "react-redux"
-import { useGetMyProfile } from "../../hooks"
+import { useGetMyProfile } from "../../hooks/react-query-hooks"
 
 const TopNav = () => {
 	const isLoggedIn = useSelector(defaultState => defaultState.user.isLoggedIn)

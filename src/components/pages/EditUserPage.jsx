@@ -7,7 +7,7 @@ import {
 	usePostImageMutation,
 	usePublishTeamMemberMutation,
 	useUserProfileQuery
-} from "../../hooks"
+} from "../../hooks/react-query-hooks"
 import SpinnerLoader from "../shared/SpinnerLoader"
 import QuestionsAndAnswers from "../shared/QuestionsAndAnswers"
 import InfoForm from "../shared/InfoForm"
@@ -114,7 +114,7 @@ function EditUserPage() {
 	async function deleteUser() {
 		try {
 			await mutateDeleteUserAsync(userToDelete.data.data.id)
-			await userToDelete.attributes?.answers?.data.forEach(async answer => {
+			userToDelete.attributes?.answers?.data.forEach(async answer => {
 				await mutateDeleteAnswerAsync(answer.id)
 			})
 			setUserToDelete(false)
@@ -155,7 +155,8 @@ function EditUserPage() {
 				disabled={isDeleteUserLoading || isDeleteAnswerLoading}
 				onConfirm={deleteUser}/>}
 			<div>
-				<button onClick={navigateAfterAction} className="text-sm hover:underline text-orange-500 hover:text-orange-400 flex items-center gap-2 mb-4"><i className="fas fa-caret-square-left"></i>Go back</button>
+				<button onClick={navigateAfterAction} className="text-sm hover:underline text-orange-500 hover:text-orange-400 flex items-center gap-2 mb-4">
+					<i className="fas fa-caret-square-left"/>Go back</button>
 			</div>
 			<div
 				className="flex justify-between items-center mx-auto max-w-screen-lg px-6 py-3

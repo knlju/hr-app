@@ -1,14 +1,15 @@
 import React, {useEffect, useState} from "react"
 import {useNavigate, useParams} from "react-router"
 import PropTypes from "prop-types"
-import {useMutation, useQuery, useQueryClient} from "react-query"
+import {useMutation, useQueryClient} from "react-query"
 import api from "../../../api"
 import {useSelector} from "react-redux"
 import {Link} from "react-router-dom"
 import InputPair from "../../shared/InputPair"
 import {INPUT_TYPES} from "../../../constants"
 import {useToast} from "../../../contexts/ToastProvider"
-import {_makeUniqueOrder} from "../../../utils"
+import {makeUniqueOrder} from "../../../utils"
+import {useGetAllQuestionsQuery} from "../../../hooks/react-query-hooks"
 
 const AddQuestion = (props) => {
 	let {id} = useParams()
@@ -30,9 +31,7 @@ const AddQuestion = (props) => {
 		{id: "image", attributes: {name: "Image"}}
 	]
 
-	const {refetch} = useQuery("getAllQuestions", async () => {
-		return await api.getAllQuestions()
-	}, {
+	const {refetch} = useGetAllQuestionsQuery({
 		onSuccess: (data) => {
 			if (data && data.data && data.data.data) {
 				const arr = data.data.data
@@ -69,14 +68,14 @@ const AddQuestion = (props) => {
 		} else {
 			api.addQuestions(payload)
 		}
-	},{
+	}, {
 		onSuccess: () => {
 			if (modeEdit === true) {
 				addToast({type: "success", text: "Question edited successfully!"})
 			} else {
 				addToast({type: "success", text: "Question added successfully!"})
 			}
-			
+
 			setTimeout(() => {
 				navigate("/questions")
 			}, 1000)
@@ -91,7 +90,7 @@ const AddQuestion = (props) => {
 	})
 
 	const [error, setError] = useState(false)
-	const addToast= useToast()
+	const addToast = useToast()
 
 
 	const handleQuestion = (e) => {
@@ -114,7 +113,7 @@ const AddQuestion = (props) => {
 					companyID,
 					text: questionName,
 					type: questionType,
-					order: _makeUniqueOrder(uniqueOrders)
+					order: makeUniqueOrder(uniqueOrders)
 				}
 				mutate(payload)
 			}
@@ -132,13 +131,15 @@ const AddQuestion = (props) => {
 						className="bg-white  rounded-lg shadow-lg w-full max-w-md p-4 sm:p-6 lg:p-8 dark:bg-gray-800 dark:border-gray-700 mx-auto">
 						<form className="space-y-6" action="#">
 							<div>
-								<InputPair type={INPUT_TYPES.text} inputValue={questionName}
+								<InputPair
+									type={INPUT_TYPES.text} inputValue={questionName}
 									setInputValue={e => setQuestionName(e.target.value)}
 									labelText="Question name"/>
 								{error && <span className="text-xs text-red-700">Please, enter a question name</span>}
 							</div>
 							<div>
-								<InputPair type={INPUT_TYPES.select} inputValue={questionType}
+								<InputPair
+									type={INPUT_TYPES.select} inputValue={questionType}
 									setInputValue={e => setQuestionType(e.target.value)}
 									labelText="Question type" selectOptions={TYPE}/>
 							</div>
@@ -148,7 +149,9 @@ const AddQuestion = (props) => {
 								onClick={handleQuestion}>{modeEdit ? "Save" : "Add"}
 							</button>
 							<div>
-								<Link to="/questions" className="text-sm hover:underline text-gray-900 hover:text-orange-600 dark:text-gray-100">back</Link>
+								<Link
+									to="/questions"
+									className="text-sm hover:underline text-gray-900 hover:text-orange-600 dark:text-gray-100">back</Link>
 							</div>
 						</form>
 					</div>

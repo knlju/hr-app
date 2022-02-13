@@ -4,7 +4,7 @@ import {useNavigate} from "react-router"
 import DeleteUserModal from "../../shared/DeleteUserModal"
 import {useSelector} from "react-redux"
 import "../../../styles/CustomStyles.css"
-import {useDeleteQuestionMutation, useDeleteUserAnswerMutation} from "../../../hooks"
+import {useDeleteQuestionMutation, useDeleteUserAnswerMutation} from "../../../hooks/react-query-hooks"
 import {useQueryClient} from "react-query"
 import {useToast} from "../../../contexts/ToastProvider"
 
@@ -21,7 +21,7 @@ const SingleQuestion = ({question, setModalOpen}) => {
 	const {mutateAsync: deleteAnswerAsync} = useDeleteUserAnswerMutation()
 	const {mutateAsync: deleteQuestionAsync} = useDeleteQuestionMutation({
 		onSuccess: async deletedQuestion => {
-			await deletedQuestion?.data?.data.attributes?.answers?.data?.forEach(async answer => {
+			deletedQuestion?.data?.data.attributes?.answers?.data?.forEach(async answer => {
 				return await deleteAnswerAsync(answer.id)
 			})
 			addToast({type: "success", text: "Question deleted successfully!"})

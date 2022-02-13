@@ -1,21 +1,24 @@
-import {all, take, call, put, race, select} from "redux-saga/effects"
+import {all, call, put, race, select, take} from "redux-saga/effects"
 import actions, {
+	createCompanyStart,
+	createProfileError,
+	createProfileStart,
+	createProfileSuccess,
+	fetchImageSuccess,
+	fetchProfileSuccess,
+	loginAddCompany,
 	loginError,
 	loginSuccess,
+	loginWithTokenError,
+	loginWithTokenSuccess,
 	logoutError,
+	logoutRemoveCompany,
 	logoutSuccess,
-	registerSuccess,
 	registerError,
-	createProfileError,
-	createProfileSuccess,
-	createCompanyStart,
-	createProfileStart,
+	registerSuccess,
+	uploadImageError,
 	uploadImageStart,
 	uploadImageSuccess,
-	uploadImageError,
-	loginWithTokenSuccess,
-	loginWithTokenError,
-	logoutRemoveCompany, loginAddCompany, fetchProfileSuccess, fetchImageSuccess,
 } from "../actions/actions"
 import api from "../../api"
 
@@ -86,8 +89,7 @@ function* registerWatcher() {
 
 function* uploadImage(payload) {
 	try {
-		const image = payload
-		const data = yield call(api.uploadImage, image)
+		const data = yield call(api.uploadImage, payload)
 		if (data) {
 			const {id, ...payloadData} = data.data[0]
 			const payload = {
@@ -210,8 +212,7 @@ function* registerOrchestrator(payload) {
 				return
 			}
 
-			const profilePhotoId = yield select(state => state.user.image.id)
-			profileConfig.profilePhoto = profilePhotoId
+			profileConfig.profilePhoto = yield select(state => state.user.image.id)
 		}
 
 		// Company is companyId integer Number

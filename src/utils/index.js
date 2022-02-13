@@ -1,8 +1,21 @@
+/**
+ * Takes a Date object and returns formatted string of type MMM - dd - YYYY
+ *
+ * @param {Date} date
+ * @returns {string} - formatted date
+ */
 export const formatDate = (date) => {
 	return new Date(date).toLocaleDateString("en-US",{ year: "numeric", month: "short", day: "2-digit" })
 }
 
-export const _extractQuestionById = (id, arr) => {
+/**
+ * Returns question in arr with id of id
+ *
+ * @param {Number} id
+ * @param {Array} arr
+ * @returns {Object} - question
+ */
+export const extractQuestionById = (id, arr) => {
 	let selected = null
 	arr.forEach(question => {
 		if (question.id === id) {
@@ -11,7 +24,15 @@ export const _extractQuestionById = (id, arr) => {
 	})
 	return selected
 }
-export const _extractQuestionType = (id, arr) => {
+
+/**
+ * Return question type in arr with id of id
+ *
+ * @param id
+ * @param arr
+ * @returns {string} - type
+ */
+export const extractQuestionType = (id, arr) => {
 	let type = null
 	arr.forEach(question => {
 		if (question.id === id) {
@@ -21,11 +42,17 @@ export const _extractQuestionType = (id, arr) => {
 	return type
 }
 
-export const _makeUniqueOrder = (uniqueOrders) => {
+/**
+ * Returns unique order for questions
+ *
+ * @param {Array} uniqueOrders
+ * @returns {number} - unique order
+ */
+export const makeUniqueOrder = (uniqueOrders) => {
 	let ord = 0
 	let exit = false
 	while (exit === false) {
-		if (parseInt(ord) in uniqueOrders) {
+		if (ord in uniqueOrders) {
 			ord++
 		} else {
 			exit = true
@@ -34,4 +61,9 @@ export const _makeUniqueOrder = (uniqueOrders) => {
 	return ord
 }
 
+/**
+ * Email testing regex
+ *
+ * @type {RegExp}
+ */
 export const emailRegEx = /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/

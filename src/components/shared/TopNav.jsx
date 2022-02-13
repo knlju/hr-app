@@ -8,12 +8,10 @@ const TopNav = () => {
 	const [image, setImage] = useState(null)
 	
 
-	const {data} = useGetMyProfile(isLoggedIn, {
+	useGetMyProfile(isLoggedIn, {
 		onSuccess: data => {
-			if(data && data.data && data.data.data[0] && data.data.data[0].id) {
-				setImage(data.data.data[0].attributes.profilePhoto.data?.attributes.formats.thumbnail.url)
-				setUserName(data.data.data[0]?.attributes.name)
-			}
+			setImage(data.data.data[0].attributes.profilePhoto.data?.attributes.formats?.thumbnail?.url)
+			setUserName(data.data.data[0]?.attributes.name)
 		}
 	})
 

@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react"
+import React, {useState} from "react"
 import {useQuery} from "react-query"
 import api from "../../api"
 import Loader from "../shared/Loader"
@@ -7,7 +7,6 @@ import {useSelector} from "react-redux"
 import {
 	useDeleteUserAnswerMutation,
 	useDeleteUserProfileMutation,
-	usePendingTeamMemberProfiles,
 	usePublishedTeamMemberProfiles
 } from "../../hooks"
 import SpinnerLoader from "../shared/SpinnerLoader"
@@ -27,7 +26,8 @@ export const TeamPage = () => {
 	const navigate = useNavigate()
 	const addToast = useToast()
 
-	const {data: company} = useQuery(["getOurCompany", companyId],
+	// todo
+	useQuery(["getOurCompany", companyId],
 		() => api.getOurCompany(companyId), {
 			enabled: !!companyId,
 			onSuccess: company => {
@@ -48,7 +48,7 @@ export const TeamPage = () => {
 		setUserToDelete(user)
 	}
 
-	function addNewTeamMember(e) {
+	function addNewTeamMember() {
 		setInviteModalOpen(true)
 	}
 

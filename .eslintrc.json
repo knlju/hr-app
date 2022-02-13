@@ -40,8 +40,8 @@
         ],
         "react/react-in-jsx-scope": "off",
         // 2 in prod, 1 is just a warning
-        "no-console": "warn",
-        "no-unused-vars": "warn"
+        "no-console": "error",
+        "no-unused-vars": "error"
     },
     "settings": {
         "react": {

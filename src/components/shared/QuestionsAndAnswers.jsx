@@ -41,23 +41,16 @@ function QuestionsAndAnswers({profileId, companyId}) {
 		isError: updateAnswerError,
 		isLoading: updateAnswerLoading,
 		mutate: updateAnswer,
-		mutateAsync: updateAnswerAsync
-	} = useUpdateAnswerMutation({
-		// onSuccess: fetchAnswers()
-	})
+	} = useUpdateAnswerMutation()
 	const {
 		isError: postAnswerError,
 		isLoading: postAnswerLoading,
 		mutate: postAnswer,
-		mutateAsync: postAnswerAsync
-	} = usePostAnswerMutation({
-		// onSuccess: fetchAnswers()
-	})
+	} = usePostAnswerMutation()
 
 	const {
 		isError: uploadImageError,
 		isLoading: uploadImageLoading,
-		mutate: uploadImage,
 		mutateAsync: uploadImageAsync
 	} = usePostImageMutation()
 
@@ -67,10 +60,6 @@ function QuestionsAndAnswers({profileId, companyId}) {
 		fetchAnswers()
 		fetchQuestions()
 	}, [])
-
-	useEffect(() => {
-		console.log("rerender")
-	})
 
 	function updatePair(e, pair) {
 		if (pair.attributes.type === "image") {
@@ -131,10 +120,6 @@ function QuestionsAndAnswers({profileId, companyId}) {
 		}
 	}
 
-	useEffect(() => {
-		console.log({mappedQuestionsAndAnswers})
-	}, [mappedQuestionsAndAnswers])
-
 	function saveAnswers(e) {
 		e.preventDefault()
 		mappedQuestionsAndAnswers.forEach(async pair => {
@@ -146,7 +131,6 @@ function QuestionsAndAnswers({profileId, companyId}) {
 				}
 			}
 			const {
-				changed,
 				...newPair
 			} = pair
 			if (pair.attributes.type !== "image"){
@@ -199,18 +183,6 @@ function QuestionsAndAnswers({profileId, companyId}) {
 		})
 		setMappedQuestionsAndAnswers(newQuestions)
 	}
-
-	// const [errorQuestion, setErrorQuestion] = useState(false)
-	// const validateQuestion = () => {
-	// 	if (!userName || userName === "") {
-	// 		setErrorQuestion("Question Name can't be empty!")
-	// 		return false
-	// 	} 
-	// 	else {
-	// 		setErrorQuestion(false)
-	// 		return true
-	// 	}
-	// }
 
 	if (questionsLoading || answersLoading || uploadImageLoading) {
 		return <SpinnerLoader/>

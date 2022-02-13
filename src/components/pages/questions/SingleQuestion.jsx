@@ -1,13 +1,11 @@
 import React, {useEffect, useState} from "react"
 import PropTypes from "prop-types"
 import {useNavigate} from "react-router"
-import api from "../../../api"
 import DeleteUserModal from "../../shared/DeleteUserModal"
 import {useSelector} from "react-redux"
 import "../../../styles/CustomStyles.css"
 import {useDeleteQuestionMutation, useDeleteUserAnswerMutation} from "../../../hooks"
 import {useQueryClient} from "react-query"
-import Alert from "../../shared/Alert"
 import {useToast} from "../../../contexts/ToastProvider"
 
 const SingleQuestion = ({question, setModalOpen}) => {

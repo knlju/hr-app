@@ -2,12 +2,10 @@ import React, { useState } from "react"
 import { useMutation } from "react-query"
 import api from "../../../api"
 import { useSelector } from "react-redux"
-import { Link } from "react-router-dom"
 import SpinnerLoader from "../../shared/SpinnerLoader"
 import { useGetCompanyQuestions } from "../../../hooks"
 import "../../../styles/CustomStyles.css"
 import InputPair from "../../shared/InputPair"
-import Alert from "../../shared/Alert"
 import {useToast} from "../../../contexts/ToastProvider"
 
 export const AnswerQuestionsPage = () => {

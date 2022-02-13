@@ -6,8 +6,6 @@ import PropTypes from "prop-types"
 import Loader from "../shared/Loader"
 import InputPair from "../shared/InputPair"
 import { INPUT_TYPES } from "../../constants"
-import Alert from "../shared/Alert"
-import {emailRegEx} from "../../utils"
 
 const CreateNewCompany = ({companyName, setCompanyName, companySlug, setCompanySlug, setErrorCompanyName, setErrorCompanySlug, validateCompanyName, validateCompanySlug, errorCompanyName, errorCompanySlug}) => {
 

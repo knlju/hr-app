@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from "react"
 import {useDispatch, useSelector} from "react-redux"
-import {createCompanySuccess, fetchCompaniesStart, registerStart} from "../../redux/actions/actions"
+import {fetchCompaniesStart, registerStart} from "../../redux/actions/actions"
 import Loader from "../shared/Loader"
 import {Link} from "react-router-dom"
 import {useParams} from "react-router"

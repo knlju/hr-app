@@ -3,16 +3,14 @@ import {useNavigate, useParams} from "react-router"
 import PropTypes from "prop-types"
 import {useMutation, useQuery, useQueryClient} from "react-query"
 import api from "../../../api"
-import {useDispatch, useSelector} from "react-redux"
+import {useSelector} from "react-redux"
 import {Link} from "react-router-dom"
-import Alert from "../../shared/Alert"
 import InputPair from "../../shared/InputPair"
 import {INPUT_TYPES} from "../../../constants"
 import {useToast} from "../../../contexts/ToastProvider"
 import {_makeUniqueOrder} from "../../../utils"
 
 const AddQuestion = (props) => {
-	const dispatch = useDispatch()
 	let {id} = useParams()
 	id = parseInt(id)
 	const modeEdit = props.modeEdit
@@ -21,11 +19,9 @@ const AddQuestion = (props) => {
 	const [questionType, setQuestionType] = useState("text")
 	const [questionOrder, setQuestionOrder] = useState("")
 	const navigate = useNavigate()
-	const [questionsLength, setQuestionsLength] = useState(null)
 
 	const queryClient = useQueryClient()
 
-	const isLoggedIn = useSelector(defaultState => defaultState.user.isLoggedIn)
 	const companyID = useSelector(defaultState => defaultState.user.profile.attributes.company.data.id)
 
 	const TYPE = [
@@ -35,7 +31,6 @@ const AddQuestion = (props) => {
 	]
 
 	const {refetch} = useQuery("getAllQuestions", async () => {
-		const token = localStorage.getItem("token")
 		return await api.getAllQuestions()
 	}, {
 		onSuccess: (data) => {
@@ -55,7 +50,6 @@ const AddQuestion = (props) => {
 						setQuestionOrder(question.attributes.order)
 
 					}
-					setQuestionsLength(arr.length)
 				})
 			}
 			queryClient.invalidateQueries("getQuestions")

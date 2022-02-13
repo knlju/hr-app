@@ -18,7 +18,8 @@ const Sidebar = () => {
 	const [activeIndex, setActiveIndex] = useState(0)
 	const location = useLocation()
 
-	const {data} = useQuery("getMyProfile", async () => {
+	//todo
+	useQuery("getMyProfile", async () => {
 		if (isLoggedIn) {
 			const token = await localStorage.getItem("token")
 			if (token) {

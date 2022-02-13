@@ -6,7 +6,7 @@ const initialState = {
 	user: null,
 	error: null,
 	profile: null,
-	image: null
+	image: null,
 }
 
 export default (state = initialState, { type, payload }) => {
@@ -17,7 +17,6 @@ export default (state = initialState, { type, payload }) => {
 			isLoading: true,
 		}
 	case actions.LOGIN_SUCCESS:
-		console.log(actions.LOGIN_SUCCESS)
 		return {
 			...state,
 			isLoading: false,
@@ -25,7 +24,6 @@ export default (state = initialState, { type, payload }) => {
 			user: payload,
 		}
 	case actions.LOGIN_ERROR:
-		console.log(actions.LOGIN_ERROR)
 		return {
 			...state,
 			isLoggedIn: false,
@@ -47,10 +45,7 @@ export default (state = initialState, { type, payload }) => {
 		}
 	case actions.LOGIN_WITH_TOKEN_ERROR:
 		return {
-			...state,
-			isLoggedIn: false,
-			user: null,
-			isLoading: false,
+			...initialState,
 			error: payload,
 		}
 	case actions.REGISTER_START:
@@ -66,7 +61,6 @@ export default (state = initialState, { type, payload }) => {
 			user: payload,
 		}
 	case actions.REGISTER_ERROR:
-		console.log(payload)
 		return {
 			...initialState,
 			error: payload,

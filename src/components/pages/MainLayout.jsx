@@ -1,13 +1,13 @@
 import Sidebar from "../shared/Sidebar"
 import { Outlet } from "react-router"
-import TopNav from "./TopNav"
+import TopNav from "../shared/TopNav"
 
-export const MainWrapper = () => {
+export const MainLayout = () => {
 	return (
 		<div>
 			<Sidebar/>
 			<div className="main">
-				<div className="main__content">
+				<div className="main__content bg-gray-100 dark:bg-gray-700">
 					<TopNav />
 					<Outlet />
 				</div>

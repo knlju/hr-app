@@ -12,15 +12,17 @@ export const Logout = () => {
 		dispatch(logoutStart())
 	}
 
-	// TODO: da li je redirect iz shared componente anti-pattern?
 	if(!isLoggedIn) {
 		return <Navigate to="/login" />
 	}
 
 	return (
 		<>
-			<button onClick={handleLogout}>
-				<i className="fas fa-sign-out-alt"></i>
+			<button className="flex items-center" onClick={handleLogout}>
+				<i className="sidebar__menu__item__icon fas fa-sign-out-alt mr-3"/>
+				<div className="sidebar__menu__item__txt">
+									Logout
+				</div>
 			</button>
 		</>
 	)

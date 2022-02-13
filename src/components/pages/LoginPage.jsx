@@ -9,6 +9,9 @@ import {
 	// Navigate
 } from "react-router-dom"
 import Loader from "../shared/Loader"
+import InputPair from "../shared/InputPair"
+import {INPUT_TYPES} from "../../constants"
+import {useToast} from "../../contexts/ToastProvider"
 
 const LoginPage = () => {
 
@@ -18,54 +21,97 @@ const LoginPage = () => {
 
 	const [email, setEmail] = useState("")
 	const [password, setPassword] = useState("")
+	const [errorEmail, setErrorEmail] = useState(false)
+	const [errorPass, setErrorPass] = useState(false)
+	const addToast = useToast()
 
+	// TODO: kako otkriti promenu u redux state-u
+	// TODO: prikazati toast alert ako je korisnik ulogovan
 	useEffect(() => {
-		console.log("-----------------------------------------")
-		console.log(user)
-	}, [user])
+		if (user.isLoggedIn) {
+			alert("logged in")
+			addToast({type: "success", text: "You are successfully logged in!"})
+		}
+	}, [user.isLoggedIn])
+
+	const validate = () => {
+		const emailValid = validateEmail()
+		const passwordValid = validatePassword()
+
+		return emailValid && passwordValid
+	}
+
+	const validateEmail = () => {
+		if (!email || email === "") {
+			setErrorEmail("Email cant be empty!")
+			return false
+		}
+		// Commented because we use made up emails, uncomment for prod
+		// else if (emailRegEx){
+		// 	setErrorEmail("Not valid email!")
+		// 	return false
+		// }
+		else {
+			setErrorEmail(false)
+			return true
+		}
+	}
+	const validatePassword = () => {
+		if (!password || password === "") {
+			setErrorPass("Password cant be empty!")
+			return false
+		}
+		// else if (regexPassword){}
+		else {
+			setErrorPass(false)
+			return true
+		}
+	}
 
 	const handleLogIn = e => {
 		e.preventDefault()
-		const data = {
-			email,
-			password
+		if (validate()) {
+			const data = {
+				email,
+				password
+			}
+			setTimeout(() => {
+				addToast({type: "success", text: "You are successfully logged in!"})
+			}, 1000)
+			setTimeout(() => {
+				dispatch(loginStart(data))
+			}, 2000)
 		}
-		dispatch(loginStart(data))
 	}
 
 	return (
 		<>
-			{user.isLoading && <Loader />}
+			{user.isLoading && <Loader/>}
 			<div>
 				<div className="flex justify-between items-center mx-auto max-w-screen-lg py-10">
 					<div
-						className="bg-white shadow-md border border-gray-200 rounded-lg w-2/5 max-w-md p-4 sm:p-6 lg:p-8 dark:bg-gray-800 dark:border-gray-700 mx-auto">
-						<form className="space-y-6" action="#">
-							<h3 className="text-xl font-medium text-gray-900 dark:text-white">Sign in to our
+						className="bg-white shadow-md border border-gray-200 rounded-lg w-full lg:w-2/5 max-w-md p-4 sm:p-6 lg:p-8 dark:bg-gray-800 dark:border-gray-700 mx-auto">
+						<form className="space-y-4" action="#">
+							<h3 className="text-lg text-center font-medium text-gray-900 dark:text-white">Sign in to our
                                 platform</h3>
 							<div>
-								<label htmlFor="email"
-									className="text-sm font-medium text-gray-900 block mb-2 dark:text-gray-300">Your
-                                    email</label>
-								<input type="email" name="email" id="email"
-									className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
-									placeholder="name@company.com" required="" value={email}
-									onChange={(e) => setEmail(e.target.value)}/>
+								<InputPair onFocus={() => setErrorEmail(false)} onBlur={validateEmail}
+									error={errorEmail} type={INPUT_TYPES.email} inputValue={email}
+									setInputValue={e => setEmail(e.target.value)} labelText="Your
+                                    email"/>
 							</div>
 							<div>
-								<label htmlFor="password"
-									className="text-sm font-medium text-gray-900 block mb-2 dark:text-gray-300">Your
-                                    password</label>
-								<input type="password" name="password" id="password" placeholder="••••••••"
-									className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
-									required="" value={password} onChange={(e) => setPassword(e.target.value)}/>
+								<InputPair type={INPUT_TYPES.password} inputValue={password}
+									setInputValue={e => setPassword(e.target.value)} labelText="Your
+                                    password" onFocus={() => setErrorPass(false)} onBlur={validatePassword}
+									error={errorPass}/>
 							</div>
 							<button type="submit"
-								className="w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+								className="w-full text-white bg-orange-600 hover:bg-orange-500 focus:ring-4 focus:ring-blue-300 font-medium rounded text-sm px-5 py-2.5 text-center shadow-md tracking-wide"
 								onClick={handleLogIn}>Login to your account
 							</button>
 							<div className="text-sm font-medium text-gray-500 dark:text-gray-300">Not registered?
-								<Link to="/register" className="text-blue-700 hover:underline dark:text-blue-500">Create
+								<Link to="/register" className="ml-2 text-orange-600 hover:underline">Create
                                     account</Link>
 							</div>
 						</form>

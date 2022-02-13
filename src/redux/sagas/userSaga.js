@@ -1,21 +1,24 @@
-import {all, take, call, put, race, select} from "redux-saga/effects"
+import {all, call, put, race, select, take} from "redux-saga/effects"
 import actions, {
+	createCompanyStart,
+	createProfileError,
+	createProfileStart,
+	createProfileSuccess,
+	fetchImageSuccess,
+	fetchProfileSuccess,
+	loginAddCompany,
 	loginError,
 	loginSuccess,
+	loginWithTokenError,
+	loginWithTokenSuccess,
 	logoutError,
+	logoutRemoveCompany,
 	logoutSuccess,
-	registerSuccess,
 	registerError,
-	createProfileError,
-	createProfileSuccess,
-	createCompanyStart,
-	createProfileStart,
+	registerSuccess,
+	uploadImageError,
 	uploadImageStart,
 	uploadImageSuccess,
-	uploadImageError,
-	loginWithTokenSuccess,
-	loginWithTokenError,
-	logoutRemoveCompany, loginAddCompany, fetchProfileSuccess, fetchImageSuccess,
 } from "../actions/actions"
 import api from "../../api"
 
@@ -27,7 +30,6 @@ function* login({email, password}) {
 			yield put(loginSuccess(data.user))
 			yield call(fetchPopulatedUser, data.user.id)
 		} else {
-			// TODO: da li ovo treba da se proverava? :)
 			yield put(loginError("Login epic Fail"))
 		}
 	} catch (error) {
@@ -59,7 +61,6 @@ function* fetchPopulatedUser(id) {
 		yield put(fetchImageSuccess(data.data[0].attributes?.profilePhoto.data))
 	} catch (e) {
 		// Rollback
-		console.log({e})
 	}
 }
 
@@ -72,7 +73,6 @@ function* register(payload) {
 			yield put(registerSuccess(data.user))
 			yield call(registerOrchestrator, payload)
 		} else {
-			// TODO: da li ovo treba da se proverava? :)
 			yield put(registerError("Register Failed"))
 		}
 	} catch (error) {
@@ -89,8 +89,7 @@ function* registerWatcher() {
 
 function* uploadImage(payload) {
 	try {
-		const image = payload
-		const data = yield call(api.uploadImage, image)
+		const data = yield call(api.uploadImage, payload)
 		if (data) {
 			const {id, ...payloadData} = data.data[0]
 			const payload = {
@@ -113,7 +112,6 @@ function* uploadImageWatcher() {
 	}
 }
 
-// TODO: add response checking (error, data, etc.)
 function* createNewProfile({name, company, user, userRole, profilePhoto = undefined}) {
 	try {
 		const requestConfig = {name, company, user, userRole}
@@ -193,7 +191,7 @@ function* registerOrchestrator(payload) {
 			})
 
 			if (companyCreationError) {
-				// TODO: rollback
+				// Rollback
 				return
 			}
 
@@ -210,12 +208,11 @@ function* registerOrchestrator(payload) {
 			})
 
 			if (uploadImageError) {
-				// TODO: rollback
+				// Rollback
 				return
 			}
 
-			const profilePhotoId = yield select(state => state.user.image.id)
-			profileConfig.profilePhoto = profilePhotoId
+			profileConfig.profilePhoto = yield select(state => state.user.image.id)
 		}
 
 		// Company is companyId integer Number
@@ -232,7 +229,7 @@ function* registerOrchestrator(payload) {
 		})
 
 		if (profileCreationError) {
-			// TODO: rollback
+			// Rollback
 			return
 		}
 	} catch (error) {

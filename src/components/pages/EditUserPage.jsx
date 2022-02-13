@@ -7,13 +7,15 @@ import {
 	usePostImageMutation,
 	usePublishTeamMemberMutation,
 	useUserProfileQuery
-} from "../../hooks"
+} from "../../hooks/react-query-hooks"
 import SpinnerLoader from "../shared/SpinnerLoader"
 import QuestionsAndAnswers from "../shared/QuestionsAndAnswers"
 import InfoForm from "../shared/InfoForm"
 import Loader from "../shared/Loader"
 import DeleteUserModal from "../shared/DeleteUserModal"
 import InputPair from "../shared/InputPair"
+import { INPUT_TYPES } from "../../constants"
+import {useToast} from "../../contexts/ToastProvider"
 
 const STATUS = [
 	{id: "pending", attributes: {name: "pending"}},
@@ -24,6 +26,7 @@ function EditUserPage() {
 
 	const {id: profileId} = useParams()
 	const navigate = useNavigate()
+	const addToast = useToast()
 
 	const {data: user, isLoading, isError, refetch} = useUserProfileQuery(parseInt(profileId), {
 		onSuccess: user => {
@@ -43,7 +46,14 @@ function EditUserPage() {
 		mutateAsync: updateProfileAsyncMutation,
 		isLoading: isProfileUpdateLoading,
 		isError: isProfileUpdateError
-	} = useEditProfileMutation()
+	} = useEditProfileMutation({
+		onError: () => {
+			addToast({type: "danger", text: "Update failed!"})
+		},
+		onSuccess: () => {
+			addToast({type: "success", text: "Update successful!"})
+		}
+	})
 
 	const {
 		mutateAsync: publishProfileAsyncMutation,
@@ -65,24 +75,26 @@ function EditUserPage() {
 
 	async function onSave(e) {
 		e.preventDefault()
-		const profileUpdateOptions = {
-			name: username
+		if(validateProfileName()) {
+			const profileUpdateOptions = {
+				name: username
+			}
+			if (userProfilePhoto) {
+				const uploadedImageResponse = await uploadImageAsyncMutation(userProfilePhoto)
+				profileUpdateOptions.profilePhoto = uploadedImageResponse?.data[0].id
+			}
+			if (selectedStatus) {
+				profileUpdateOptions.status = selectedStatus
+			}
+			await updateProfileAsyncMutation({profileId: parseInt(profileId), putOptions: profileUpdateOptions})
+			setUserProfilePhoto(false)
+			refetch()
 		}
-		if (userProfilePhoto) {
-			const uploadedImageResponse = await uploadImageAsyncMutation(userProfilePhoto)
-			profileUpdateOptions.profilePhoto = uploadedImageResponse?.data[0].id
-		}
-		if (selectedStatus) {
-			profileUpdateOptions.status = selectedStatus
-		}
-		await updateProfileAsyncMutation({profileId: parseInt(profileId), putOptions: profileUpdateOptions})
-		setUserProfilePhoto(false)
-		refetch()
 	}
 
 	function navigateAfterAction() {
 		if (user.data.data.attributes.status === "pending") {
-			navigate("/team/pending")
+			navigate("/pending")
 		} else {
 			navigate("/team")
 		}
@@ -90,6 +102,7 @@ function EditUserPage() {
 
 	async function approveTeamMember() {
 		await publishProfileAsyncMutation(parseInt(profileId))
+		addToast({type: "success", text: "Update successful!"})
 		navigateAfterAction()
 	}
 
@@ -99,15 +112,30 @@ function EditUserPage() {
 	}
 
 	async function deleteUser() {
-		await mutateDeleteUserAsync(userToDelete.data.data.id)
-		await userToDelete.attributes?.answers?.data.forEach(async answer => {
-			await mutateDeleteAnswerAsync(answer.id)
-		})
-		setUserToDelete(false)
-		navigateAfterAction()
+		try {
+			await mutateDeleteUserAsync(userToDelete.data.data.id)
+			userToDelete.attributes?.answers?.data.forEach(async answer => {
+				await mutateDeleteAnswerAsync(answer.id)
+			})
+			setUserToDelete(false)
+			addToast({type: "success", text: "Deleted successfully!"})
+			navigateAfterAction()
+		} catch (err) {
+			addToast({type: "danger", text: "Deletion unsuccessful!"})
+		}
 	}
 
-	useEffect(() => console.log({selectedStatus}), [selectedStatus])
+	const [errorProfileName, setErrorProfileName] = useState(false)
+	const validateProfileName = () => {
+		if (!username || username === "") {
+			setErrorProfileName("Profile Name can't be empty!")
+			return false
+		} 
+		else {
+			setErrorProfileName(false)
+			return true
+		}
+	}
 
 	if (isLoading) {
 		return <SpinnerLoader/>
@@ -116,8 +144,6 @@ function EditUserPage() {
 	if (isError) {
 		return <p>Loading error...</p>
 	}
-
-	console.log({user})
 
 	return (
 		<div>
@@ -128,43 +154,46 @@ function EditUserPage() {
 				user={user.data.data}
 				disabled={isDeleteUserLoading || isDeleteAnswerLoading}
 				onConfirm={deleteUser}/>}
+			<div>
+				<button onClick={navigateAfterAction} className="text-sm hover:underline text-orange-500 hover:text-orange-400 flex items-center gap-2 mb-4">
+					<i className="fas fa-caret-square-left"/>Go back</button>
+			</div>
 			<div
-				className="flex justify-between align-center mx-auto max-w-screen-lg py-10
-				bg-white shadow-md border border-gray-200 rounded-lg mx-auto p-4 sm:p-6 lg:p-8
-				dark:bg-gray-800 dark:border-gray-700 text-white"
+				className="flex justify-between items-center mx-auto max-w-screen-lg px-6 py-3
+				bg-white text-gray-900 shadow-md rounded-lg
+				dark:bg-gray-900  dark:text-gray-100"
 			>
 				{
 					(!isLoading &&
                         user?.data?.data?.attributes.status === "pending") ? (
 							<>
-								<div>
+								<div className="text-base">
                                 Moderate team member entry
 								</div>
-								<div className="flex justify-end align-top gap-2">
+								<div className="flex flex-col md:justify-end gap-4 md:flex-row">
 									<button
-										className="disabled:opacity-70 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+										className="disabled:opacity-70 text-white bg-orange-600 hover:bg-orange-500 focus:ring-4 focus:ring-orange-200 font-medium rounded text-sm px-5 py-2.5 text-center tracking-wide"
 										onClick={approveTeamMember}>Approve
 									</button>
 									<button
-										className="disabled:opacity-70 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+										className="disabled:opacity-70 text-white bg-red-600 hover:bg-red-700 focus:ring-4 focus:ring-red-200 font-medium rounded text-sm px-5 py-2.5 text-center tracking-wide"
 										onClick={openDeleteModal}>Delete
 									</button>
 								</div>
 							</>
 						) : (<>
-							<div>
+							<div className="text-base">
                             Edit Team Member
 							</div>
-							<div className="flex justify-end align-top gap-2">
-								<InputPair type="select" answer={selectedStatus}
-									setAnswer={e => setSelectedStatus(e.target.value)}
-									question="Status" selectOptions={STATUS}/>
+							<div className="flex justify-end align-top">
+								<InputPair type={INPUT_TYPES.userStatus} inputValue={selectedStatus}
+									setInputValue={e => setSelectedStatus(e.target.value)} selectOptions={STATUS}/>
 							</div>
 						</>)
 				}
 			</div>
 			<div
-				className="flex justify-between align-top mx-auto max-w-screen-lg py-10"
+				className="flex gap-6 flex-col md:flex-row md:justify-between md:items-start max-w-screen-lg py-10"
 			>
 				<InfoForm
 					setName={setUsername}
@@ -173,7 +202,10 @@ function EditUserPage() {
 					newPhoto={userProfilePhoto}
 					disabled={isError || isLoading}
 					photo={user?.data?.data?.attributes?.profilePhoto?.data?.attributes.url}
-					action={onSave}/>
+					action={onSave}
+					onFocus={()=>setErrorProfileName(false)} 
+					onBlur={validateProfileName} 
+					error={errorProfileName}/>
 				<QuestionsAndAnswers companyId={user?.company?.id} profileId={parseInt(profileId)}/>
 			</div>
 		</div>

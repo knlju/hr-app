@@ -1,48 +1,37 @@
 import React from "react"
 import PropTypes from "prop-types"
+import InputPair from "./InputPair"
 
-function InfoForm({name, setName, photo, newPhoto, setNewPhoto, disabled, action, isCompany = false}) {
+function InfoForm({name, setName, photo, newPhoto, setNewPhoto, disabled, action, isCompany = false, onFocus, onBlur, error}) {
 	return (
 		<form
 			onSubmit={action}
-			className="bg-white shadow-md border border-gray-200 rounded-lg mx-auto w-2/5 max-w-md p-4 sm:p-6 lg:p-8 dark:bg-gray-800 dark:border-gray-700">
-			<span className="text-sm font-medium text-gray-900 block mb-2 dark:text-gray-300">
+			className="bg-white shadow-md border border-gray-200 rounded-lg w-full max-w-md p-4 sm:p-6 lg:p-8 dark:bg-gray-900 dark:border-gray-700">
+			<span className="text-lg font-medium text-gray-900 block mb-2 dark:text-gray-100">
 				{!isCompany ? "Basic" : "Company"} info
 			</span>
 			<div>
-				<label htmlFor="userName"
-					className="text-sm font-medium text-gray-900 block mb-2 dark:text-gray-300">
-					{!isCompany ? "User" : "Company"} name *
-				</label>
-				<input type="text" name="username" id="name"
-					className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
-					placeholder={"userName"} value={name} required=""
-					onChange={e => setName(e.target.value)}/>
+				<InputPair type="text" inputValue={name}
+					setInputValue={e => setName(e.target.value)} labelText={!isCompany ? "User" : "Company" + " name"} onFocus={onFocus} error={error} onBlur={onBlur}/>
 			</div>
 			<div>
-				<label htmlFor="formFile"
-					className="form-label text-sm font-medium text-gray-900 block mb-2 dark:text-gray-300">
-					{isCompany ? "Logo" : "Profile photo"}
-				</label>
-				<input
-					className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
-					type="file" id="formFile" accept="image/*"
-					onChange={(e) => setNewPhoto(e.target.files[0])}
-				/>
+				<InputPair type="image" inputValue={name}
+					setInputValue={e => setNewPhoto(e.target.files[0])} labelText={isCompany ? "Logo" : "Profile photo"}/>
 			</div>
 			<button type="submit"
 				disabled={disabled}
-				className="disabled:opacity-70 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+				className="disabled:opacity-70 w-full text-white tracking-wide bg-orange-600 hover:bg-orange-500 focus:ring-4 focus:ring-blue-300 font-medium rounded text-sm px-5 py-2.5 text-center"
 			>Save
 			</button>
 			{
 				newPhoto ? (
-					<div>
-						<p>New Profile Photo preview:</p>
-						<img src={URL.createObjectURL(newPhoto)} alt="new photo"/>
+					<div className="mt-5">
+						<p className="mb-3 text-sm text-gray-900 dark:text-gray-100">New {!isCompany ? "User" : "Company"} Photo preview:</p>
+						<img className="rounded-md w-40 h-40 object-cover" src={URL.createObjectURL(newPhoto)} alt="new photo"/>
 					</div>) : (
-					<div>
-						<img src={photo} alt=""/>
+					<div className="mt-5">
+						<p className="mb-3 text-sm text-gray-900 dark:text-gray-100">Your Current {!isCompany ? "User" : "Company"} Photo:</p>
+						<img className="rounded-md w-40 h-40 object-cover" src={photo} alt={name}/>
 					</div>
 				)
 			}
@@ -59,6 +48,9 @@ InfoForm.propTypes = {
 	disabled: PropTypes.bool,
 	action: PropTypes.func,
 	isCompany: PropTypes.bool,
+	error: PropTypes.any,
+	onFocus: PropTypes.func,
+	onBlur: PropTypes.func,
 }
 
 export default InfoForm

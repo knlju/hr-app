@@ -5,7 +5,7 @@ import {
 	usePostImageMutation,
 	useQuestionsQuery,
 	useUpdateAnswerMutation
-} from "../../hooks"
+} from "../../hooks/react-query-hooks"
 import SpinnerLoader from "./SpinnerLoader"
 import PropTypes from "prop-types"
 import InputPair from "./InputPair"
@@ -41,23 +41,16 @@ function QuestionsAndAnswers({profileId, companyId}) {
 		isError: updateAnswerError,
 		isLoading: updateAnswerLoading,
 		mutate: updateAnswer,
-		mutateAsync: updateAnswerAsync
-	} = useUpdateAnswerMutation({
-		// onSuccess: fetchAnswers()
-	})
+	} = useUpdateAnswerMutation()
 	const {
 		isError: postAnswerError,
 		isLoading: postAnswerLoading,
 		mutate: postAnswer,
-		mutateAsync: postAnswerAsync
-	} = usePostAnswerMutation({
-		// onSuccess: fetchAnswers()
-	})
+	} = usePostAnswerMutation()
 
 	const {
 		isError: uploadImageError,
 		isLoading: uploadImageLoading,
-		mutate: uploadImage,
 		mutateAsync: uploadImageAsync
 	} = usePostImageMutation()
 
@@ -67,10 +60,6 @@ function QuestionsAndAnswers({profileId, companyId}) {
 		fetchAnswers()
 		fetchQuestions()
 	}, [])
-
-	useEffect(() => {
-		console.log("rerender")
-	})
 
 	function updatePair(e, pair) {
 		if (pair.attributes.type === "image") {
@@ -95,7 +84,7 @@ function QuestionsAndAnswers({profileId, companyId}) {
 						attributes: {
 							...newQuestion.attributes.answers.data[0].attributes,
 							file: e.target.files[0],
-							answer: URL.createObjectURL(e.target.files[0]),
+							inputValue: URL.createObjectURL(e.target.files[0]),
 						}
 					}
 				}
@@ -122,7 +111,7 @@ function QuestionsAndAnswers({profileId, companyId}) {
 						...newQuestion.attributes.answers.data[0],
 						attributes: {
 							...newQuestion.attributes.answers.data[0].attributes,
-							answer: e.target.value,
+							inputValue: e.target.value,
 						}
 					}
 				}
@@ -130,10 +119,6 @@ function QuestionsAndAnswers({profileId, companyId}) {
 			}))
 		}
 	}
-
-	useEffect(() => {
-		console.log({mappedQuestionsAndAnswers})
-	}, [mappedQuestionsAndAnswers])
 
 	function saveAnswers(e) {
 		e.preventDefault()
@@ -146,7 +131,6 @@ function QuestionsAndAnswers({profileId, companyId}) {
 				}
 			}
 			const {
-				changed,
 				...newPair
 			} = pair
 			if (pair.attributes.type !== "image"){
@@ -213,22 +197,25 @@ function QuestionsAndAnswers({profileId, companyId}) {
 			{updateAnswerLoading || postAnswerLoading && <Loader/>}
 			{updateAnswerError || postAnswerError && <p>Update error... :(</p>}
 			<div
-				className="bg-white shadow-md border border-gray-200 rounded-lg mx-auto w-2/5 max-w-md p-4 sm:p-6 lg:p-8 dark:bg-gray-800 dark:border-gray-700">
+				className="bg-white shadow-md rounded-lg w-full max-w-md p-4 sm:p-6 lg:p-8 dark:bg-gray-900">
 				<form onSubmit={saveAnswers}>
 					{mappedQuestionsAndAnswers.map(pair => {
 						return (
 							<InputPair
 								key={pair.id}
-								question={pair.attributes.text}
-								answer={pair.attributes.answers?.data[0]?.attributes.answer}
+								labelText={pair.attributes.text}
+								inputValue={pair.attributes.answers?.data[0]?.attributes.answer}
 								type={pair.attributes?.type}
-								setAnswer={e => updatePair(e, pair)}
+								setInputValue={e => updatePair(e, pair)}
+								// onFocus={()=>setErrorQuestion(false)} 
+								// onBlur={validateQuestion} 
+								// error={errorQuestion}
 							/>
 						)
 					})}
 					<button type="submit"
 						// disabled={disabled}
-						className="disabled:opacity-70 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+						className="disabled:opacity-70 text-white w-full bg-orange-600 hover:bg-orange-500 focus:ring-4 focus:ring-blue-300 font-medium rounded text-sm px-5 py-2.5 text-center"
 					>
                         Save
 					</button>

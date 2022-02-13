@@ -1,41 +1,31 @@
-import { useSelector } from "react-redux"
-import { Navigate, Outlet } from "react-router-dom"
+import {useSelector} from "react-redux"
+import {Navigate, Outlet, useLocation} from "react-router-dom"
 import PropTypes from "prop-types"
 
-/* TODO: another solution:
-*   instead of props, you can add checking
-*   of route types in ProtectedRoutes  */
-export const RouteTypes = {
-	adminOnly: "adminOnly",
-	companyUser: "companyUser",
-	loggedOutOnly: "loggedOutOnly"
-}
+const ProtectedRoutes = ({allowedRoles, unauthenticated}) => {
+	const user = useSelector(state => state.user)
+	const location = useLocation()
 
-const ProtectedRoutes = ({adminOnly = false, companyUser = false, loggedOutOnly = false}) => {
-	const user = useSelector(defaultState => defaultState.user)
-
-	if (adminOnly) {
-		return user?.profile?.attributes.userRole === "company_admin" ? <Outlet /> : <Navigate to="/401" />
-	}
-
-	if (companyUser) {
-		return user?.profile?.attributes.userRole === "company_user" ? <Outlet /> : <Navigate to="/401" />
-	}
-
-	// TODO: gde ono treba da se redirectuje posle logina
-	if (loggedOutOnly) {
-		return !user.isLoggedIn ? <Outlet /> : <Navigate to="/" />
+	if (unauthenticated) {
+		if (user.isLoggedIn) {
+			return <Navigate to="/" state={{from: location}} replace/>
+		} else {
+			return <Outlet />
+		}
 	}
 
 	return (
-		user.isLoggedIn ? <Outlet /> : <Navigate to="/login" />
+		allowedRoles?.some(role => role === user?.profile?.attributes.userRole)
+			? <Outlet/>
+			: user.isLoggedIn
+				? <Navigate to="/unauthorized" state={{from: location}} replace/>
+				:  <Navigate to="/login" state={{from: location}} replace/>
 	)
 }
 
 ProtectedRoutes.propTypes = {
-	adminOnly: PropTypes.bool,
-	companyUser: PropTypes.bool,
-	loggedOutOnly: PropTypes.bool
+	allowedRoles: PropTypes.array,
+	unauthenticated: PropTypes.bool,
 }
 
 export default ProtectedRoutes

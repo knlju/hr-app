@@ -1,10 +1,17 @@
+export const ROLES = {
+	user: "company_user",
+	admin: "company_admin"
+}
+
 export const INPUT_TYPES = {
 	text: "text",
 	longtext: "longtext",
 	image: "image",
-	select: "select"
+	select: "select",
+	email: "email",
+	password: "password",
+	userStatus: "userStatus"
 }
-
 
 export const SORT = [
 	{

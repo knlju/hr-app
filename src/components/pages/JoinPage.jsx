@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from "react"
 import {useDispatch, useSelector} from "react-redux"
-import {createCompanySuccess, fetchCompaniesStart, registerStart} from "../../redux/actions/actions"
+import {fetchCompaniesStart, registerStart} from "../../redux/actions/actions"
 import Loader from "../shared/Loader"
 import {Link} from "react-router-dom"
 import {useParams} from "react-router"
@@ -83,6 +83,12 @@ const JoinPage = () => {
 							<input
 								className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
 								type="file" id="formFile" accept="image/*" onChange={handleImageChange}/>
+							{image && (
+								<div className="mt-5">
+									<p className="mb-3 text-sm text-gray-900 dark:text-gray-100">Photo preview:</p>
+									<img className="rounded-md w-40 h-40 object-cover" src={URL.createObjectURL(image)} alt="new photo"/>
+								</div>
+							)}
 						</div>
 						<div>
 							<label htmlFor="formRole"

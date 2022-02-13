@@ -3,45 +3,59 @@ import PropTypes from "prop-types"
 import {INPUT_TYPES} from "../../constants"
 
 // factory
-function InputPair({question, answer, setAnswer, type, selectOptions}) {
+function InputPair({labelText, inputValue, setInputValue, type, selectOptions, placeholder, onFocus, onBlur, error}) {
 
 	if (type === INPUT_TYPES.text) {
-		return <TextInput question={question} answer={answer} setAnswer={setAnswer}/>
+		return <TextInput labelText={labelText} placeholder={placeholder} inputValue={inputValue} setInputValue={setInputValue} onFocus={onFocus} onBlur={onBlur} error={error}/>
 	}
 
 	if (type === INPUT_TYPES.longtext) {
-		return <LongTextInput question={question} answer={answer} setAnswer={setAnswer}/>
+		return <LongTextInput labelText={labelText} placeholder={placeholder} inputValue={inputValue} setInputValue={setInputValue} onFocus={onFocus} onBlur={onBlur} error={error}/>
 	}
 
 	if (type === INPUT_TYPES.image) {
-		return <ImageQAInput question={question} image={answer} setImage={setAnswer}/>
+		return <ImageQAInput labelText={labelText} image={inputValue} setImage={setInputValue}/>
 	}
 
 	if (type === INPUT_TYPES.select) {
-		return <SelectInput question={question} answer={answer} setAnswer={setAnswer} options={selectOptions}/>
+		return <SelectInput labelText={labelText} inputValue={inputValue} setInputValue={setInputValue} options={selectOptions} onFocus={onFocus} onBlur={onBlur} error={error}/>
+	}
+
+	if (type === INPUT_TYPES.userStatus) {
+		return <UserStatusInput labelText={labelText} inputValue={inputValue} setInputValue={setInputValue} options={selectOptions} onFocus={onFocus} onBlur={onBlur} error={error}/>
+	}
+
+	if (type === INPUT_TYPES.email) {
+		return <EmailInput labelText={labelText} inputValue={inputValue} setInputValue={setInputValue} onFocus={onFocus} onBlur={onBlur} error={error}/>
+	}
+
+	if (type === INPUT_TYPES.password) {
+		return <PasswordInput labelText={labelText} inputValue={inputValue} setInputValue={setInputValue} onFocus={onFocus} onBlur={onBlur} error={error}/>
 	}
 
 	return null
 }
 
-//TODO: dodati validaciju
-
 InputPair.propTypes = {
-	question: PropTypes.string,
-	answer: PropTypes.any,
-	setAnswer: PropTypes.func,
+	labelText: PropTypes.string,
+	inputValue: PropTypes.any,
+	setInputValue: PropTypes.func,
 	type: PropTypes.any,
 	selectOptions: PropTypes.array,
+	placeholder: PropTypes.string,
+	onFocus: PropTypes.func,
+	onBlur: PropTypes.func,
+	error: PropTypes.any
 }
 
-const ImageQAInput = ({question, image, setImage}) => (
-	<div>
+const ImageQAInput = ({labelText, image, setImage}) => (
+	<div className="mb-5">
 		<label htmlFor="formFile"
-			className="form-label text-sm font-medium text-gray-900 block mb-2 dark:text-gray-300">
-			{question}
+			className="text-sm lg:text-base form-label font-medium text-gray-900 block dark:text-gray-100">
+			{labelText}
 		</label>
 		<input
-			className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
+			className="relative bg-gray-100 border border-gray-100 text-gray-900 text-sm lg:text-base rounded focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white file:bg-gray-900 file:text-white file:border-0 file:rounded-md file:px-2 file:py-1 file:absolute file:top-1.5 file:right-1"
 			type="file" id="formFile" accept="image/*"
 			onChange={setImage}
 		/>
@@ -52,75 +66,163 @@ const ImageQAInput = ({question, image, setImage}) => (
 )
 
 ImageQAInput.propTypes = {
-	question: PropTypes.string,
+	labelText: PropTypes.string,
 	image: PropTypes.any,
 	setImage: PropTypes.func,
 }
 
-const TextInput = ({question, answer, setAnswer}) => (
-	<div>
+const TextInput = ({labelText, inputValue, setInputValue, placeholder, onFocus, onBlur, error}) => (
+	<div className="mb-5">
 		<label htmlFor="userName"
-			className="text-sm font-medium text-gray-900 block mb-2 dark:text-gray-300">
-			{question}
+			className="text-sm lg:text-base font-medium text-gray-900 block dark:text-gray-100">
+			{labelText}
 		</label>
-		<input type="text" name="username" id="name"
-			className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
-			placeholder={"userName"} value={answer} required=""
-			onChange={setAnswer}/>
+		<input type="text" name="username"
+			className="bg-gray-100 border border-gray-100 text-gray-900 text-sm lg:text-base rounded focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" value={inputValue} required=""
+			onChange={setInputValue} placeholder={placeholder} onFocus={onFocus} onBlur={onBlur}/>
+		{error && <span className="text-xs text-red-700">{error}</span>}
+
 	</div>
 )
 
 TextInput.propTypes = {
-	question: PropTypes.string,
-	answer: PropTypes.any,
-	setAnswer: PropTypes.func,
+	labelText: PropTypes.string,
+	placeholder: PropTypes.string,
+	inputValue: PropTypes.any,
+	setInputValue: PropTypes.func,
+	onFocus: PropTypes.func,
+	onBlur: PropTypes.func,
+	error: PropTypes.any
 }
 
-const LongTextInput = ({question, answer, setAnswer}) => (
-	<div>
+const LongTextInput = ({labelText, inputValue, setInputValue, placeholder,onFocus, onBlur,error}) => (
+	<div className="mb-5">
 		<label htmlFor="userName"
-			className="text-sm font-medium text-gray-900 block mb-2 dark:text-gray-300">
-			{question}
+			className="text-sm lg:text-base font-medium text-gray-900 block dark:text-gray-100">
+			{labelText}
 		</label>
 		<textarea
-			className="form-control block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding
-                border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
+			className="form-control text-sm lg:text-base block w-full px-3 py-1.5 font-normal text-gray-700 bg-white bg-clip-padding
+                border border-solid border-gray-100 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
 			id="exampleFormControlTextarea1"
 			rows="3"
-			placeholder="userName"
-			value={answer} required
-			onChange={setAnswer}
+			value={inputValue} required
+			onChange={setInputValue}
+			placeholder={placeholder}
+			onFocus={onFocus} onBlur={onBlur}
 		/>
+		{error && <span className="text-xs text-red-700">{error}</span>}
 	</div>
 )
 
 LongTextInput.propTypes = {
-	question: PropTypes.string,
-	answer: PropTypes.any,
-	setAnswer: PropTypes.func,
+	labelText: PropTypes.string,
+	placeholder: PropTypes.string,
+	inputValue: PropTypes.any,
+	setInputValue: PropTypes.func,
+	onFocus: PropTypes.func,
+	onBlur: PropTypes.func,
+	error: PropTypes.any
 }
 
-const SelectInput = ({question, answer, setAnswer, options}) => (
-	<div>
+const SelectInput = ({labelText, inputValue, setInputValue, options,onFocus, onBlur,error}) => (
+	<div className="mb-5">
 		<label htmlFor="userName"
-			className="text-sm font-medium text-gray-900 block mb-2 dark:text-gray-300">
-			{question}
+			className="text-sm lg:text-base font-medium text-gray-900 block dark:text-gray-100">
+			{labelText}
 		</label>
 		<select
-			className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
-			value={answer} onChange={setAnswer} id="formCompanies">
-			{options?.map(option => (
+			className="bg-gray-100 border border-gray-100 text-gray-900 text-sm lg:text-base rounded focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
+			value={inputValue} onChange={setInputValue} id="formCompanies" onFocus={onFocus} onBlur={onBlur}>
+			{options.map(option => (
 				<option key={option.id} value={option.id}>{option.attributes.name}</option>
 			))}
 		</select>
+		{error && <span className="text-xs text-red-700">{error}</span>}
 	</div>
 )
 
 SelectInput.propTypes = {
-	question: PropTypes.string,
-	answer: PropTypes.any,
-	setAnswer: PropTypes.func,
+	labelText: PropTypes.string,
+	inputValue: PropTypes.any,
+	setInputValue: PropTypes.func,
 	options: PropTypes.array,
+	onFocus: PropTypes.func,
+	onBlur: PropTypes.func,
+	error: PropTypes.any
+}
+
+const UserStatusInput = ({labelText, inputValue, setInputValue, options,onFocus, onBlur,error}) => (
+	<div>
+		<label htmlFor="userName"
+			className="text-sm lg:text-base font-medium text-gray-900 block dark:text-gray-100">
+			{labelText}
+		</label>
+		<select
+			className="bg-gray-100 border border-gray-100 text-gray-900 text-sm lg:text-base rounded focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
+			value={inputValue} onChange={setInputValue} onFocus={onFocus} onBlur={onBlur}>
+			{options.map(option => (
+				<option key={option.id} value={option.id}>{option.attributes.name}</option>
+			))}
+		</select>
+		{error && <span className="text-xs text-red-700">{error}</span>}
+	</div>
+)
+
+UserStatusInput.propTypes = {
+	labelText: PropTypes.string,
+	inputValue: PropTypes.any,
+	setInputValue: PropTypes.func,
+	options: PropTypes.array,
+	onFocus: PropTypes.func,
+	onBlur: PropTypes.func,
+	error: PropTypes.any
+}
+
+const EmailInput = ({labelText, inputValue, setInputValue,onFocus, onBlur, error}) => (
+	<div className="mb-5">
+		<label htmlFor="email"
+			className="text-sm lg:text-base font-medium text-gray-900 block dark:text-gray-100">
+			{labelText}
+		</label>
+		<input type="email" name="email" id="email"
+			className="bg-gray-100 border border-gray-100 text-gray-900 text-sm lg:text-base rounded focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white placeholder:text-sm"
+			placeholder="Email..." value={inputValue} required=""
+			onChange={setInputValue} onFocus={onFocus} onBlur={onBlur}/>
+		{error && <span className="text-xs text-red-700">{error}</span>}
+	</div>
+)
+
+EmailInput.propTypes = {
+	labelText: PropTypes.string,
+	inputValue: PropTypes.any,
+	setInputValue: PropTypes.func,
+	onFocus: PropTypes.func,
+	onBlur: PropTypes.func,
+	error: PropTypes.any
+}
+
+const PasswordInput = ({labelText, inputValue, setInputValue, onFocus, onBlur, error}) => (
+	<div className="mb-5">
+		<label htmlFor="password"
+			className="text-sm lg:text-base font-medium text-gray-900 block dark:text-gray-100">
+			{labelText}
+		</label>
+		<input type="password" name="password"
+			className="bg-gray-100 border border-gray-100 text-gray-900 text-sm lg:text-base rounded focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
+			placeholder="*******" value={inputValue} required=""
+			onChange={setInputValue} onFocus={onFocus} onBlur={onBlur}/>
+		{error && <span className="text-xs text-red-700">{error}</span>}
+	</div>
+)
+
+PasswordInput.propTypes = {
+	labelText: PropTypes.string,
+	inputValue: PropTypes.any,
+	setInputValue: PropTypes.func,
+	onFocus: PropTypes.func,
+	onBlur: PropTypes.func,
+	error: PropTypes.any
 }
 
 export default InputPair

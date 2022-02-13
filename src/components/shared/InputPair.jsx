@@ -3,7 +3,18 @@ import PropTypes from "prop-types"
 import {INPUT_TYPES} from "../../constants"
 
 // factory
-function InputPair({labelText, inputValue, setInputValue, type, selectOptions, placeholder, onFocus, onBlur, error}) {
+function InputPair({
+	labelText,
+	inputValue,
+	setInputValue,
+	type,
+	selectOptions,
+	placeholder,
+	onFocus,
+	onBlur,
+	error,
+	disabled
+}) {
 
 	if (type === INPUT_TYPES.text) {
 		return <TextInput labelText={labelText} placeholder={placeholder} inputValue={inputValue} setInputValue={setInputValue} onFocus={onFocus} onBlur={onBlur} error={error}/>
@@ -18,11 +29,14 @@ function InputPair({labelText, inputValue, setInputValue, type, selectOptions, p
 	}
 
 	if (type === INPUT_TYPES.select) {
-		return <SelectInput labelText={labelText} inputValue={inputValue} setInputValue={setInputValue} options={selectOptions} onFocus={onFocus} onBlur={onBlur} error={error}/>
+		return <SelectInput labelText={labelText} inputValue={inputValue} setInputValue={setInputValue}
+			options={selectOptions} onFocus={onFocus} onBlur={onBlur} error={error}
+			disabled={disabled}/>
 	}
 
 	if (type === INPUT_TYPES.userStatus) {
-		return <UserStatusInput labelText={labelText} inputValue={inputValue} setInputValue={setInputValue} options={selectOptions} onFocus={onFocus} onBlur={onBlur} error={error}/>
+		return <UserStatusInput labelText={labelText} inputValue={inputValue} setInputValue={setInputValue}
+			options={selectOptions} onFocus={onFocus} onBlur={onBlur} error={error}/>
 	}
 
 	if (type === INPUT_TYPES.email) {
@@ -45,7 +59,8 @@ InputPair.propTypes = {
 	placeholder: PropTypes.string,
 	onFocus: PropTypes.func,
 	onBlur: PropTypes.func,
-	error: PropTypes.any
+	error: PropTypes.any,
+	disabled: PropTypes.bool
 }
 
 const ImageQAInput = ({labelText, image, setImage}) => (
@@ -95,7 +110,7 @@ TextInput.propTypes = {
 	error: PropTypes.any
 }
 
-const LongTextInput = ({labelText, inputValue, setInputValue, placeholder,onFocus, onBlur,error}) => (
+const LongTextInput = ({labelText, inputValue, setInputValue, placeholder, onFocus, onBlur, error}) => (
 	<div className="mb-5">
 		<label htmlFor="userName"
 			className="text-sm lg:text-base font-medium text-gray-900 block dark:text-gray-100">
@@ -125,13 +140,15 @@ LongTextInput.propTypes = {
 	error: PropTypes.any
 }
 
-const SelectInput = ({labelText, inputValue, setInputValue, options,onFocus, onBlur,error}) => (
+const SelectInput = ({labelText, inputValue, setInputValue, options, onFocus, onBlur, error, disabled = false}) => (
 	<div className="mb-5">
-		<label htmlFor="userName"
+		<label
+			htmlFor="userName"
 			className="text-sm lg:text-base font-medium text-gray-900 block dark:text-gray-100">
 			{labelText}
 		</label>
 		<select
+			disabled={disabled}
 			className="bg-gray-100 border border-gray-100 text-gray-900 text-sm lg:text-base rounded focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
 			value={inputValue} onChange={setInputValue} id="formCompanies" onFocus={onFocus} onBlur={onBlur}>
 			{options.map(option => (
@@ -149,10 +166,11 @@ SelectInput.propTypes = {
 	options: PropTypes.array,
 	onFocus: PropTypes.func,
 	onBlur: PropTypes.func,
-	error: PropTypes.any
+	error: PropTypes.any,
+	disabled: PropTypes.bool
 }
 
-const UserStatusInput = ({labelText, inputValue, setInputValue, options,onFocus, onBlur,error}) => (
+const UserStatusInput = ({labelText, inputValue, setInputValue, options, onFocus, onBlur, error}) => (
 	<div>
 		<label htmlFor="userName"
 			className="text-sm lg:text-base font-medium text-gray-900 block dark:text-gray-100">
@@ -179,7 +197,7 @@ UserStatusInput.propTypes = {
 	error: PropTypes.any
 }
 
-const EmailInput = ({labelText, inputValue, setInputValue,onFocus, onBlur, error}) => (
+const EmailInput = ({labelText, inputValue, setInputValue, onFocus, onBlur, error}) => (
 	<div className="mb-5">
 		<label htmlFor="email"
 			className="text-sm lg:text-base font-medium text-gray-900 block dark:text-gray-100">

@@ -48,3 +48,13 @@ export const ORDER = [
 		}
 	},
 ]
+
+export const ROLE_SELECT = [
+	{id: "company_user", attributes: {name: "User"}},
+	{id: "company_admin", attributes: {name: "Admin"}},
+]
+
+export const COMPANIES_ANNEX = [
+	{id: "-1", attributes: {name: "Select a company"}},
+	{id: "0", attributes: {name: "Create a new company"}},
+]

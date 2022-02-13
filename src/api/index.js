@@ -66,7 +66,7 @@ const api = {
      * @returns {Promise<AxiosResponse<any>>}
      */
 	getAllCompanies: () => {
-		return axiosInstanceWithoutAuth.get("/api/companies")
+		return axiosInstanceWithoutAuth.get("/api/companies?pagination[pageSize]=1000")
 	},
 
 	/**

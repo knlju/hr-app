@@ -1,11 +1,12 @@
 import React, {useEffect, useState} from "react"
 import {Link} from "react-router-dom"
 import {useDispatch, useSelector} from "react-redux"
-import {createCompanySuccess, fetchCompaniesStart, registerStart} from "../../redux/actions/actions"
+import {createCompanySuccess, fetchCompaniesStart, loginError, registerStart} from "../../redux/actions/actions"
 import PropTypes from "prop-types"
 import Loader from "../shared/Loader"
 import InputPair from "../shared/InputPair"
-import { INPUT_TYPES } from "../../constants"
+import {COMPANIES_ANNEX, INPUT_TYPES, ROLE_SELECT} from "../../constants"
+import {useToast} from "../../contexts/ToastProvider"
 
 const CreateNewCompany = ({companyName, setCompanyName, companySlug, setCompanySlug, setErrorCompanyName, setErrorCompanySlug, validateCompanyName, validateCompanySlug, errorCompanyName, errorCompanySlug}) => {
 
@@ -50,8 +51,17 @@ const RegisterPage = () => {
 	const [companyName, setCompanyName] = useState("")
 	const [companySlug, setCompanySlug] = useState("")
 
+	const [errorEmail, setErrorEmail] = useState(false)
+	const [errorPass, setErrorPass] = useState(false)
+	const [errorUsername, setErrorUsername] = useState(false)
+	const [errorCompany, setErrorCompany] = useState(false)
+	const [errorCompanyName, setErrorCompanyName] = useState(false)
+	const [errorCompanySlug, setErrorCompanySlug] = useState(false)
+
 	const companies = useSelector(state => state.companies)
 	const user = useSelector(state => state.user)
+	const addToast = useToast()
+
 	const dispatch = useDispatch()
 
 	useEffect(() => {
@@ -72,29 +82,13 @@ const RegisterPage = () => {
 			}
 			dispatch(registerStart(payload))
 		}
-	}
 
+	}
 	function handleCompanyChange(e) {
 		setCompanyId(e.target.value)
 		dispatch(createCompanySuccess({data: companies.companies.find(company => company.id === parseInt(e.target.value))}))
+
 	}
-
-	const ROLE = [
-		{id: "company_user", attributes: {name: "User"}},
-		{id: "company_admin", attributes: {name: "Admin"}},
-	]
-
-	const COMPANIES = [
-		{id: "-1", attributes: {name: "Select a company"}},
-		{id: "0", attributes: {name: "Create a new company"}},
-	]
-
-	const [errorEmail, setErrorEmail] = useState(false)
-	const [errorPass, setErrorPass] = useState(false)
-	const [errorUsername, setErrorUsername] = useState(false)
-	const [errorCompany, setErrorCompany] = useState(false)
-	const [errorCompanyName, setErrorCompanyName] = useState(false)
-	const [errorCompanySlug, setErrorCompanySlug] = useState(false)
 
 	const validateEmail = () => {
 		if (!email || email === "") {
@@ -165,8 +159,7 @@ const RegisterPage = () => {
 			return true
 		}
 	}
-	
-	
+
 	const validate = () => {
 		const emailValid = validateEmail()
 		const passwordValid = validatePassword()
@@ -175,11 +168,15 @@ const RegisterPage = () => {
 		
 		return emailValid && passwordValid && usernameValid && companyValid
 	}
-	// TODO: error sa beka u toast
+
+	if (user.error) {
+		addToast({type: "danger", text: user.error.message})
+		dispatch(loginError(null))
+	}
+
 	return (
 		<>
 			{user.isLoading && <Loader/>}
-			{user.error && <h1 className="text-6xl">{JSON.stringify(user.error)}</h1>}
 			<div className="flex justify-between items-center mx-auto max-w-screen-lg py-10">
 				<div
 					className="bg-white shadow-md border border-gray-200 rounded-lg mx-auto w-full lg:w-2/5 max-w-md p-4 sm:p-6 lg:p-8 dark:bg-gray-800 dark:border-gray-700">
@@ -212,12 +209,12 @@ const RegisterPage = () => {
 						<div>
 							<InputPair type={INPUT_TYPES.select} inputValue={userRole}
 								setInputValue={e => setUserRole(e.target.value)}
-								labelText="Role" selectOptions={ROLE}/>
+								labelText="Role" selectOptions={ROLE_SELECT}/>
 						</div>
 						<div>
 							<InputPair type={INPUT_TYPES.select} inputValue={companyId}
 								setInputValue={handleCompanyChange}
-								labelText="Company" selectOptions={COMPANIES.concat(companies?.companies)} onFocus={()=>setErrorCompany(false)} onBlur={validateCompany} error={errorCompany}/>
+								labelText="Company" selectOptions={COMPANIES_ANNEX.concat(companies?.companies)} onFocus={()=>setErrorCompany(false)} onBlur={validateCompany} error={errorCompany}/>
 						</div>
 						{(companyId === "0") && (
 							<CreateNewCompany

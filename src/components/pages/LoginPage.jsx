@@ -1,13 +1,7 @@
 import React, {useEffect, useState} from "react"
-import {
-	useDispatch, useSelector,
-	// useSelector
-} from "react-redux"
-import {loginStart} from "../../redux/actions/actions"
-import {
-	Link,
-	// Navigate
-} from "react-router-dom"
+import {useDispatch, useSelector} from "react-redux"
+import {loginError, loginStart} from "../../redux/actions/actions"
+import {Link} from "react-router-dom"
 import Loader from "../shared/Loader"
 import InputPair from "../shared/InputPair"
 import {INPUT_TYPES} from "../../constants"
@@ -75,13 +69,18 @@ const LoginPage = () => {
 				email,
 				password
 			}
-			setTimeout(() => {
-				addToast({type: "success", text: "You are successfully logged in!"})
-			}, 1000)
-			setTimeout(() => {
-				dispatch(loginStart(data))
-			}, 2000)
+			// setTimeout(() => {
+			// 	addToast({type: "success", text: "You are successfully logged in!"})
+			// }, 1000)
+			// setTimeout(() => {
+			dispatch(loginStart(data))
+			// }, 2000)
 		}
+	}
+
+	if (user.error) {
+		addToast({type: "danger", text: user.error.message})
+		dispatch(loginError(null))
 	}
 
 	return (

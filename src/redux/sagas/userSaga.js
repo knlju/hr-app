@@ -33,7 +33,7 @@ function* login({email, password}) {
 			yield put(loginError("Login epic Fail"))
 		}
 	} catch (error) {
-		yield put(loginError(error.message))
+		yield put(loginError(error.response.data.error))
 	}
 }
 
@@ -76,7 +76,7 @@ function* register(payload) {
 			yield put(registerError("Register Failed"))
 		}
 	} catch (error) {
-		yield put(registerError(error.message))
+		yield put(registerError(error.response.data.error))
 	}
 }
 
@@ -233,7 +233,7 @@ function* registerOrchestrator(payload) {
 			return
 		}
 	} catch (error) {
-		yield put(registerError(error.message))
+		yield put(registerError(error.response.data.error))
 	}
 }
 

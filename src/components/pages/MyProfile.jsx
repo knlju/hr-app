@@ -25,7 +25,7 @@ export const MyProfile = () => {
 	const [newPassword, setNewPassword] = useState("")
 	const addToast = useToast()
 
-	const {isLoading, isError, refetch} = useGetMyProfile(isLoggedIn, {
+	const {isLoading, isError, refetch} = useGetMyProfile({
 		onSuccess: data => {
 			setProfileId(data?.data?.data?.[0].id)
 			setImage(data?.data?.data?.[0].attributes.profilePhoto.data?.attributes.formats.thumbnail.url)

@@ -8,7 +8,18 @@ import InputPair from "../shared/InputPair"
 import {COMPANIES_ANNEX, INPUT_TYPES, ROLE_SELECT} from "../../constants"
 import {useToast} from "../../contexts/ToastProvider"
 
-const CreateNewCompany = ({companyName, setCompanyName, companySlug, setCompanySlug, setErrorCompanyName, setErrorCompanySlug, validateCompanyName, validateCompanySlug, errorCompanyName, errorCompanySlug}) => {
+const CreateNewCompany = ({
+	companyName,
+	setCompanyName,
+	companySlug,
+	setCompanySlug,
+	setErrorCompanyName,
+	setErrorCompanySlug,
+	validateCompanyName,
+	validateCompanySlug,
+	errorCompanyName,
+	errorCompanySlug
+}) => {
 
 	return (
 		<>
@@ -18,11 +29,14 @@ const CreateNewCompany = ({companyName, setCompanyName, companySlug, setCompanyS
 			<div>
 				<InputPair type={INPUT_TYPES.text} inputValue={companyName}
 					setInputValue={e => setCompanyName(e.target.value)} labelText="Company
-                    name" placeholder="Company name..." onFocus={()=>setErrorCompanyName(false)} onBlur={validateCompanyName} error={errorCompanyName}/>
+                    name" placeholder="Company name..." onFocus={() => setErrorCompanyName(false)}
+					onBlur={validateCompanyName} error={errorCompanyName}/>
 			</div>
 			<div>
 				<InputPair type={INPUT_TYPES.text} inputValue={companySlug}
-					setInputValue={e => setCompanySlug(e.target.value)} labelText="Company slug" placeholder="Company slug..." onFocus={()=>setErrorCompanySlug(false)} onBlur={validateCompanySlug} error={errorCompanySlug}/>
+					setInputValue={e => setCompanySlug(e.target.value)} labelText="Company slug"
+					placeholder="Company slug..." onFocus={() => setErrorCompanySlug(false)}
+					onBlur={validateCompanySlug} error={errorCompanySlug}/>
 			</div>
 		</>
 	)
@@ -70,7 +84,7 @@ const RegisterPage = () => {
 
 	const submitRegistration = (e) => {
 		e.preventDefault()
-		if(validate()) {
+		if (validate()) {
 			let company = companyId
 			const payload = {username, email, password, company, userRole}
 			if (parseInt(companyId) < 1) {
@@ -84,10 +98,14 @@ const RegisterPage = () => {
 		}
 
 	}
+
 	function handleCompanyChange(e) {
 		setCompanyId(e.target.value)
-		dispatch(createCompanySuccess({data: companies.companies.find(company => company.id === parseInt(e.target.value))}))
-
+		dispatch(createCompanySuccess({
+			data: {
+				data: companies.companies.find(company => company.id === parseInt(e.target.value))
+			}
+		}))
 	}
 
 	const validateEmail = () => {
@@ -108,8 +126,8 @@ const RegisterPage = () => {
 		if (!password || password === "") {
 			setErrorPass("Password can't be empty!")
 			return false
-		} 
-		// else if (regexPassword){} 
+		}
+		// else if (regexPassword){}
 		else {
 			setErrorPass(false)
 			return true
@@ -119,19 +137,17 @@ const RegisterPage = () => {
 		if (!username || username === "") {
 			setErrorUsername("Username can't be empty!")
 			return false
-		} 
-		else {
+		} else {
 			setErrorUsername(false)
 			return true
 		}
 	}
-	
+
 	const validateCompanyName = () => {
 		if (!companyName || companyName === "") {
 			setErrorCompanyName("Company Name can't be empty!")
 			return false
-		} 
-		else {
+		} else {
 			setErrorCompanyName(false)
 			return true
 		}
@@ -140,8 +156,7 @@ const RegisterPage = () => {
 		if (!companySlug || companySlug === "") {
 			setErrorCompanySlug("Company Slug can't be empty!")
 			return false
-		} 
-		else {
+		} else {
 			setErrorCompanySlug(false)
 			return true
 		}
@@ -153,8 +168,7 @@ const RegisterPage = () => {
 		} else if (companyId === "0") {
 			validateCompanyName()
 			validateCompanySlug()
-		}
-		else {
+		} else {
 			setErrorCompany(false)
 			return true
 		}
@@ -165,7 +179,7 @@ const RegisterPage = () => {
 		const passwordValid = validatePassword()
 		const usernameValid = validateUsername()
 		const companyValid = validateCompany()
-		
+
 		return emailValid && passwordValid && usernameValid && companyValid
 	}
 

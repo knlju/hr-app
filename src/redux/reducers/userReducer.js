@@ -20,7 +20,7 @@ export default (state = initialState, { type, payload }) => {
 		return {
 			...state,
 			isLoading: false,
-			isLoggedIn: true,
+			// isLoggedIn: true,
 			user: payload,
 		}
 	case actions.LOGIN_ERROR:
@@ -40,7 +40,7 @@ export default (state = initialState, { type, payload }) => {
 		return {
 			...state,
 			isLoading: false,
-			isLoggedIn: true,
+			// isLoggedIn: true,
 			user: payload,
 		}
 	case actions.LOGIN_WITH_TOKEN_ERROR:
@@ -57,7 +57,7 @@ export default (state = initialState, { type, payload }) => {
 		return {
 			...state,
 			isLoading: false,
-			isLoggedIn: true,
+			// isLoggedIn: true,
 			user: payload,
 		}
 	case actions.REGISTER_ERROR:
@@ -90,6 +90,7 @@ export default (state = initialState, { type, payload }) => {
 		return {
 			...state,
 			isLoading: false,
+			isLoggedIn: true,
 			profile: payload
 		}
 	case actions.CREATE_PROFILE_ERROR: {
@@ -102,6 +103,7 @@ export default (state = initialState, { type, payload }) => {
 	case actions.FETCH_PROFILE_SUCCESS: {
 		return {
 			...state,
+			isLoggedIn: true,
 			profile: payload
 		}
 	}

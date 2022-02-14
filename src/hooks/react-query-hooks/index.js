@@ -93,11 +93,10 @@ export const useGetAllCompanies = (options = {}) => {
 /**
  * * Returns useQuery hook for fetching user by Token
  *
- * @param isLoggedIn
  * @param options
  * @returns
  */
-export const useGetMyProfile = (isLoggedIn, options = {}) => {
+export const useGetMyProfile = (options = {}) => {
 	return useQuery("getMyProfile", async () => {
 		const token = localStorage.getItem("token")
 		const tokenDecoded = jwtDecode(token)

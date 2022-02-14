@@ -6,12 +6,14 @@ import {
 	useQuestionsQuery,
 	useUpdateAnswerMutation
 } from "../../hooks/react-query-hooks"
-import SpinnerLoader from "./SpinnerLoader"
 import PropTypes from "prop-types"
 import InputPair from "./InputPair"
 import Loader from "./Loader"
+import {useToast} from "../../contexts/ToastProvider"
 
 function QuestionsAndAnswers({profileId, companyId}) {
+
+	const addToast = useToast()
 
 	const {
 		data: questions,
@@ -40,12 +42,12 @@ function QuestionsAndAnswers({profileId, companyId}) {
 	const {
 		isError: updateAnswerError,
 		isLoading: updateAnswerLoading,
-		mutate: updateAnswer,
+		mutateAsync: updateAnswerAsync,
 	} = useUpdateAnswerMutation()
 	const {
 		isError: postAnswerError,
 		isLoading: postAnswerLoading,
-		mutate: postAnswer,
+		mutateAsync: postAnswerAsync,
 	} = usePostAnswerMutation()
 
 	const {
@@ -84,7 +86,7 @@ function QuestionsAndAnswers({profileId, companyId}) {
 						attributes: {
 							...newQuestion.attributes.answers.data[0].attributes,
 							file: e.target.files[0],
-							inputValue: URL.createObjectURL(e.target.files[0]),
+							answer: URL.createObjectURL(e.target.files[0]),
 						}
 					}
 				}
@@ -111,7 +113,7 @@ function QuestionsAndAnswers({profileId, companyId}) {
 						...newQuestion.attributes.answers.data[0],
 						attributes: {
 							...newQuestion.attributes.answers.data[0].attributes,
-							inputValue: e.target.value,
+							answer: e.target.value,
 						}
 					}
 				}
@@ -122,54 +124,60 @@ function QuestionsAndAnswers({profileId, companyId}) {
 
 	function saveAnswers(e) {
 		e.preventDefault()
-		mappedQuestionsAndAnswers.forEach(async pair => {
-			if (!pair.changed) return
-			// sets changed to false to stop additional updates on save
-			const mockEvent = {
-				target: {
-					value: pair.attributes.answers.data[0].attributes.answer
+		try {
+			mappedQuestionsAndAnswers.forEach(async pair => {
+				if (!pair.changed) return
+				// sets changed to false to stop additional updates on save
+				const mockEvent = {
+					target: {
+						value: pair.attributes.answers.data[0].attributes.answer
+					}
 				}
-			}
-			const {
-				...newPair
-			} = pair
-			if (pair.attributes.type !== "image"){
-				updatePair(mockEvent, newPair)
-			}
-
-			// no id means it's a new answer
-			if (!Object.prototype.hasOwnProperty.call(pair.attributes.answers.data[0], "id")) {
-				const currentAnswer = pair.attributes.answers.data[0]
-
-				const payload = {
-					questionId: currentAnswer.attributes.question,
-					answer: currentAnswer.attributes.answer,
-					userProfile: currentAnswer.attributes.profile
+				const {
+					...newPair
+				} = pair
+				if (pair.attributes.type !== "image"){
+					updatePair(mockEvent, newPair)
 				}
 
-				if (pair.attributes.type === "image") {
-					const uploadImageResponse = await uploadImageAsync(currentAnswer.attributes.file)
-					payload.answer = uploadImageResponse.data[0].url
-				}
+				// no id means it's a new answer
+				if (!Object.prototype.hasOwnProperty.call(pair.attributes.answers.data[0], "id")) {
+					const currentAnswer = pair.attributes.answers.data[0]
 
-				postAnswer(payload)
-			} else {
-				const currentAnswer = pair.attributes.answers.data[0]
-				const payload = {
-					answerId: currentAnswer.id,
-					questionId: currentAnswer.attributes.question,
-					answer: currentAnswer.attributes.answer,
-					userProfile: currentAnswer.attributes.profile
-				}
+					const payload = {
+						questionId: currentAnswer.attributes.question,
+						answer: currentAnswer.attributes.answer,
+						userProfile: currentAnswer.attributes.profile
+					}
 
-				if (pair.attributes.type === "image") {
-					const uploadImageResponse = await uploadImageAsync(currentAnswer.attributes.file)
-					payload.answer = uploadImageResponse.data[0].url
+					if (pair.attributes.type === "image") {
+						const uploadImageResponse = await uploadImageAsync(currentAnswer.attributes.file)
+						payload.answer = uploadImageResponse.data[0].url
+					}
+
+					await postAnswerAsync(payload)
+				} else {
+					const currentAnswer = pair.attributes.answers.data[0]
+					const payload = {
+						answerId: currentAnswer.id,
+						questionId: currentAnswer.attributes.question,
+						answer: currentAnswer.attributes.answer,
+						userProfile: currentAnswer.attributes.profile
+					}
+
+					if (pair.attributes.type === "image") {
+						const uploadImageResponse = await uploadImageAsync(currentAnswer.attributes.file)
+						payload.answer = uploadImageResponse.data[0].url
+					}
+
+					await updateAnswerAsync(payload)
 				}
-                
-				updateAnswer(payload)
-			}
-		})
+			})
+			addToast({type: "success", text: "Answers succesfully updated!"})
+		} catch (err) {
+			addToast({type: "danger", text: "Error while updating answers!"})
+		}
+
 	}
 
 	function mapAnswersToQuestions(questions, answers) {
@@ -184,20 +192,19 @@ function QuestionsAndAnswers({profileId, companyId}) {
 		setMappedQuestionsAndAnswers(newQuestions)
 	}
 
-	if (questionsLoading || answersLoading || uploadImageLoading) {
-		return <SpinnerLoader/>
-	}
-
 	if (questionsError || answersError || uploadImageError) {
 		return <p>Loading error...</p>
 	}
 
+	const disabled = postAnswerLoading || updateAnswerLoading
+
 	return (
 		<>
-			{updateAnswerLoading || postAnswerLoading && <Loader/>}
-			{updateAnswerError || postAnswerError && <p>Update error... :(</p>}
 			<div
 				className="bg-white shadow-md rounded-lg w-full max-w-md p-4 sm:p-6 lg:p-8 dark:bg-gray-900">
+				{updateAnswerLoading || postAnswerLoading && <Loader/>}
+				{questionsLoading || answersLoading || uploadImageLoading && <Loader />}
+				{updateAnswerError || postAnswerError && <p>Update error... :(</p>}
 				<form onSubmit={saveAnswers}>
 					{mappedQuestionsAndAnswers.map(pair => {
 						return (
@@ -214,7 +221,7 @@ function QuestionsAndAnswers({profileId, companyId}) {
 						)
 					})}
 					<button type="submit"
-						// disabled={disabled}
+						disabled={disabled}
 						className="disabled:opacity-70 text-white w-full bg-orange-600 hover:bg-orange-500 focus:ring-4 focus:ring-blue-300 font-medium rounded text-sm px-5 py-2.5 text-center"
 					>
                         Save

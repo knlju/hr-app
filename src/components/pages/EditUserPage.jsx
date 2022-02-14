@@ -146,7 +146,7 @@ function EditUserPage() {
 	}
 
 	return (
-		<div>
+		<div className="max-w-7xl mx-auto">
 			{(isImageUploading || isProfileUpdateLoading || isProfilePublishLoading) && <Loader/>}
 			{(imageUploadError || isProfileUpdateError) && <p>Update error... Try again</p>}
 			{isProfilePublishError && <p>Publish error :(</p>}
@@ -154,7 +154,7 @@ function EditUserPage() {
 				user={user.data.data}
 				disabled={isDeleteUserLoading || isDeleteAnswerLoading}
 				onConfirm={deleteUser}/>}
-			<div>
+			<div className="max-w-screen-lg mx-auto">
 				<button onClick={navigateAfterAction} className="text-sm hover:underline text-orange-500 hover:text-orange-400 flex items-center gap-2 mb-4">
 					<i className="fas fa-caret-square-left"/>Go back</button>
 			</div>
@@ -193,7 +193,7 @@ function EditUserPage() {
 				}
 			</div>
 			<div
-				className="flex gap-6 flex-col md:flex-row md:justify-between md:items-start max-w-screen-lg py-10"
+				className="flex gap-6 mx-auto flex-col md:flex-row md:justify-between md:items-start max-w-screen-lg py-10"
 			>
 				<InfoForm
 					setName={setUsername}

@@ -9,7 +9,7 @@ function Modal({children, closeModal}) {
 	}, [])
 
 	return ReactDOM.createPortal(
-		<div className="fixed z-10 inset-0 overflow-y-auto" aria-labelledby="modal-title" role="dialog"
+		<div className="fixed z-10 inset-0 overflow-y-auto py-5" aria-labelledby="modal-title" role="dialog"
 			aria-modal="true" onClick={closeModal}>
 			<div className="flex items-center justify-center min-h-screen text-center">
 				<div>

@@ -51,7 +51,7 @@ export const PendingPage = () => {
 	}
 
 	return (
-		<div className="grid gap-5 lg:grid-cols-3 md:grid-cols-2 xs:grid-cols-1">
+		<div className="grid gap-5 lg:grid-cols-3 md:grid-cols-2 xs:grid-cols-1 mx-auto max-w-7xl">
 			{userToDelete &&
                 <DeleteUserModal disabled={isDeleteUserLoading || isDeleteAnswerLoading} onCancel={() => setUserToDelete(false)} onConfirm={deleteUser} user={userToDelete} />}
 			{(isDeleteUserLoading || isDeleteAnswerLoading) && <Loader/>}

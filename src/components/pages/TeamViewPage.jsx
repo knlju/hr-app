@@ -36,7 +36,7 @@ export const TeamViewPage = () => {
 				<div className="flex justify-start py-5">
 					<div className="flex flex-col items-center md:flex-row md:items-center gap-6">
 						<img className="w-36 h-36 md:w-24 md:h-24 rounded-md" src={companyLogo} alt={company?.attributes.name}/>
-						<h1 className="text-xl md:text-2xl tracking-wide">{company?.attributes.name}</h1>
+						<h1 className="text-gray-900 dark:text-gray-100 text-xl md:text-2xl tracking-wide">{company?.attributes.name}</h1>
 					</div>
 				</div>
 				<div className="grid gap-5 lg:grid-cols-3 md:grid-cols-2 xs:grid-cols-1">

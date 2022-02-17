@@ -12,7 +12,7 @@ export const Questions = () => {
 	const [modalOpen, setModalOpen] = useState(false)
 	const [modalId, setModalId] = useState(null)
 	const [questionList, setQuestionList] = useState([])
-	const companyID = useSelector(defaultState => defaultState.user.profile.attributes.company.data.id)
+	const companyID = useSelector(state => state.companies.userCompany.data.id)
 	const addToast = useToast()
 
 	const {refetch, isLoading, isFetching} = useGetCompanyQuestions(companyID, {

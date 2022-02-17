@@ -9,7 +9,7 @@ import InputPair from "../../shared/InputPair"
 import {useToast} from "../../../contexts/ToastProvider"
 
 export const AnswerQuestionsPage = () => {
-	const companyID = useSelector(defaultState => defaultState.user?.profile?.attributes?.company?.data?.id)
+	const companyID = useSelector(state => state.companies.userCompany.data.id)
 	const userProfile = useSelector(defaultState => defaultState.user?.profile?.id)
 	const [index,setIndex] = useState(0)
 	const [questions, setQuestions] = useState([index])

@@ -14,6 +14,8 @@ import {ROLES} from "../constants"
 import TeamPageRoleRoute from "./TeamPageRoleRoute"
 import QuestionsRoleRoute from "./QuestionsRoleRoute"
 
+import RegisterPageFormik from "../components/pages/RegisterPageFormik"
+
 const createRoutes = () => (
 	<Routes>
 		<Route element={<MainLayout/>}>
@@ -44,7 +46,8 @@ const createRoutes = () => (
 
 			<Route element={<ProtectedRoutes unauthenticated />}>
 				<Route path="/login" element={<LoginPage/>}/>
-				<Route path="/register" element={<RegisterPage/>}/>
+				{/* <Route path="/register" element={<RegisterPage/>}/> */}
+				<Route path="/register" element={<RegisterPageFormik/>}/>
 				<Route path="/join/:slug" element={<JoinPage/>}/>
 			</Route>
 

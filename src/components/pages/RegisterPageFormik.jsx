@@ -8,6 +8,10 @@ import InputPair from "../shared/InputPair"
 import {COMPANIES_ANNEX, INPUT_TYPES, ROLE_SELECT} from "../../constants"
 import {useToast} from "../../contexts/ToastProvider"
 
+import { Formik, useFormik } from "formik"
+import * as Yup from "yup"
+
+
 
 const CreateNewCompany = ({
 	companyName,
@@ -76,6 +80,59 @@ const RegisterPage = () => {
 	const companies = useSelector(state => state.companies)
 	const user = useSelector(state => state.user)
 	const addToast = useToast()
+
+	//formik
+	const lowercaseRegex = /(?=.*[a-z])/
+	const uppercaseRegex = /(?=.*[A-Z])/
+	const numericRegex = /(?=.*[0-9])/
+
+	const SignupSchema = Yup.object().shape({
+		username: Yup.string()
+			.min(2, "Too Short!")
+			.required("Required"),
+		email: Yup.string()
+			.lowercase()
+			.email("Must be a valid email!")
+		// .notOneOf(emailAddresses, "Email already taken!")
+			.required("Required!"),
+		password: Yup.string()
+			.matches(lowercaseRegex, "one lowercase required!")
+			.matches(uppercaseRegex, "one uppercase required!")
+			.matches(numericRegex, "one number required!")
+			.min(8, "Minimum 8 characters required!")
+			.required("Required!"),
+	// passwordConfirm: Yup.string()
+	// 	.oneOf([Yup.ref("password")], "Password must be the same!")
+	// 	.required("Required!")
+	})
+
+	const formik = useFormik({
+		initialValues: {
+			username: "",
+			email: "",
+			password: ""
+		},
+		validationSchema: Yup.object().shape({
+			username: Yup.string()
+				.min(2, "Too Short!")
+				.required("Required"),
+			email: Yup.string()
+				.lowercase()
+				.email("Must be a valid email!")
+			// .notOneOf(emailAddresses, "Email already taken!")
+				.required("Required!"),
+			password: Yup.string()
+				.matches(lowercaseRegex, "one lowercase required!")
+				.matches(uppercaseRegex, "one uppercase required!")
+				.matches(numericRegex, "one number required!")
+				.min(8, "Minimum 8 characters required!")
+				.required("Required!"),
+			// passwordConfirm: Yup.string()
+			// 	.oneOf([Yup.ref("password")], "Password must be the same!")
+			// 	.required("Required!")
+		})
+	})
+	//formik
 
 	const dispatch = useDispatch()
 
@@ -189,26 +246,33 @@ const RegisterPage = () => {
 		dispatch(loginError(null))
 	}
 
+	console.log("this is formik",formik)
+	console.log("this is formik errors",formik.errors)
+
 	return (
 		<>
 			{user.isLoading && <Loader/>}
 			<div className="flex justify-between items-center mx-auto max-w-screen-lg py-10">
 				<div
 					className="bg-white shadow-md border border-gray-200 rounded-lg mx-auto w-full lg:w-2/5 max-w-md p-4 sm:p-6 lg:p-8 dark:bg-gray-800 dark:border-gray-700">
-					<form className="space-y-6" action="#" onSubmit={submitRegistration}>
+					<form className="space-y-6" action="#"
+
+						//  onSubmit={submitRegistration}
+
+						onSubmit={formik.handleSubmit}>
 						<h3 className="text-xl font-medium text-gray-900 dark:text-white">Sign in to our platform</h3>
 						<div>
-							<InputPair type={INPUT_TYPES.text} inputValue={username}
-								setInputValue={e => setUsername(e.target.value)} labelText="Your name" placeholder="Your name..." onFocus={()=>setErrorUsername(false)} onBlur={validateUsername} error={errorUsername}/>
+							<InputPair type={INPUT_TYPES.text} inputValue={formik.values.username}
+								setInputValue={formik.handleChange} labelText="Your name" placeholder="Your name..." onFocus={()=>setErrorUsername(false)} onBlur={formik.handleBlur} error={formik.errors.username}/>
 								
 						</div>
 						<div>
-							<InputPair type={INPUT_TYPES.email} inputValue={email}
-								setInputValue={e => setEmail(e.target.value)} labelText="Your email" onFocus={()=>setErrorEmail(false)} onBlur={validateEmail} error={errorEmail}/>
+							<InputPair type={INPUT_TYPES.email} inputValue={formik.values.email}
+								setInputValue={formik.handleChange} labelText="Your email" onFocus={()=>setErrorEmail(false)} onBlur={formik.handleBlur} error={errorEmail}/>
 						</div>
 						<div>
-							<InputPair type={INPUT_TYPES.password} inputValue={password}
-								setInputValue={e => setPassword(e.target.value)} labelText="Your password" onFocus={()=>setErrorPass(false)} onBlur={validatePassword} error={errorPass}/>
+							<InputPair type={INPUT_TYPES.password} inputValue={formik.values.password}
+								setInputValue={formik.handleChange} labelText="Your password" onFocus={()=>setErrorPass(false)} onBlur={formik.handleBlur} error={errorPass}/>
 								
 						</div>
 						<div>

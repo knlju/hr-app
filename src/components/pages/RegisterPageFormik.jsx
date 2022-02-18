@@ -8,7 +8,7 @@ import InputPair from "../shared/InputPair"
 import {COMPANIES_ANNEX, INPUT_TYPES, ROLE_SELECT} from "../../constants"
 import {useToast} from "../../contexts/ToastProvider"
 
-import { Formik, useFormik } from "formik"
+import { useFormik } from "formik"
 import * as Yup from "yup"
 
 
@@ -18,8 +18,8 @@ const CreateNewCompany = ({
 	setCompanyName,
 	companySlug,
 	setCompanySlug,
-	setErrorCompanyName,
-	setErrorCompanySlug,
+	// setErrorCompanyName,
+	// setErrorCompanySlug,
 	validateCompanyName,
 	validateCompanySlug,
 	errorCompanyName,
@@ -33,14 +33,16 @@ const CreateNewCompany = ({
 			</div>
 			<div>
 				<InputPair type={INPUT_TYPES.text} inputValue={companyName}
-					setInputValue={e => setCompanyName(e.target.value)} labelText="Company
-                    name" placeholder="Company name..." onFocus={() => setErrorCompanyName(false)}
+					setInputValue={setCompanyName} labelText="Company
+                    name" placeholder="Company name..." 
+					// onFocus={() => setErrorCompanyName(false)}
 					onBlur={validateCompanyName} error={errorCompanyName}/>
 			</div>
 			<div>
 				<InputPair type={INPUT_TYPES.text} inputValue={companySlug}
-					setInputValue={e => setCompanySlug(e.target.value)} labelText="Company slug"
-					placeholder="Company slug..." onFocus={() => setErrorCompanySlug(false)}
+					setInputValue={setCompanySlug} labelText="Company slug"
+					placeholder="Company slug..." 
+					// onFocus={() => setErrorCompanySlug(false)}
 					onBlur={validateCompanySlug} error={errorCompanySlug}/>
 			</div>
 		</>
@@ -70,12 +72,8 @@ const RegisterPage = () => {
 	const [companyName, setCompanyName] = useState("")
 	const [companySlug, setCompanySlug] = useState("")
 
-	const [errorEmail, setErrorEmail] = useState(false)
-	const [errorPass, setErrorPass] = useState(false)
-	const [errorUsername, setErrorUsername] = useState(false)
+
 	const [errorCompany, setErrorCompany] = useState(false)
-	const [errorCompanyName, setErrorCompanyName] = useState(false)
-	const [errorCompanySlug, setErrorCompanySlug] = useState(false)
 
 	const companies = useSelector(state => state.companies)
 	const user = useSelector(state => state.user)
@@ -89,60 +87,39 @@ const RegisterPage = () => {
 	const SignupSchema = Yup.object().shape({
 		username: Yup.string()
 			.min(2, "Too Short!")
-			.required("Required"),
+			.required("Username can't be empty!"),
 		email: Yup.string()
 			.lowercase()
 			.email("Must be a valid email!")
-		// .notOneOf(emailAddresses, "Email already taken!")
-			.required("Required!"),
+			// .notOneOf(emailAddresses, "Email already taken!")
+			.required("Email can't be empty!!"),
 		password: Yup.string()
 			.matches(lowercaseRegex, "one lowercase required!")
 			.matches(uppercaseRegex, "one uppercase required!")
 			.matches(numericRegex, "one number required!")
 			.min(8, "Minimum 8 characters required!")
-			.required("Required!"),
-	// passwordConfirm: Yup.string()
-	// 	.oneOf([Yup.ref("password")], "Password must be the same!")
-	// 	.required("Required!")
+			.required("Password can't be empty!"),
+		companyId: Yup.string()
+			.required("Please, choose your company!"),
+		// companyName: Yup.string()
+		// 	.required("Company Name can't be empty!"),
+		// companySlug: Yup.string()
+		// 	.required("Company Slug can't be empty!"),
 	})
 
 	const formik = useFormik({
 		initialValues: {
-			username: "",
-			email: "",
-			password: ""
+			username,
+			email,
+			password, 
+			companyId,
+			userRole,
+			image,
+			companyName,
+			companySlug
 		},
-		validationSchema: Yup.object().shape({
-			username: Yup.string()
-				.min(2, "Too Short!")
-				.required("Required"),
-			email: Yup.string()
-				.lowercase()
-				.email("Must be a valid email!")
-			// .notOneOf(emailAddresses, "Email already taken!")
-				.required("Required!"),
-			password: Yup.string()
-				.matches(lowercaseRegex, "one lowercase required!")
-				.matches(uppercaseRegex, "one uppercase required!")
-				.matches(numericRegex, "one number required!")
-				.min(8, "Minimum 8 characters required!")
-				.required("Required!"),
-			// passwordConfirm: Yup.string()
-			// 	.oneOf([Yup.ref("password")], "Password must be the same!")
-			// 	.required("Required!")
-		})
-	})
-	//formik
-
-	const dispatch = useDispatch()
-
-	useEffect(() => {
-		dispatch(fetchCompaniesStart())
-	}, [])
-
-	const submitRegistration = (e) => {
-		e.preventDefault()
-		if (validate()) {
+		validationSchema: SignupSchema,
+		onSubmit: values => {
 			let company = companyId
 			const payload = {username, email, password, company, userRole}
 			if (parseInt(companyId) < 1) {
@@ -153,9 +130,18 @@ const RegisterPage = () => {
 				payload.image = image
 			}
 			dispatch(registerStart(payload))
-		}
+		},
+	})
 
-	}
+	console.log("------formik values",formik.values)
+	//formik
+
+	const dispatch = useDispatch()
+
+	useEffect(() => {
+		dispatch(fetchCompaniesStart())
+	}, [])
+
 
 	function handleCompanyChange(e) {
 		setCompanyId(e.target.value)
@@ -166,88 +152,26 @@ const RegisterPage = () => {
 		}))
 	}
 
-	const validateEmail = () => {
-		if (!email || email === "") {
-			setErrorEmail("Email can't be empty!")
-			return false
-		}
-		// else if (emailRegEx.test(email)){
-		// 	setErrorEmail("Not valid email!")
-		// 	return false
-		// }
-		else {
-			setErrorEmail(false)
-			return true
-		}
-	}
-	const validatePassword = () => {
-		if (!password || password === "") {
-			setErrorPass("Password can't be empty!")
-			return false
-		}
-		// else if (regexPassword){}
-		else {
-			setErrorPass(false)
-			return true
-		}
-	}
-	const validateUsername = () => {
-		if (!username || username === "") {
-			setErrorUsername("Username can't be empty!")
-			return false
-		} else {
-			setErrorUsername(false)
-			return true
-		}
-	}
 
-	const validateCompanyName = () => {
-		if (!companyName || companyName === "") {
-			setErrorCompanyName("Company Name can't be empty!")
-			return false
-		} else {
-			setErrorCompanyName(false)
-			return true
-		}
-	}
-	const validateCompanySlug = () => {
-		if (!companySlug || companySlug === "") {
-			setErrorCompanySlug("Company Slug can't be empty!")
-			return false
-		} else {
-			setErrorCompanySlug(false)
-			return true
-		}
-	}
 	const validateCompany = () => {
 		if (companyId === "-1") {
 			setErrorCompany("Please, choose your company!")
 			return false
 		} else if (companyId === "0") {
-			validateCompanyName()
-			validateCompanySlug()
+			// validateCompanyName()
+			// validateCompanySlug()
 		} else {
 			setErrorCompany(false)
 			return true
 		}
 	}
 
-	const validate = () => {
-		const emailValid = validateEmail()
-		const passwordValid = validatePassword()
-		const usernameValid = validateUsername()
-		const companyValid = validateCompany()
-
-		return emailValid && passwordValid && usernameValid && companyValid
-	}
 
 	if (user.error) {
 		addToast({type: "danger", text: user.error.message})
 		dispatch(loginError(null))
 	}
 
-	console.log("this is formik",formik)
-	console.log("this is formik errors",formik.errors)
 
 	return (
 		<>
@@ -263,16 +187,20 @@ const RegisterPage = () => {
 						<h3 className="text-xl font-medium text-gray-900 dark:text-white">Sign in to our platform</h3>
 						<div>
 							<InputPair type={INPUT_TYPES.text} inputValue={formik.values.username}
-								setInputValue={formik.handleChange} labelText="Your name" placeholder="Your name..." onFocus={()=>setErrorUsername(false)} onBlur={formik.handleBlur} error={formik.errors.username}/>
+								setInputValue={formik.handleChange} labelText="Your name" placeholder="Your name..." 
+								onBlur={formik.handleBlur} error={formik.errors.username}/>
 								
 						</div>
 						<div>
 							<InputPair type={INPUT_TYPES.email} inputValue={formik.values.email}
-								setInputValue={formik.handleChange} labelText="Your email" onFocus={()=>setErrorEmail(false)} onBlur={formik.handleBlur} error={errorEmail}/>
+								setInputValue={formik.handleChange} labelText="Your email"
+								onBlur={formik.handleBlur} error={formik.errors.email}/>
 						</div>
 						<div>
 							<InputPair type={INPUT_TYPES.password} inputValue={formik.values.password}
-								setInputValue={formik.handleChange} labelText="Your password" onFocus={()=>setErrorPass(false)} onBlur={formik.handleBlur} error={errorPass}/>
+								setInputValue={formik.handleChange} labelText="Your password" 
+								// onFocus={()=>setErrorPass(false)} 
+								onBlur={formik.handleBlur} error={formik.errors.password}/>
 								
 						</div>
 						<div>
@@ -297,16 +225,16 @@ const RegisterPage = () => {
 						</div>
 						{(companyId === "0") && (
 							<CreateNewCompany
-								companyName={companyName}
-								companySlug={companySlug}
-								setCompanyName={setCompanyName}
-								setCompanySlug={setCompanySlug}
-								setErrorCompanyName={setErrorCompanyName}
-								setErrorCompanySlug={setErrorCompanySlug}
-								validateCompanyName={validateCompanyName}
-								validateCompanySlug={validateCompanySlug}
-								errorCompanyName={errorCompanyName}
-								errorCompanySlug={errorCompanySlug}
+								companyName={formik.values.companyName}
+								companySlug={formik.values.companySlug}
+								setCompanyName={formik.handleChange}
+								setCompanySlug={formik.handleChange}
+								// setErrorCompanyName={setErrorCompanyName}
+								// setErrorCompanySlug={setErrorCompanySlug}
+								validateCompanyName={formik.handleBlur}
+								validateCompanySlug={formik.handleBlur}
+								errorCompanyName={formik.errors.companyName}
+								errorCompanySlug={formik.errors.companySlug}
 							/>
 						)}
 						<div className="flex justify-between items-center">

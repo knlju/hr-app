@@ -63,14 +63,14 @@ CreateNewCompany.propTypes = {
 }
 
 const RegisterPage = () => {
-	const [username, setUsername] = useState("")
-	const [email, setEmail] = useState("")
-	const [password, setPassword] = useState("")
+	// const [username, setUsername] = useState("")
+	// const [email, setEmail] = useState("")
+	// const [password, setPassword] = useState("")
 	const [companyId, setCompanyId] = useState("-1")
-	const [userRole, setUserRole] = useState("company_user")
-	const [image, setImage] = useState(null)
-	const [companyName, setCompanyName] = useState("")
-	const [companySlug, setCompanySlug] = useState("")
+	// const [userRole, setUserRole] = useState("company_user")
+	// const [image, setImage] = useState(null)
+	// const [companyName, setCompanyName] = useState("")
+	// const [companySlug, setCompanySlug] = useState("")
 
 
 	const [errorCompany, setErrorCompany] = useState(false)
@@ -94,40 +94,45 @@ const RegisterPage = () => {
 			// .notOneOf(emailAddresses, "Email already taken!")
 			.required("Email can't be empty!!"),
 		password: Yup.string()
-			.matches(lowercaseRegex, "one lowercase required!")
-			.matches(uppercaseRegex, "one uppercase required!")
-			.matches(numericRegex, "one number required!")
+			.matches(lowercaseRegex, "One lowercase required!")
+			.matches(uppercaseRegex, "One uppercase required!")
+			.matches(numericRegex, "One number required!")
 			.min(8, "Minimum 8 characters required!")
 			.required("Password can't be empty!"),
 		companyId: Yup.string()
 			.required("Please, choose your company!"),
-		// companyName: Yup.string()
-		// 	.required("Company Name can't be empty!"),
-		// companySlug: Yup.string()
-		// 	.required("Company Slug can't be empty!"),
+		companyNew: Yup.array().of(
+			Yup.object().shape({
+				companyName: Yup.string()
+					.required("Company Name is required"),
+				companySlug: Yup.string()
+					.required("Company Slug is required")
+			})
+		)
 	})
 
 	const formik = useFormik({
 		initialValues: {
-			username,
-			email,
-			password, 
-			companyId,
-			userRole,
-			image,
-			companyName,
-			companySlug
+			username: "",
+			email: "",
+			password: "", 
+			companyId: "",
+			userRole: "",
+			image: null,
+			companyNew: "0",
+			companyName: "",
+			companySlug: ""
 		},
 		validationSchema: SignupSchema,
 		onSubmit: values => {
 			let company = companyId
-			const payload = {username, email, password, company, userRole}
+			const payload = {username: values.username, email: values.email, password:values.password, company, userRole: values.userRole}
 			if (parseInt(companyId) < 1) {
-				company = {name: companyName, slug: companySlug}
+				company = {name: values.companyName, slug: values.companySlug}
 				payload.company = company
 			}
-			if (image) {
-				payload.image = image
+			if (values.image) {
+				payload.image = values.image
 			}
 			dispatch(registerStart(payload))
 		},
@@ -153,18 +158,18 @@ const RegisterPage = () => {
 	}
 
 
-	const validateCompany = () => {
-		if (companyId === "-1") {
-			setErrorCompany("Please, choose your company!")
-			return false
-		} else if (companyId === "0") {
-			// validateCompanyName()
-			// validateCompanySlug()
-		} else {
-			setErrorCompany(false)
-			return true
-		}
-	}
+	// const validateCompany = () => {
+	// 	if (companyId === "-1") {
+	// 		setErrorCompany("Please, choose your company!")
+	// 		return false
+	// 	} else if (companyId === "0") {
+	// 		// validateCompanyName()
+	// 		// validateCompanySlug()
+	// 	} else {
+	// 		setErrorCompany(false)
+	// 		return true
+	// 	}
+	// }
 
 
 	if (user.error) {
@@ -205,23 +210,26 @@ const RegisterPage = () => {
 						</div>
 						<div>
 							<InputPair type={INPUT_TYPES.image}
-								setInputValue={e => setImage(e.target.files[0])} labelText="Profile photo"/>
-							{image && (
+								setInputValue={formik.handleChange} labelText="Profile photo"/>
+							{formik.values.image && (
 								<div className="mt-5">
 									<p className="mb-3 text-sm text-gray-900 dark:text-gray-100">Photo preview:</p>
-									<img className="rounded-md w-40 h-40 object-cover" src={URL.createObjectURL(image)} alt="new photo"/>
+									<img className="rounded-md w-40 h-40 object-cover" src={URL.createObjectURL(formik.values.image)} alt="new photo"/>
 								</div>
 							)}
 						</div>
 						<div>
-							<InputPair type={INPUT_TYPES.select} inputValue={userRole}
-								setInputValue={e => setUserRole(e.target.value)}
+							<InputPair type={INPUT_TYPES.select} inputValue={formik.values.userRole}
+								setInputValue={formik.handleChange}
 								labelText="Role" selectOptions={ROLE_SELECT}/>
 						</div>
 						<div>
 							<InputPair type={INPUT_TYPES.select} inputValue={companyId}
 								setInputValue={handleCompanyChange}
-								labelText="Company" selectOptions={COMPANIES_ANNEX.concat(companies?.companies)} onFocus={()=>setErrorCompany(false)} onBlur={validateCompany} error={errorCompany}/>
+								labelText="Company" selectOptions={COMPANIES_ANNEX.concat(companies?.companies)} 
+								// onFocus={()=>setErrorCompany(false)} 
+								onBlur={formik.handleBlur} 
+								error={formik.errors.companyId}/>
 						</div>
 						{(companyId === "0") && (
 							<CreateNewCompany

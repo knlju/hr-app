@@ -1,6 +1,7 @@
 import React from "react"
 import PropTypes from "prop-types"
 import {INPUT_TYPES} from "../../constants"
+import { notifyManager } from "react-query"
 
 // factory
 function InputPair({
@@ -13,11 +14,12 @@ function InputPair({
 	onFocus,
 	onBlur,
 	error,
-	disabled
+	disabled,
+	name
 }) {
 
 	if (type === INPUT_TYPES.text) {
-		return <TextInput labelText={labelText} placeholder={placeholder} inputValue={inputValue} setInputValue={setInputValue} onFocus={onFocus} onBlur={onBlur} error={error}/>
+		return <TextInput labelText={labelText} placeholder={placeholder} inputValue={inputValue} setInputValue={setInputValue} onFocus={onFocus} onBlur={onBlur} error={error} name={name}/>
 	}
 
 	if (type === INPUT_TYPES.longtext) {
@@ -60,7 +62,8 @@ InputPair.propTypes = {
 	onFocus: PropTypes.func,
 	onBlur: PropTypes.func,
 	error: PropTypes.any,
-	disabled: PropTypes.bool
+	disabled: PropTypes.bool,
+	name: PropTypes.string
 }
 
 const ImageQAInput = ({labelText, image, setImage}) => (
@@ -86,13 +89,13 @@ ImageQAInput.propTypes = {
 	setImage: PropTypes.func,
 }
 
-const TextInput = ({labelText, inputValue, setInputValue, placeholder, onFocus, onBlur, error}) => (
+const TextInput = ({labelText, inputValue, setInputValue, placeholder, onFocus, onBlur, error, name}) => (
 	<div className="mb-5">
-		<label htmlFor="userName"
+		<label htmlFor={name || "username"}
 			className="text-sm lg:text-base font-medium text-gray-900 block dark:text-gray-100">
 			{labelText}
 		</label>
-		<input type="text" name="username"
+		<input type="text" name={name}
 			className="bg-gray-100 border border-gray-100 text-gray-900 text-sm lg:text-base rounded focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" value={inputValue} required=""
 			onChange={setInputValue} placeholder={placeholder} onFocus={onFocus} onBlur={onBlur}/>
 		{error && <span className="text-xs text-red-700">{error}</span>}
@@ -107,7 +110,8 @@ TextInput.propTypes = {
 	setInputValue: PropTypes.func,
 	onFocus: PropTypes.func,
 	onBlur: PropTypes.func,
-	error: PropTypes.any
+	error: PropTypes.any,
+	name: PropTypes.string,
 }
 
 const LongTextInput = ({labelText, inputValue, setInputValue, placeholder, onFocus, onBlur, error}) => (

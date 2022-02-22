@@ -6,7 +6,7 @@ import {useMutation} from "react-query"
 import api from "../../../api"
 import Modal from "../../shared/Modal"
 import InputPair from "../../shared/InputPair"
-import {useGetCompanyQuestions} from "../../../hooks/react-query-hooks"
+import {useGetCompanyQuestions} from "../../../hooks/reactQueryHooks"
 import {INPUT_TYPES} from "../../../constants"
 import {extractQuestionById, extractQuestionType} from "../../../utils"
 
@@ -15,8 +15,8 @@ function QuestionModal({setModalClose, modalId, addToast}) {
 	const [answer, setAnswer] = useState("")
 	const [answerImage, setAnswerImage] = useState(null)
 	const [questionType, setQuestionType] = useState("")
-	const companyID = useSelector(defaultState => defaultState.user.profile.attributes.company.data.id)
-	const userProfile = useSelector(defaultState => defaultState.user.profile.id)
+	const companyID = useSelector(state => state.companies.userCompany.data.id)
+	const userProfile = useSelector(state => state.user.profile.id)
 
 	const [error, setError] = useState(false)
 

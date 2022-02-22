@@ -3,7 +3,7 @@ import { useMutation } from "react-query"
 import api from "../../../api"
 import { useSelector } from "react-redux"
 import SpinnerLoader from "../../shared/SpinnerLoader"
-import { useGetCompanyQuestions } from "../../../hooks/react-query-hooks"
+import { useGetCompanyQuestions } from "../../../hooks/reactQueryHooks"
 import "../../../styles/CustomStyles.css"
 import InputPair from "../../shared/InputPair"
 import {useToast} from "../../../contexts/ToastProvider"
@@ -20,22 +20,11 @@ export const AnswerQuestionsPage = () => {
 	const addToast = useToast()
 
 	const {isLoading} = useGetCompanyQuestions(companyID, {
-		onSuccess: company_questions => {
-			const sortedQuestions = company_questions?.data?.data.sort(compare)
+		onSuccess: data => {
+			const sortedQuestions = data?.data?.data
 			setQuestions(sortedQuestions)
 		}
 	})
-	
-
-	function compare(a, b) {
-		if (a.attributes.order < b.attributes.order) {
-			return -1
-		}
-		if (a.attributes.order > b.attributes.order) {
-			return 1
-		}
-		return 0
-	}
 
 	const {id, attributes} = questions[index]
 	const text = attributes?.text

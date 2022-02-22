@@ -1,17 +1,16 @@
 import React, { useState } from "react"
 import {useSelector} from "react-redux"
-import {useGetCompanyQuery, usePublishedTeamMemberProfiles} from "../../hooks/react-query-hooks"
+import {useGetCompanyQuery, usePublishedTeamMemberProfiles} from "../../hooks/reactQueryHooks"
 import SpinnerLoader from "../shared/SpinnerLoader"
 import UserCard from "../shared/UserCard"
 
 export const TeamViewPage = () => {
 	const company = useSelector(state => state.companies.userCompany.data)
 	const [companyLogo, setCompanyLogo] = useState(null)
-	const companyId = useSelector(state => state.companies.userCompany.data.id)
 	const {data: teamMembers, isLoading, isError} = usePublishedTeamMemberProfiles(company.id)
 
-	useGetCompanyQuery(companyId, {
-		enabled: !!companyId, onSuccess: company => {
+	useGetCompanyQuery(company.id, {
+		onSuccess: company => {
 			setCompanyLogo(company.data.data.attributes.logo.data.attributes.url)
 		}
 	})

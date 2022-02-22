@@ -1,6 +1,6 @@
 import {useMutation, useQuery} from "react-query"
 import jwtDecode from "jwt-decode"
-import api from "../../api"
+import api from "../api"
 
 // Queries
 

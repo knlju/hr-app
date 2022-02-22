@@ -1,7 +1,7 @@
 import React from "react"
 import Modal from "./shared/Modal"
 import PropTypes from "prop-types"
-import {useAnswersQuery} from "../hooks/react-query-hooks"
+import {useAnswersQuery} from "../hooks/reactQueryHooks"
 import SpinnerLoader from "./shared/SpinnerLoader"
 
 function UserModal({user, closeModal}) {

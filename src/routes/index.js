@@ -1,21 +1,20 @@
 import {Route, Routes} from "react-router-dom"
 import LoginPage from "../components/pages/LoginPage"
-import RegisterPage from "../components/pages/RegisterPage"
-import { MainLayout} from "../components/pages/MainLayout"
+import MainLayout from "../components/pages/MainLayout"
 import ProtectedRoutes from "./ProtectedRoutes"
-import { PendingPage } from "../components/pages/PendingPage"
-import { Company } from "../components/pages/Company"
-import { MyProfile } from "../components/pages/MyProfile"
+import PendingPage from "../components/pages/PendingPage"
+import Company from "../components/pages/Company"
+import MyProfile from "../components/pages/MyProfile"
 import EditUserPage from "../components/pages/EditUserPage"
 import AddQuestion from "../components/pages/questions/AddQuestion"
 import JoinPage from "../components/pages/JoinPage"
 import CompanyWall from "../components/pages/CompanyWall"
-import {ROLES} from "../constants"
 import TeamPageRoleRoute from "./TeamPageRoleRoute"
 import QuestionsRoleRoute from "./QuestionsRoleRoute"
+import ErrorPage from "../components/pages/404"
+import RegisterPage from "../components/pages/RegisterPage"
 
-import RegisterPageFormik from "../components/pages/RegisterPageFormik"
-import { ErrorPage } from "../components/pages/404"
+import {ROLES} from "../constants"
 
 const createRoutes = () => (
 	<Routes>
@@ -47,8 +46,7 @@ const createRoutes = () => (
 
 			<Route element={<ProtectedRoutes unauthenticated />}>
 				<Route path="/login" element={<LoginPage/>}/>
-				{/* <Route path="/register" element={<RegisterPage/>}/> */}
-				<Route path="/register" element={<RegisterPageFormik/>}/>
+				<Route path="/register" element={<RegisterPage/>}/>
 				<Route path="/join/:slug" element={<JoinPage/>}/>
 			</Route>
 

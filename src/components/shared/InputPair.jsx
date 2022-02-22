@@ -1,7 +1,6 @@
 import React from "react"
 import PropTypes from "prop-types"
 import {INPUT_TYPES} from "../../constants"
-import { notifyManager } from "react-query"
 
 // factory
 function InputPair({

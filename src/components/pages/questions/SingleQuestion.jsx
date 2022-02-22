@@ -1,10 +1,10 @@
 import React, {useEffect, useState} from "react"
 import PropTypes from "prop-types"
 import {useNavigate} from "react-router"
-import DeleteUserModal from "../../shared/DeleteUserModal"
+import DeleteModal from "../../shared/DeleteModal"
 import {useSelector} from "react-redux"
 import "../../../styles/CustomStyles.css"
-import {useDeleteQuestionMutation, useDeleteUserAnswerMutation} from "../../../hooks/react-query-hooks"
+import {useDeleteQuestionMutation, useDeleteUserAnswerMutation} from "../../../hooks/reactQueryHooks"
 import {useQueryClient} from "react-query"
 import {useToast} from "../../../contexts/ToastProvider"
 
@@ -17,6 +17,7 @@ const SingleQuestion = ({question, setModalOpen}) => {
 	const [admin, setAdmin] = useState("")
 	const addToast = useToast()
 	const [questionDeleteModal, setQuestionDeleteModal] = useState(false)
+	const {id, attributes: {text}} = question
 
 	const {mutateAsync: deleteAnswerAsync} = useDeleteUserAnswerMutation()
 	const {mutateAsync: deleteQuestionAsync} = useDeleteQuestionMutation({
@@ -38,8 +39,6 @@ const SingleQuestion = ({question, setModalOpen}) => {
 		}
 	}, [])
 
-	const {id, attributes: {text}} = question
-
 	const handleEdit = (id) => {
 		navigate(`/edit-question/${id}`)
 	}
@@ -52,7 +51,7 @@ const SingleQuestion = ({question, setModalOpen}) => {
 	return (
 		<>
 			{questionDeleteModal &&
-                <DeleteUserModal onCancel={() => setQuestionDeleteModal(false)} modeQuestion={true} onConfirm={() => {handleDelete(id)}}
+                <DeleteModal onCancel={() => setQuestionDeleteModal(false)} modeQuestion={true} onConfirm={() => {handleDelete(id)}}
                 />}
 			<div
 				className="flex items-center justify-between w-full bg-white rounded-lg shadow-lg text-gray-900 px-4 py-4 dark:bg-gray-900 dark:text-white">
@@ -99,7 +98,6 @@ const SingleQuestion = ({question, setModalOpen}) => {
 
 SingleQuestion.propTypes = {
 	question: PropTypes.object,
-	cbRefresh: PropTypes.func,
 	setModalOpen: PropTypes.func,
 	setQuestionDeleteModal: PropTypes.func,
 }

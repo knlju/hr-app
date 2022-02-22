@@ -1,13 +1,13 @@
 import React, {useState} from "react"
 import {useNavigate} from "react-router"
-import DeleteUserModal from "../shared/DeleteUserModal"
-import {useDeleteUserAnswerMutation, useDeleteUserProfileMutation, usePendingTeamMemberProfiles} from "../../hooks/react-query-hooks"
+import DeleteModal from "../shared/DeleteModal"
+import {useDeleteUserAnswerMutation, useDeleteUserProfileMutation, usePendingTeamMemberProfiles} from "../../hooks/reactQueryHooks"
 import UserCard from "../shared/UserCard"
 import SpinnerLoader from "../shared/SpinnerLoader"
 import {useSelector} from "react-redux"
 import Loader from "../shared/Loader"
 
-export const PendingPage = () => {
+const PendingPage = () => {
 
 	const companyId = useSelector(state => state.companies.userCompany.data.id)
 	const {data: teamMembers, isLoading, isError, refetch} = usePendingTeamMemberProfiles(companyId)
@@ -53,7 +53,7 @@ export const PendingPage = () => {
 	return (
 		<div className="grid gap-5 lg:grid-cols-3 md:grid-cols-2 xs:grid-cols-1 mx-auto max-w-7xl">
 			{userToDelete &&
-                <DeleteUserModal disabled={isDeleteUserLoading || isDeleteAnswerLoading} onCancel={() => setUserToDelete(false)} onConfirm={deleteUser} user={userToDelete} />}
+                <DeleteModal disabled={isDeleteUserLoading || isDeleteAnswerLoading} onCancel={() => setUserToDelete(false)} onConfirm={deleteUser} user={userToDelete} />}
 			{(isDeleteUserLoading || isDeleteAnswerLoading) && <Loader/>}
 			{
 				teamMembers?.data?.data?.map(user => (
@@ -64,3 +64,5 @@ export const PendingPage = () => {
 		</div>
 	)
 }
+
+export default PendingPage

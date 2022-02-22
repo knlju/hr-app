@@ -5,7 +5,7 @@ import SingleQuestion from "./SingleQuestion"
 import QuestionModal from "./QuestionModal"
 import DraggableList from "./draganddrop/list/DraggableList"
 import SpinnerLoader from "../../shared/SpinnerLoader"
-import {useGetCompanyQuestions} from "../../../hooks/react-query-hooks"
+import {useGetCompanyQuestions} from "../../../hooks/reactQueryHooks"
 import {useToast} from "../../../contexts/ToastProvider"
 
 export const Questions = () => {
@@ -17,30 +17,15 @@ export const Questions = () => {
 
 	const {refetch, isLoading, isFetching} = useGetCompanyQuestions(companyID, {
 		onSuccess: companyQuestions => {
-			const sortedQuestions = companyQuestions.data.data.sort(compare)
+			const sortedQuestions = companyQuestions.data.data
 			setQuestionList(sortedQuestions)
 		},
 		refetchOnMount: true,
 		refetchOnWindowFocus: false,
 	})
 
-	function compare(a, b) {
-		if (a.attributes.order < b.attributes.order) {
-			return -1
-		}
-		if (a.attributes.order > b.attributes.order) {
-			return 1
-		}
-		return 0
-	}
-
-	const cbRefresh = () => (
-		refetch()
-	)
-
 	const DraggableQuestion = question => (
 		<SingleQuestion question={question}
-			cbRefresh={cbRefresh}
 			key={question.id}
 			setModalOpen={(id) => {
 				setModalOpen(true)

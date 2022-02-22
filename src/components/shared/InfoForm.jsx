@@ -30,7 +30,7 @@ function InfoForm({name, setName, photo, newPhoto, setNewPhoto, disabled, action
 						<img className="rounded-md w-40 h-40 object-cover" src={URL.createObjectURL(newPhoto)} alt="new photo"/>
 					</div>) : (
 					<div className="mt-5">
-						<p className="mb-3 text-sm text-gray-900 dark:text-gray-100">Your Current {!isCompany ? "User" : "Company"} Photo:</p>
+						<p className="mb-3 text-sm text-gray-900 dark:text-gray-100">Current {!isCompany ? "User" : "Company"} Photo:</p>
 						<img className="rounded-md w-40 h-40 object-cover" src={photo} alt={name}/>
 					</div>
 				)

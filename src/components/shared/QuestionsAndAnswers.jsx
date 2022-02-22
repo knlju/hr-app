@@ -5,7 +5,7 @@ import {
 	usePostImageMutation,
 	useQuestionsQuery,
 	useUpdateAnswerMutation
-} from "../../hooks/react-query-hooks"
+} from "../../hooks/reactQueryHooks"
 import PropTypes from "prop-types"
 import InputPair from "./InputPair"
 import Loader from "./Loader"
@@ -173,7 +173,7 @@ function QuestionsAndAnswers({profileId, companyId}) {
 					await updateAnswerAsync(payload)
 				}
 			})
-			addToast({type: "success", text: "Answers succesfully updated!"})
+			addToast({type: "success", text: "Answers successfully updated!"})
 		} catch (err) {
 			addToast({type: "danger", text: "Error while updating answers!"})
 		}
@@ -214,9 +214,6 @@ function QuestionsAndAnswers({profileId, companyId}) {
 								inputValue={pair.attributes.answers?.data[0]?.attributes.answer}
 								type={pair.attributes?.type}
 								setInputValue={e => updatePair(e, pair)}
-								// onFocus={()=>setErrorQuestion(false)} 
-								// onBlur={validateQuestion} 
-								// error={errorQuestion}
 							/>
 						)
 					})}

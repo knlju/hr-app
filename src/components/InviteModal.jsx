@@ -2,7 +2,7 @@ import React, {useState} from "react"
 import Modal from "./shared/Modal"
 import InputPair from "./shared/InputPair"
 import PropTypes from "prop-types"
-import {useInviteMutation} from "../hooks/react-query-hooks"
+import {useInviteMutation} from "../hooks/reactQueryHooks"
 import {useToast} from "../contexts/ToastProvider"
 
 function InviteModal({closeModal, companySlug}) {

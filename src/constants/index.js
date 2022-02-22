@@ -58,3 +58,8 @@ export const COMPANIES_ANNEX = [
 	{id: "-1", attributes: {name: "Select a company"}},
 	{id: "0", attributes: {name: "Create a new company"}},
 ]
+
+export const STATUS = [
+	{id: "pending", attributes: {name: "pending"}},
+	{id: "published", attributes: {name: "published"}}
+]

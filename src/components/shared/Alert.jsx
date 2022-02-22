@@ -17,9 +17,9 @@ const Alert = ({ type, text }) => {
 	)
 }
 
-export default Alert
-
 Alert.propTypes = {
 	type: PropTypes.string,
 	text: PropTypes.string
 }
+
+export default Alert

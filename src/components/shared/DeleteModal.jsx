@@ -2,7 +2,7 @@ import React from "react"
 import Modal from "./Modal"
 import PropTypes from "prop-types"
 
-function DeleteUserModal({onConfirm, onCancel, user, modeQuestion, disabled}) {
+function DeleteModal({onConfirm, onCancel, user, modeQuestion, disabled}) {
 	return(
 		<Modal closeModal={onCancel}>
 			<div
@@ -49,7 +49,7 @@ function DeleteUserModal({onConfirm, onCancel, user, modeQuestion, disabled}) {
 	)
 }
 
-DeleteUserModal.propTypes = {
+DeleteModal.propTypes = {
 	onConfirm: PropTypes.func,
 	onCancel: PropTypes.func,
 	user: PropTypes.object,
@@ -57,4 +57,4 @@ DeleteUserModal.propTypes = {
 	disabled: PropTypes.bool,
 }
 
-export default DeleteUserModal
+export default DeleteModal

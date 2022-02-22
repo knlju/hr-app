@@ -1,19 +1,15 @@
 import React, {useEffect, useState} from "react"
 import {useMutation} from "react-query"
 import api from "../../api"
-import {useSelector} from "react-redux"
 import SpinnerLoader from "../shared/SpinnerLoader"
-import {useGetMyProfile, usePostImageMutation} from "../../hooks/react-query-hooks"
+import {useGetMyProfile, usePostImageMutation} from "../../hooks/reactQueryHooks"
 import InfoForm from "../shared/InfoForm"
 import Loader from "../shared/Loader"
 import InputPair from "../shared/InputPair"
 import {INPUT_TYPES} from "../../constants"
 import {useToast} from "../../contexts/ToastProvider"
 
-//TODO: ipak je reset password umesto new password ili tako nesto...
-export const MyProfile = () => {
-
-	const isLoggedIn = useSelector(defaultState => defaultState.user.isLoggedIn)
+const MyProfile = () => {
 
 	const [userName, setUserName] = useState("")
 	const [userEmail, setUserEmail] = useState("")
@@ -154,3 +150,5 @@ export const MyProfile = () => {
 		</>
 	)
 }
+
+export default MyProfile

@@ -8,10 +8,6 @@ li {
   border-top: 2px solid transparent;
 }
 
-.draggable-list__item * {
-  /* pointer-events: none; */
-}
-
 .draggable-list__item.dragstart {
   opacity: 0.5;
 }

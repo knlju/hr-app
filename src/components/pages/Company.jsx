@@ -3,11 +3,11 @@ import {useMutation} from "react-query"
 import api from "../../api"
 import InfoForm from "../shared/InfoForm"
 import Loader from "../shared/Loader"
-import {useGetCompanyQuery, useGetMyProfile, usePostImageMutation} from "../../hooks/react-query-hooks"
+import {useGetCompanyQuery, useGetMyProfile, usePostImageMutation} from "../../hooks/reactQueryHooks"
 import SpinnerLoader from "../shared/SpinnerLoader"
 import {useToast} from "../../contexts/ToastProvider"
 
-export const Company = () => {
+const Company = () => {
 	const [companyName, setCompanyName] = useState("")
 	const [companyLogo, setCompanyLogo] = useState(null)
 	const addToast = useToast()
@@ -106,3 +106,5 @@ export const Company = () => {
 		</>
 	)
 }
+
+export default Company

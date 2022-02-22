@@ -9,7 +9,7 @@ import InputPair from "../../shared/InputPair"
 import {INPUT_TYPES} from "../../../constants"
 import {useToast} from "../../../contexts/ToastProvider"
 import {makeUniqueOrder} from "../../../utils"
-import {useGetAllQuestionsQuery} from "../../../hooks/react-query-hooks"
+import {useGetAllQuestionsQuery} from "../../../hooks/reactQueryHooks"
 
 const AddQuestion = (props) => {
 	let {id} = useParams()
@@ -33,24 +33,22 @@ const AddQuestion = (props) => {
 
 	const {refetch} = useGetAllQuestionsQuery({
 		onSuccess: (data) => {
-			if (data && data.data && data.data.data) {
-				const arr = data.data.data
-				arr.forEach(question => {
-					const order = question.attributes.order
-					setUniqueOrders((uniqueOrders) => {
-						return {
-							...uniqueOrders,
-							[order]: true
-						}
-					})
-					if (question.id === id) {
-						setQuestionName(question.attributes.text)
-						setQuestionType(question.attributes.type)
-						setQuestionOrder(question.attributes.order)
-
+			const arr = data?.data?.data
+			arr.forEach(question => {
+				const order = question?.attributes.order
+				setUniqueOrders((uniqueOrders) => {
+					return {
+						...uniqueOrders,
+						[order]: true
 					}
 				})
-			}
+				if (question.id === id) {
+					setQuestionName(question?.attributes.text)
+					setQuestionType(question?.attributes.type)
+					setQuestionOrder(question?.attributes.order)
+
+				}
+			})
 			queryClient.invalidateQueries("getQuestions")
 		},
 		enabled: false

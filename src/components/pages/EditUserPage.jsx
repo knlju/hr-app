@@ -7,20 +7,15 @@ import {
 	usePostImageMutation,
 	usePublishTeamMemberMutation,
 	useUserProfileQuery
-} from "../../hooks/react-query-hooks"
+} from "../../hooks/reactQueryHooks"
 import SpinnerLoader from "../shared/SpinnerLoader"
 import QuestionsAndAnswers from "../shared/QuestionsAndAnswers"
 import InfoForm from "../shared/InfoForm"
 import Loader from "../shared/Loader"
-import DeleteUserModal from "../shared/DeleteUserModal"
+import DeleteModal from "../shared/DeleteModal"
 import InputPair from "../shared/InputPair"
-import { INPUT_TYPES } from "../../constants"
+import {INPUT_TYPES, STATUS} from "../../constants"
 import {useToast} from "../../contexts/ToastProvider"
-
-const STATUS = [
-	{id: "pending", attributes: {name: "pending"}},
-	{id: "published", attributes: {name: "published"}}
-]
 
 function EditUserPage() {
 
@@ -75,7 +70,7 @@ function EditUserPage() {
 
 	async function onSave(e) {
 		e.preventDefault()
-		if(validateProfileName()) {
+		if (validateProfileName()) {
 			const profileUpdateOptions = {
 				name: username
 			}
@@ -130,8 +125,7 @@ function EditUserPage() {
 		if (!username || username === "") {
 			setErrorProfileName("Profile Name can't be empty!")
 			return false
-		} 
-		else {
+		} else {
 			setErrorProfileName(false)
 			return true
 		}
@@ -150,13 +144,15 @@ function EditUserPage() {
 			{(isImageUploading || isProfileUpdateLoading || isProfilePublishLoading) && <Loader/>}
 			{(imageUploadError || isProfileUpdateError) && <p>Update error... Try again</p>}
 			{isProfilePublishError && <p>Publish error :(</p>}
-			{userToDelete && <DeleteUserModal onCancel={() => setUserToDelete(false)}
+			{userToDelete && <DeleteModal onCancel={() => setUserToDelete(false)}
 				user={user.data.data}
 				disabled={isDeleteUserLoading || isDeleteAnswerLoading}
 				onConfirm={deleteUser}/>}
 			<div className="max-w-screen-lg mx-auto">
-				<button onClick={navigateAfterAction} className="text-sm hover:underline text-orange-500 hover:text-orange-400 flex items-center gap-2 mb-4">
-					<i className="fas fa-caret-square-left"/>Go back</button>
+				<button onClick={navigateAfterAction}
+					className="text-sm hover:underline text-orange-500 hover:text-orange-400 flex items-center gap-2 mb-4">
+					<i className="fas fa-caret-square-left"/>Go back
+				</button>
 			</div>
 			<div
 				className="flex justify-between items-center mx-auto max-w-screen-lg px-6 py-3
@@ -203,8 +199,8 @@ function EditUserPage() {
 					disabled={isError || isLoading}
 					photo={user?.data?.data?.attributes?.profilePhoto?.data?.attributes.url}
 					action={onSave}
-					onFocus={()=>setErrorProfileName(false)} 
-					onBlur={validateProfileName} 
+					onFocus={() => setErrorProfileName(false)}
+					onBlur={validateProfileName}
 					error={errorProfileName}/>
 				<QuestionsAndAnswers companyId={user?.company?.id} profileId={parseInt(profileId)}/>
 			</div>

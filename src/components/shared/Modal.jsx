@@ -15,7 +15,7 @@ function Modal({children, closeModal}) {
 				<div>
 					<div className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true"/>
 					<span className="hidden sm:inline-block sm:align-middle sm:h-screen"
-						aria-hidden="true">&#8203;</span>
+						aria-hidden="true"/>
 					<div
 						className="inline-block align-bottom rounded-lg
                             text-left overflow-hidden shadow-xl transform transition-all

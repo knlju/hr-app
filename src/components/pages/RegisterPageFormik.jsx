@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react"
+import React, {useEffect} from "react"
 import {Link} from "react-router-dom"
 import {useDispatch, useSelector} from "react-redux"
 import {createCompanySuccess, fetchCompaniesStart, loginError, registerStart} from "../../redux/actions/actions"
@@ -8,18 +8,12 @@ import {COMPANIES_ANNEX, INPUT_TYPES, ROLE_SELECT} from "../../constants"
 import {useToast} from "../../contexts/ToastProvider"
 import {useFormik} from "formik"
 import * as Yup from "yup"
+import { lowercaseRegex, numericRegex, uppercaseRegex } from "../../utils"
 
 const RegisterPage = () => {
-	const [companyId, setCompanyId] = useState("-1")
-
 	const companies = useSelector(state => state.companies)
 	const user = useSelector(state => state.user)
 	const addToast = useToast()
-
-	const lowercaseRegex = /(?=.*[a-z])/
-	const uppercaseRegex = /(?=.*[A-Z])/
-	const numericRegex = /(?=.*[0-9])/
-
 
 	const SignupSchema = Yup.object().shape({
 		username: Yup.string()
@@ -28,7 +22,6 @@ const RegisterPage = () => {
 		email: Yup.string()
 			.lowercase()
 			.email("Must be a valid email!")
-		// .notOneOf(emailAddresses, "Email already taken!")
 			.required("Email can't be empty!!"),
 		password: Yup.string()
 			.matches(lowercaseRegex, "One lowercase required!")
@@ -37,8 +30,7 @@ const RegisterPage = () => {
 			.min(8, "Minimum 8 characters required!")
 			.required("Password can't be empty!"),
 		companyId: Yup.string()
-			.required("Please, choose your company!").nullable(),
-
+			.notOneOf(["-1"], "Please, choose your company!"),
 		companyName: Yup.string()
 			.when("companyId", {
 				is: "0",
@@ -51,8 +43,6 @@ const RegisterPage = () => {
 				then: Yup.string()
 					.required("Company Slug is required")
 			})
-        
-        
 	})
 
 	const formik = useFormik({
@@ -68,7 +58,7 @@ const RegisterPage = () => {
 		},
 		validationSchema: SignupSchema,
 		onSubmit: values => {
-			let company = companyId
+			let company = formik.values.companyId
 			const payload = {
 				username: values.username,
 				email: values.email,
@@ -76,7 +66,7 @@ const RegisterPage = () => {
 				company,
 				userRole: values.userRole
 			}
-			if (parseInt(companyId) < 1) {
+			if (parseInt(company) < 1) {
 				company = {name: values.companyName, slug: values.companySlug}
 				payload.company = company
 			}
@@ -89,6 +79,15 @@ const RegisterPage = () => {
 
 	const dispatch = useDispatch()
 
+	function handleCompanyChange(e) {
+		formik.setFieldValue("companyId", e.target.value)
+		dispatch(createCompanySuccess({
+			data: {
+				data: companies.companies.find(company => company.id === parseInt(e.target.value))
+			}
+		}))
+	}
+
 	useEffect(() => {
 		dispatch(fetchCompaniesStart())
 	}, [])
@@ -98,7 +97,6 @@ const RegisterPage = () => {
 		addToast({type: "danger", text: user.error.message})
 		dispatch(loginError(null))
 	}
-
 
 	console.log(formik.values)
 
@@ -135,7 +133,8 @@ const RegisterPage = () => {
 						<div>
 							<InputPair type={INPUT_TYPES.image}
 								inputValue={formik.values.image}
-								setInputValue={e => formik.setFieldValue("image", e.target.files[0])} labelText="Profile photo"/>
+								setInputValue={e => formik.setFieldValue("image", e.target.files[0])}
+								labelText="Profile photo"/>
 							{formik.values.image && (
 								<div className="mt-5">
 									<p className="mb-3 text-sm text-gray-900 dark:text-gray-100">Photo preview:</p>
@@ -152,7 +151,7 @@ const RegisterPage = () => {
 						<div>
 							<InputPair type={INPUT_TYPES.select}
 								inputValue={formik.values.companyId}
-								setInputValue={e => formik.setFieldValue("companyId", e.target.value)}
+								setInputValue={e => handleCompanyChange(e)}
 								labelText="Company" selectOptions={COMPANIES_ANNEX.concat(companies?.companies)}
 								onBlur={formik.handleBlur}
 								error={formik.touched.companyId && formik.errors.companyId}/>
@@ -171,7 +170,7 @@ const RegisterPage = () => {
 										error={formik.touched.companyName && formik.errors.companyName}/>
 								</div>
 								<div>
-									<InputPair type={INPUT_TYPES.text} inputValue={formik.values.companyId.companySlug}
+									<InputPair type={INPUT_TYPES.text} inputValue={formik.values.companySlug}
 										setInputValue={formik.handleChange} labelText="Company slug"
 										placeholder="Company slug..."
 										name="companySlug"

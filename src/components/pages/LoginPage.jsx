@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react"
+import React from "react"
 import {useDispatch, useSelector} from "react-redux"
 import {loginError, loginStart} from "../../redux/actions/actions"
 import {Link} from "react-router-dom"
@@ -6,6 +6,8 @@ import Loader from "../shared/Loader"
 import InputPair from "../shared/InputPair"
 import {INPUT_TYPES} from "../../constants"
 import {useToast} from "../../contexts/ToastProvider"
+import {useFormik} from "formik"
+import * as Yup from "yup"
 
 const LoginPage = () => {
 
@@ -13,70 +15,32 @@ const LoginPage = () => {
 
 	const user = useSelector(state => state.user)
 
-	const [email, setEmail] = useState("")
-	const [password, setPassword] = useState("")
-	const [errorEmail, setErrorEmail] = useState(false)
-	const [errorPass, setErrorPass] = useState(false)
 	const addToast = useToast()
 
-	// TODO: kako otkriti promenu u redux state-u
-	// TODO: prikazati toast alert ako je korisnik ulogovan
-	useEffect(() => {
-		if (user.isLoggedIn) {
-			alert("logged in")
-			addToast({type: "success", text: "You are successfully logged in!"})
-		}
-	}, [user.isLoggedIn])
+	const LoginSchema = Yup.object().shape({
+		email: Yup.string()
+			.lowercase()
+			.email("Must be a valid email!")
+			.required("Email can't be empty!!"),
+		password: Yup.string()
+			.min(8, "Minimum 8 characters required!")
+			.required("Password can't be empty!"),
+	})
 
-	const validate = () => {
-		const emailValid = validateEmail()
-		const passwordValid = validatePassword()
-
-		return emailValid && passwordValid
-	}
-
-	const validateEmail = () => {
-		if (!email || email === "") {
-			setErrorEmail("Email cant be empty!")
-			return false
-		}
-		// Commented because we use made up emails, uncomment for prod
-		// else if (emailRegEx){
-		// 	setErrorEmail("Not valid email!")
-		// 	return false
-		// }
-		else {
-			setErrorEmail(false)
-			return true
-		}
-	}
-	const validatePassword = () => {
-		if (!password || password === "") {
-			setErrorPass("Password cant be empty!")
-			return false
-		}
-		// else if (regexPassword){}
-		else {
-			setErrorPass(false)
-			return true
-		}
-	}
-
-	const handleLogIn = e => {
-		e.preventDefault()
-		if (validate()) {
+	const formik = useFormik({
+		initialValues: {
+			email: "",
+			password: "",
+		},
+		validationSchema: LoginSchema,
+		onSubmit: values => {
 			const data = {
-				email,
-				password
+				email: values.email,
+				password: values.password
 			}
-			// setTimeout(() => {
-			// 	addToast({type: "success", text: "You are successfully logged in!"})
-			// }, 1000)
-			// setTimeout(() => {
 			dispatch(loginStart(data))
-			// }, 2000)
-		}
-	}
+		},
+	})
 
 	if (user.error) {
 		addToast({type: "danger", text: user.error.message})
@@ -90,24 +54,22 @@ const LoginPage = () => {
 				<div className="flex justify-between items-center mx-auto max-w-screen-lg py-10">
 					<div
 						className="bg-white shadow-md border border-gray-200 rounded-lg w-full lg:w-2/5 max-w-md p-4 sm:p-6 lg:p-8 dark:bg-gray-800 dark:border-gray-700 mx-auto">
-						<form className="space-y-4" action="#">
+						<form className="space-y-4" action="#" onSubmit={formik.handleSubmit}>
 							<h3 className="text-lg text-center font-medium text-gray-900 dark:text-white">Sign in to our
                                 platform</h3>
 							<div>
-								<InputPair onFocus={() => setErrorEmail(false)} onBlur={validateEmail}
-									error={errorEmail} type={INPUT_TYPES.email} inputValue={email}
-									setInputValue={e => setEmail(e.target.value)} labelText="Your
-                                    email"/>
+								<InputPair type={INPUT_TYPES.email} inputValue={formik.values.email}
+									setInputValue={formik.handleChange} labelText="Your email"
+									onBlur={formik.handleBlur} error={formik.touched.email && formik.errors.email}/>
 							</div>
 							<div>
-								<InputPair type={INPUT_TYPES.password} inputValue={password}
-									setInputValue={e => setPassword(e.target.value)} labelText="Your
-                                    password" onFocus={() => setErrorPass(false)} onBlur={validatePassword}
-									error={errorPass}/>
+								<InputPair type={INPUT_TYPES.password} inputValue={formik.values.password}
+									setInputValue={formik.handleChange} labelText="Your password"
+									onBlur={formik.handleBlur}
+									error={formik.touched.password && formik.errors.password}/>
 							</div>
 							<button type="submit"
-								className="w-full text-white bg-orange-600 hover:bg-orange-500 focus:ring-4 focus:ring-blue-300 font-medium rounded text-sm px-5 py-2.5 text-center shadow-md tracking-wide"
-								onClick={handleLogIn}>Login to your account
+								className="w-full text-white bg-orange-600 hover:bg-orange-500 focus:ring-4 focus:ring-blue-300 font-medium rounded text-sm px-5 py-2.5 text-center shadow-md tracking-wide">Login to your account
 							</button>
 							<div className="text-sm font-medium text-gray-500 dark:text-gray-300">Not registered?
 								<Link to="/register" className="ml-2 text-orange-600 hover:underline">Create

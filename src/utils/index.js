@@ -66,4 +66,6 @@ export const makeUniqueOrder = (uniqueOrders) => {
  *
  * @type {RegExp}
  */
-export const emailRegEx = /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/
+export const lowercaseRegex = /(?=.*[a-z])/
+export const uppercaseRegex = /(?=.*[A-Z])/
+export const numericRegex = /(?=.*[0-9])/

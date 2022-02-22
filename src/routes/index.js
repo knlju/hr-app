@@ -15,6 +15,7 @@ import TeamPageRoleRoute from "./TeamPageRoleRoute"
 import QuestionsRoleRoute from "./QuestionsRoleRoute"
 
 import RegisterPageFormik from "../components/pages/RegisterPageFormik"
+import { ErrorPage } from "../components/pages/404"
 
 const createRoutes = () => (
 	<Routes>
@@ -52,7 +53,7 @@ const createRoutes = () => (
 			</Route>
 
 			{/* Catch all */}
-			<Route path="*" element={<div><h1>Yay 404</h1></div>}/>
+			<Route path="*" element={<ErrorPage/>}/>
 		</Route>
 	</Routes>
 )

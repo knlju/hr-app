@@ -12,24 +12,33 @@ import store, {Persistor} from "./redux/store"
 import {QueryClient, QueryClientProvider} from "react-query"
 import {PersistGate} from "redux-persist/integration/react"
 import ToastProvider from "./contexts/ToastProvider"
+import {ErrorBoundary} from "react-error-boundary"
+import { FallbackPage } from "./components/pages/FallbackPage"
 
 const queryClient = new QueryClient()
 
+//this would call server logging
+const errorHandler = (error, errorInfo) => {
+	console.log("logging", error, errorInfo)
+}
+
 ReactDOM.render(
 	<React.StrictMode>
-		<Provider store={store}>
-			<PersistGate loading={null} persistor={Persistor}>
-				<ToastProvider>
-					<ThemeProvider>
-						<BrowserRouter>
-							<QueryClientProvider client={queryClient}>
-								<App/>
-							</QueryClientProvider>
-						</BrowserRouter>
-					</ThemeProvider>
-				</ToastProvider>
-			</PersistGate>
-		</Provider>
+		<ErrorBoundary FallbackComponent={FallbackPage} onError={errorHandler}>
+			<Provider store={store}>
+				<PersistGate loading={null} persistor={Persistor}>
+					<ToastProvider>
+						<ThemeProvider>
+							<BrowserRouter>
+								<QueryClientProvider client={queryClient}>
+									<App/>
+								</QueryClientProvider>
+							</BrowserRouter>
+						</ThemeProvider>
+					</ToastProvider>
+				</PersistGate>
+			</Provider>
+		</ErrorBoundary>
 	</React.StrictMode>,
 	document.getElementById("root")
 )
